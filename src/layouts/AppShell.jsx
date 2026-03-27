@@ -286,7 +286,16 @@ export default function AppShell() {
 
           <button onClick={() => navigate('/notifications')} className="relative text-[#787774] hover:text-[#1A1A1A] transition-colors">
             <Bell size={16} />
-            <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full text-white text-[9px] flex items-center justify-center font-bold" style={{ background: '#F43F5E' }}>3</span>
+            {(() => {
+              try {
+                const stored = localStorage.getItem('notifications');
+                const items = stored ? JSON.parse(stored) : null;
+                const count = Array.isArray(items) ? items.filter(n => !n.read).length : 0;
+                return count > 0 ? (
+                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full text-white text-[9px] flex items-center justify-center font-bold" style={{ background: '#F43F5E' }}>{count > 9 ? '9+' : count}</span>
+                ) : null;
+              } catch { return null; }
+            })()}
           </button>
           <UserMenu user={user} onLogout={() => { logout(); navigate('/auth/login'); }} />
         </header>

@@ -28,6 +28,9 @@ const FORM_MAP = {
   'Sundry Debtors':           { title: 'Add Ledger',              subtitle: 'Group: Sundry Debtors',       component: AddLedgerForm },
   'Duties & Taxes':           { title: 'Add Ledger',              subtitle: 'Group: Duties & Taxes',       component: AddLedgerForm },
   'Custom Groups':            { title: 'Add Ledger',              subtitle: 'Custom Group',                component: AddLedgerForm },
+  'Record Payment':           { title: 'Record Payment',          subtitle: 'Financials · Payments',       component: VoucherForm },
+  'Record Receipt':           { title: 'Record Receipt',          subtitle: 'Financials · Receipts',       component: VoucherForm },
+  'Record Expense':           { title: 'Record Expense',          subtitle: 'Financials · Expenses',       component: VoucherForm },
 };
 
 export default function CreateModal({ formKey, onClose }) {
