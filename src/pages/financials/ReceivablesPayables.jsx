@@ -1,0 +1,180 @@
+import { useState } from 'react';
+import { Users, AlertTriangle, Clock, TrendingUp } from 'lucide-react';
+import KPICard from '../../components/KPICard';
+import Badge from '../../components/Badge';
+import Table from '../../components/Table';
+import Drawer from '../../components/Drawer';
+import { receivables, payables } from '../../data/mockData';
+
+const fmt = n => '₹' + n.toLocaleString('en-IN');
+const riskVariant = { High: 'red', Medium: 'yellow', Low: 'green' };
+const TABS = ['Party-wise', 'Invoice/Bill-wise', 'Ageing Analysis'];
+
+export default function ReceivablesPayables() {
+  const [mode, setMode] = useState('receivables');
+  const [tab, setTab] = useState(0);
+  const [drawer, setDrawer] = useState(null);
+  const data = mode === 'receivables' ? receivables : payables;
+  const totalOutstanding = data.reduce((s, r) => s + r.outstanding, 0);
+  const totalOverdue = data.reduce((s, r) => s + r.overdue, 0);
+
+  const partyCols = [
+    { key: 'party', label: mode === 'receivables' ? 'Customer' : 'Vendor' },
+    { key: 'outstanding', label: 'Outstanding', render: v => <span className="font-semibold text-[#1A1A1A]">{fmt(v)}</span> },
+    { key: 'overdue', label: 'Overdue', render: v => v > 0 ? <span className="text-rose-500 font-medium">{fmt(v)}</span> : <span className="text-[#AEACA8]">—</span> },
+    { key: 'risk', label: 'Risk', render: v => <Badge label={v} variant={riskVariant[v]} /> },
+    { key: 'contact', label: 'Contact', render: v => <span className="text-[#787774] font-mono text-xs">{v}</span> },
+  ];
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-end justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-[#1A1A1A] tracking-tight">Receivables & Payables</h1>
+          <p className="text-sm text-[#787774] mt-0.5">July 2025</p>
+        </div>
+        <div className="flex bg-[#F1F0EC] rounded-lg p-0.5">
+          {['receivables','payables'].map(m => (
+            <button key={m} onClick={() => setMode(m)}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors capitalize ${mode === m ? 'bg-white text-[#1A1A1A] shadow-notion' : 'text-[#787774] hover:text-[#1A1A1A]'}`}>
+              {m}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-4 gap-3">
+        <KPICard title="Total Outstanding" value={fmt(totalOutstanding)} icon={Users} accent="#059669" />
+        <KPICard title="Total Overdue" value={fmt(totalOverdue)} icon={AlertTriangle} accent="#F43F5E" />
+        <KPICard title="Due This Week" value={fmt(Math.round(totalOutstanding * 0.15))} icon={Clock} accent="#F59E0B" />
+        <KPICard title={mode === 'receivables' ? 'Avg Collection Days' : 'Avg Payment Days'} value="28 days" icon={TrendingUp} accent="#10B981" />
+      </div>
+
+      <div className="grid grid-cols-3 gap-4">
+        <div className="col-span-2 bg-white border border-[#E8E7E3] rounded-xl p-5">
+          <p className="text-sm font-semibold text-[#1A1A1A] mb-3">Recent Activity</p>
+          <table className="w-full text-sm">
+            <thead><tr className="border-b border-[#F1F0EC]">
+              <th className="text-left py-2 text-xs text-[#787774] font-semibold">Party</th>
+              <th className="text-right py-2 text-xs text-[#787774] font-semibold">Amount</th>
+              <th className="text-right py-2 text-xs text-[#787774] font-semibold">Date</th>
+            </tr></thead>
+            <tbody>
+              {data.slice(0, 4).map((r, i) => (
+                <tr key={i} className="border-b border-[#F1F0EC] last:border-0 hover:bg-[#F7F6F3] cursor-pointer" onClick={() => setDrawer(r)}>
+                  <td className="py-2.5 font-medium text-[#1A1A1A]">{r.party}</td>
+                  <td className="py-2.5 text-right font-semibold text-[#059669]">{fmt(r.outstanding)}</td>
+                  <td className="py-2.5 text-right text-[#787774] text-xs">10 Jul 2025</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="bg-white border border-[#E8E7E3] rounded-xl p-5 space-y-3">
+          <p className="text-sm font-semibold text-[#1A1A1A]">Alerts</p>
+          <div className="p-3 bg-rose-50 rounded-lg text-xs text-rose-700 border border-rose-200">
+            {data.filter(r => r.risk === 'High').length} parties with high-risk outstanding
+          </div>
+          <div className="p-3 bg-amber-50 rounded-lg text-xs text-amber-700 border border-amber-200">
+            {data.filter(r => r.overdue > 0).length} parties with overdue amounts
+          </div>
+          <p className="text-sm font-semibold text-[#1A1A1A] pt-1">Top 3</p>
+          {data.slice(0, 3).map((r, i) => (
+            <div key={i} className="flex justify-between text-sm py-1 border-b border-[#F1F0EC] last:border-0">
+              <span className="text-[#787774] truncate mr-2">{r.party.split(' ')[0]}</span>
+              <span className="font-semibold text-[#1A1A1A] flex-shrink-0">{fmt(r.outstanding)}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-white border border-[#E8E7E3] rounded-xl">
+        <div className="flex border-b border-[#E8E7E3] px-1 pt-1">
+          {TABS.map((t, i) => (
+            <button key={i} onClick={() => setTab(i)}
+              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#059669] bg-[#ECFDF5]' : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F7F6F3]'}`}>{t}</button>
+          ))}
+        </div>
+        <div className="p-5">
+          {tab === 0 && <Table columns={partyCols} data={data} onRowClick={setDrawer} />}
+          {tab === 1 && (
+            <Table columns={[
+              { key: 'party', label: mode === 'receivables' ? 'Customer' : 'Vendor' },
+              { key: 'outstanding', label: 'Amount', render: v => fmt(v) },
+              { key: 'overdue', label: 'Overdue', render: v => v > 0 ? <span className="text-rose-500">{fmt(v)}</span> : '—' },
+              { key: 'risk', label: 'Status', render: v => <Badge label={v === 'High' ? 'Overdue' : v === 'Low' ? 'Current' : 'Partial'} variant={riskVariant[v]} /> },
+            ]} data={data} onRowClick={setDrawer} />
+          )}
+          {tab === 2 && (
+            <div className="overflow-x-auto rounded-xl border border-[#E8E7E3]">
+              <table className="w-full text-sm">
+                <thead className="bg-[#FBFAF8] border-b border-[#E8E7E3]">
+                  <tr>{['Party','0–30 days','31–60 days','61–90 days','90+ days','Total'].map(h => (
+                    <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-[#787774] uppercase whitespace-nowrap">{h}</th>
+                  ))}</tr>
+                </thead>
+                <tbody>
+                  {data.map((r, i) => (
+                    <tr key={i} className="border-b border-[#F1F0EC] hover:bg-[#F7F6F3] cursor-pointer" onClick={() => setDrawer(r)}>
+                      <td className="px-4 py-3 font-medium text-[#1A1A1A]">{r.party}</td>
+                      <td className="px-4 py-3 text-emerald-600">{r.aging.d0_30 ? fmt(r.aging.d0_30) : '—'}</td>
+                      <td className="px-4 py-3 text-amber-600">{r.aging.d31_60 ? fmt(r.aging.d31_60) : '—'}</td>
+                      <td className="px-4 py-3 text-orange-600">{r.aging.d61_90 ? fmt(r.aging.d61_90) : '—'}</td>
+                      <td className="px-4 py-3 text-rose-600">{r.aging.d90plus ? fmt(r.aging.d90plus) : '—'}</td>
+                      <td className="px-4 py-3 font-bold text-[#1A1A1A]">{fmt(r.outstanding)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <Drawer open={!!drawer} onClose={() => setDrawer(null)} title={drawer?.party}>
+        {drawer && (
+          <div className="space-y-5">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="font-semibold text-[#1A1A1A] text-base">{drawer.party}</p>
+                <p className="text-sm text-[#787774] mt-0.5">{drawer.contact}</p>
+              </div>
+              <Badge label={drawer.risk} variant={riskVariant[drawer.risk]} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-3 rounded-xl bg-[#ECFDF5] border border-[#6EE7B7]">
+                <p className="text-xs text-[#787774]">Outstanding</p>
+                <p className="font-bold text-[#059669] text-lg">{fmt(drawer.outstanding)}</p>
+              </div>
+              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200">
+                <p className="text-xs text-[#787774]">Overdue</p>
+                <p className="font-bold text-rose-600 text-lg">{fmt(drawer.overdue)}</p>
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-[#AEACA8] uppercase tracking-wider mb-3">Ageing Buckets</p>
+              <div className="space-y-2">
+                {[['0–30 days', drawer.aging.d0_30, 'emerald'], ['31–60 days', drawer.aging.d31_60, 'amber'], ['61–90 days', drawer.aging.d61_90, 'orange'], ['90+ days', drawer.aging.d90plus, 'rose']].map(([l, v, c]) => (
+                  <div key={l} className="flex items-center gap-3">
+                    <span className="text-xs text-[#787774] w-20 flex-shrink-0">{l}</span>
+                    <div className="flex-1 bg-[#F1F0EC] rounded-full h-1.5">
+                      <div className={`h-1.5 rounded-full bg-${c}-500`} style={{ width: v ? `${(v / drawer.outstanding) * 100}%` : '0%' }} />
+                    </div>
+                    <span className={`text-xs font-medium w-20 text-right ${v ? `text-${c}-600` : 'text-[#AEACA8]'}`}>{v ? fmt(v) : '—'}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex flex-col gap-2 pt-2">
+              <button className="w-full py-2.5 rounded-lg text-sm font-medium text-white" style={{ background: '#059669' }}>
+                {mode === 'receivables' ? 'Record Receipt' : 'Record Payment'}
+              </button>
+              <button className="w-full py-2.5 rounded-lg text-sm font-medium text-[#787774] border border-[#E8E7E3] hover:bg-[#F7F6F3]">Send Reminder</button>
+              <button className="w-full py-2.5 rounded-lg text-sm font-medium text-[#787774] border border-[#E8E7E3] hover:bg-[#F7F6F3]">Share Outstanding PDF</button>
+            </div>
+          </div>
+        )}
+      </Drawer>
+    </div>
+  );
+}
