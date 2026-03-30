@@ -34,17 +34,20 @@ export default function Ledgers() {
   const [search,  setSearch]      = useState('');
   const [groupFilter, setGroupFilter] = useState('All');
   const [page,    setPage]        = useState(1);
+  const [pageSize, setPageSize]    = useState(25);
+  const [total,    setTotal]       = useState(0);
   const [drawer,  setDrawer]      = useState(null);
   const [ledgerTab, setLedgerTab] = useState(0);
 
   const companyGuid = selectedCompany?.guid;
 
-  const load = async (searchText = '', pg = 1) => {
+  const load = async (searchText = '', pg = 1, ps = pageSize) => {
     setLoading(true); setError(null);
     try {
-      const res = await api.fetchLedgers({ companyGuid, page: pg, searchText });
+      const res = await api.fetchLedgers({ companyGuid, page: pg, pageSize: ps, searchText });
       const list = res?.data?.ledgers || res?.data || [];
       setLedgers(Array.isArray(list) ? list : []);
+      if (res?.data?.total) setTotal(res.data.total);
     } catch (err) {
       console.warn('API error:', err.message);
       setLedgers([]);
@@ -53,11 +56,11 @@ export default function Ledgers() {
     }
   };
 
-  useEffect(() => { load(search, 1); }, [companyGuid]);
+  useEffect(() => { load(search, 1, pageSize); setPage(1); }, [companyGuid, pageSize]);
 
   // Debounced search
   useEffect(() => {
-    const t = setTimeout(() => { load(search, 1); setPage(1); }, 400);
+    const t = setTimeout(() => { load(search, 1, pageSize); setPage(1); }, 400);
     return () => clearTimeout(t);
   }, [search]);
 
@@ -142,6 +145,43 @@ export default function Ledgers() {
           </table>
         </div>
       </div>
+
+      {/* Pagination */}
+      {total > 0 && (
+        <div className="flex items-center justify-between px-4 py-3 bg-white border border-[#E8E7E3] rounded-xl">
+          <p className="text-xs text-[#787774]">
+            Showing <span className="font-semibold text-[#1A1A1A]">{((page-1)*pageSize)+1}–{Math.min(page*pageSize, total)}</span> of <span className="font-semibold text-[#1A1A1A]">{total}</span> ledgers
+          </p>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => { const pg = page-1; setPage(pg); load(search, pg, pageSize); }}
+              disabled={page === 1}
+              className="px-3 py-1.5 text-xs font-medium border border-[#E8E7E3] rounded-lg disabled:opacity-40 hover:bg-[#F7F6F3] transition-colors"
+            >← Prev</button>
+            {/* Page numbers */}
+            {Array.from({ length: Math.min(5, Math.ceil(total/pageSize)) }, (_, i) => {
+              const totalPages = Math.ceil(total/pageSize);
+              let pg;
+              if (totalPages <= 5) pg = i + 1;
+              else if (page <= 3) pg = i + 1;
+              else if (page >= totalPages - 2) pg = totalPages - 4 + i;
+              else pg = page - 2 + i;
+              return (
+                <button key={pg} onClick={() => { setPage(pg); load(search, pg, pageSize); }}
+                  className={`w-8 h-8 text-xs font-medium rounded-lg transition-colors ${pg === page ? 'text-white' : 'border border-[#E8E7E3] text-[#787774] hover:bg-[#F7F6F3]'}`}
+                  style={pg === page ? { background: '#059669' } : {}}>
+                  {pg}
+                </button>
+              );
+            })}
+            <button
+              onClick={() => { const pg = page+1; setPage(pg); load(search, pg, pageSize); }}
+              disabled={page >= Math.ceil(total/pageSize)}
+              className="px-3 py-1.5 text-xs font-medium border border-[#E8E7E3] rounded-lg disabled:opacity-40 hover:bg-[#F7F6F3] transition-colors"
+            >Next →</button>
+          </div>
+        </div>
+      )}
 
       <Drawer open={!!drawer} onClose={() => setDrawer(null)} title={getName(drawer || {})}>
         {drawer && (
