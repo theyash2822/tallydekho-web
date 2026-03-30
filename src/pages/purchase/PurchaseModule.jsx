@@ -44,8 +44,8 @@ export default function PurchaseModule() {
 
   useEffect(() => {
     if (!token || !selectedCompany?.guid) {
-      setInvoices(purchaseInvoices);
-      setUsingMock(true);
+      setInvoices([]);
+      setUsingMock(false);
       setLoading(false);
       return;
     }
@@ -61,9 +61,9 @@ export default function PurchaseModule() {
             status: 'Paid', mode: 'Bank', received: 'Complete',
           })));
           setUsingMock(false);
-        } else { setInvoices(purchaseInvoices); setUsingMock(true); }
+        } else { setInvoices([]); setUsingMock(false); }
       })
-      .catch(() => { setInvoices(purchaseInvoices); setUsingMock(true); })
+      .catch(() => { setInvoices([]); setUsingMock(false); })
       .finally(() => setLoading(false));
   }, [selectedCompany?.guid, token]);
   const [search, setSearch] = useState('');

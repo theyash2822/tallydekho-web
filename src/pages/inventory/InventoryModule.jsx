@@ -63,7 +63,23 @@ export default function InventoryModule() {
     try {
       const res = await api.fetchStocks({ companyGuid: selectedCompany.guid, page: 1, searchText: search });
       const list = res?.data?.stocks || res?.data || [];
-      if (Array.isArray(list) && list.length > 0) setStockItems(list);
+      if (Array.isArray(list) && list.length > 0) {
+        setStockItems(list.map(s => ({
+          id: s.id,
+          name: s.name || s.NAME || 'Unknown',
+          sku: s.guid?.slice(-8) || '',
+          category: s.category || s.group_name || 'General',
+          qty: s.closing_qty || 0,
+          unit: s.unit || 'Pcs',
+          rate: s.closing_rate || 0,
+          value: s.closing_value || 0,
+          warehouse: 'Main',
+          reorderLevel: s.reorder_level || 0,
+          status: s.closing_qty === 0 ? 'Out of Stock' : s.closing_qty <= (s.reorder_level || 0) ? 'Low Stock' : 'Normal',
+        })));
+      } else {
+        setStockItems([]);
+      }
     } catch { /* use mock */ } finally { setLoading(false); }
   };
 

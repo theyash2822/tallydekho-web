@@ -44,10 +44,10 @@ export default function Ledgers() {
     try {
       const res = await api.fetchLedgers({ companyGuid, page: pg, searchText });
       const list = res?.data?.ledgers || res?.data || [];
-      setLedgers(Array.isArray(list) ? list : mockLedgers);
+      setLedgers(Array.isArray(list) ? list : []);
     } catch (err) {
-      console.warn('Using mock data:', err.message);
-      setLedgers(mockLedgers);
+      console.warn('API error:', err.message);
+      setLedgers([]);
     } finally {
       setLoading(false);
     }

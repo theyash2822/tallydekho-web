@@ -59,8 +59,8 @@ export default function SalesModule() {
         setInvoices(mapped);
         setUsingMock(false);
       } else {
-        setInvoices(mockInvoices);
-        setUsingMock(true);
+        setInvoices([]);
+        setUsingMock(false);
       }
     } catch {
       setInvoices(mockInvoices);
