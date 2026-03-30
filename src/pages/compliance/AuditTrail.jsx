@@ -37,6 +37,8 @@ export default function AuditTrail() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
   const { selectedCompany, token } = useAuth();
 
   const loadData = async () => {
@@ -46,8 +48,10 @@ export default function AuditTrail() {
       const res = await api.fetchVouchers({
         companyGuid: selectedCompany.guid,
         page: 1,
-        pageSize: 200,
+        pageSize: 500,
         searchText: search,
+        fromDate: fromDate || undefined,
+        toDate: toDate || undefined,
       });
       const list = res?.data?.vouchers || [];
       setVouchers(list);
@@ -59,7 +63,7 @@ export default function AuditTrail() {
     }
   };
 
-  useEffect(() => { loadData(); }, [selectedCompany?.guid, token]);
+  useEffect(() => { loadData(); }, [selectedCompany?.guid, token, fromDate, toDate]);
   useEffect(() => {
     const unsub = wsService.on('synced', () => loadData());
     return unsub;
@@ -72,8 +76,13 @@ export default function AuditTrail() {
     const s = !search || (v.party_name || '').toLowerCase().includes(search.toLowerCase()) ||
       (v.voucher_number || '').toLowerCase().includes(search.toLowerCase());
     const t = typeFilter === 'All' || v.voucher_type === typeFilter;
-    return s && t;
+    const d1 = !fromDate || !v.date || v.date >= fromDate.replace(/-/g, '');
+    const d2 = !toDate || !v.date || v.date <= toDate.replace(/-/g, '');
+    return s && t && d1 && d2;
   });
+
+  // My Entries = filter by current user's vouchers (placeholder — show all for now)
+  const myEntries = filtered;
 
   // Activity per day chart
   const activityByDay = (() => {
@@ -176,28 +185,58 @@ export default function AuditTrail() {
         </div>
         <div className="p-5">
           {/* Filters */}
-          <div className="flex gap-3 mb-4 flex-wrap">
+          <div className="flex gap-3 mb-4 flex-wrap items-center">
+            {/* Search */}
             <div className="relative flex-1 min-w-48">
               <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#AEACA8]" />
-              <input value={search} onChange={e => { setSearch(e.target.value); }}
+              <input value={search} onChange={e => setSearch(e.target.value)}
                 placeholder="Search party or voucher no..."
                 className="notion-input pl-8 w-full text-sm" />
             </div>
+            {/* Voucher type */}
             <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)} className="notion-input text-sm text-[#787774]">
               {voucherTypes.map(t => <option key={t}>{t}</option>)}
             </select>
+            {/* Date range */}
+            <div className="flex items-center gap-2 bg-white border border-[#E8E7E3] rounded-lg px-3 py-1.5">
+              <span className="text-xs text-[#AEACA8] flex-shrink-0">From</span>
+              <input
+                type="date"
+                value={fromDate}
+                onChange={e => setFromDate(e.target.value)}
+                className="text-xs text-[#1A1A1A] outline-none bg-transparent"
+              />
+            </div>
+            <div className="flex items-center gap-2 bg-white border border-[#E8E7E3] rounded-lg px-3 py-1.5">
+              <span className="text-xs text-[#AEACA8] flex-shrink-0">To</span>
+              <input
+                type="date"
+                value={toDate}
+                onChange={e => setToDate(e.target.value)}
+                className="text-xs text-[#1A1A1A] outline-none bg-transparent"
+              />
+            </div>
+            {/* Clear dates */}
+            {(fromDate || toDate) && (
+              <button
+                onClick={() => { setFromDate(''); setToDate(''); }}
+                className="text-xs text-rose-500 hover:text-rose-600 font-medium px-2 py-1.5 hover:bg-rose-50 rounded-lg transition-colors"
+              >
+                Clear dates
+              </button>
+            )}
           </div>
 
           {loading ? (
             <div className="space-y-2">{[...Array(6)].map((_, i) => <div key={i} className="h-10 bg-[#F7F6F3] rounded-lg animate-pulse" />)}</div>
-          ) : filtered.length === 0 ? (
+          ) : (tab === 0 ? filtered : myEntries).length === 0 ? (
             <div className="py-12 text-center text-[#AEACA8]">
               <ClipboardList size={36} className="mx-auto mb-3 opacity-20" />
               <p className="text-sm font-medium">No vouchers found</p>
               <p className="text-xs mt-1">Sync from TallyDekho Desktop to see Day Book data</p>
             </div>
           ) : (
-            <Table columns={cols} data={filtered} onRowClick={setDrawer} />
+            <Table columns={cols} data={tab === 0 ? filtered : myEntries} onRowClick={setDrawer} />
           )}
         </div>
       </div>
