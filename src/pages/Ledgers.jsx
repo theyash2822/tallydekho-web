@@ -64,10 +64,10 @@ export default function Ledgers() {
   const groups = ['All', ...Array.from(new Set(ledgers.map(l => l.group || l.PARENT || 'Other')))];
   const filtered = groupFilter === 'All' ? ledgers : ledgers.filter(l => (l.group || l.PARENT) === groupFilter);
 
-  const getName  = l => l.name  || l.NAME  || l.ledgerName  || '—';
-  const getGroup = l => l.group || l.PARENT || '—';
-  const getClose = l => l.closing || l.closingBalance || l.CLOSINGBALANCE || 0;
-  const getOpen  = l => l.opening || l.openingBalance  || l.OPENINGBALANCE || 0;
+  const getName  = l => l.name || l.NAME || l.ledgerName || '—';
+  const getGroup = l => l.parent || l.group || l.PARENT || '—';
+  const getClose = l => Math.abs(l.closing_balance || l.closing || l.closingBalance || l.CLOSINGBALANCE || 0);
+  const getOpen  = l => Math.abs(l.opening_balance || l.opening || l.openingBalance || l.OPENINGBALANCE || 0);
   const getGstin = l => l.gstin  || l.GSTIN  || '';
   const getType  = l => l.type   || (getClose(l) >= 0 ? 'Dr' : 'Cr');
 

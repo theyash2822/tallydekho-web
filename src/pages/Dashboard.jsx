@@ -234,11 +234,7 @@ function ChartCard({ title, sub, action, children }) {
 }
 
 // ─── Trend cards data ─────────────────────────────────────────────────────────
-const trendCards = [
-  { label: 'Sales',     value: '₹45.8L', change: '+14.2%', up: true,  sub: 'vs June 2025',  icon: TrendingUp,    color: '#059669', bg: '#ECFDF5' },
-  { label: 'Purchases', value: '₹28.4L', change: '+3.1%',  up: false, sub: 'vs June 2025',  icon: ShoppingCart,  color: '#F59E0B', bg: '#FFFBEB' },
-  { label: 'Expenses',  value: '₹11.2L', change: '-2.3%',  up: true,  sub: 'Lower this month', icon: Receipt,    color: '#F43F5E', bg: '#FFF1F2' },
-];
+// trendCards defined in component using real data
 
 // ─── Dashboard ────────────────────────────────────────────────────────────────
 export default function Dashboard() {
@@ -260,6 +256,12 @@ export default function Dashboard() {
       .catch(() => {})
       .finally(() => setDashLoading(false));
   }, [selectedCompany?.guid]);
+
+  const trendCards = [
+    { label: 'Sales',     value: dashLoading ? '...' : fmtL(dashData?.totalSales || 0),    change: '', up: true,  sub: selectedCompany?.name || '', icon: TrendingUp,   color: '#059669', bg: '#ECFDF5' },
+    { label: 'Purchases', value: dashLoading ? '...' : fmtL(dashData?.totalPurchase || 0), change: '', up: false, sub: selectedCompany?.name || '', icon: ShoppingCart, color: '#F59E0B', bg: '#FFFBEB' },
+    { label: 'Cash+Bank', value: dashLoading ? '...' : fmtL((dashData?.cashBalance||0)+(dashData?.bankBalance||0)), change: '', up: true, sub: 'Available balance', icon: Receipt, color: '#F43F5E', bg: '#FFF1F2' },
+  ];
 
   const kpis = [
     { label: 'Total Revenue',  value: dashLoading ? '...' : fmtL(dashData?.totalSales || 0),     change: '', up: true,  sub: selectedCompany?.name || 'FY 2025-26', color: '#059669' },
