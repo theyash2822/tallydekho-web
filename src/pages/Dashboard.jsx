@@ -18,14 +18,7 @@ import { useCompanyData } from '../hooks/useCompanyData';
 import api from '../services/api';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
-const kpis = [
-  { label: 'Total Revenue',   value: '₹45.8L', change: '+14.2%', up: true,  sub: 'vs June 2025',   color: '#059669', bg: 'from-indigo-500 to-violet-600' },
-  { label: 'Net Profit',      value: '₹8.2L',  change: '+2.5%',  up: true,  sub: 'Margin 17.9%',    color: '#10B981', bg: 'from-emerald-500 to-teal-600' },
-  { label: 'Receivables',     value: '₹12.8L', change: '-3.1%',  up: false, sub: '5 overdue parties',color: '#F59E0B', bg: 'from-amber-500 to-orange-500' },
-  { label: 'Payables',        value: '₹7.6L',  change: '+1.8%',  up: false, sub: 'Due this week ₹2.1L',color: '#F43F5E', bg: 'from-rose-500 to-pink-600' },
-  { label: 'Cash & Bank',     value: '₹31.1L', change: '+8.4%',  up: true,  sub: 'Across 2 accounts', color: '#06B6D4', bg: 'from-cyan-500 to-sky-600' },
-  { label: 'Loans & ODs',     value: '₹43.2L', change: '',       up: null,  sub: 'EMI ₹1.28L/month', color: '#8B5CF6', bg: 'from-violet-500 to-purple-600' },
-];
+// kpis defined dynamically in component using real API data
 
 const revenueData = [
   { month: 'Feb', revenue: 3200, purchase: 2100, expenses: 820 },
@@ -254,12 +247,28 @@ export default function Dashboard() {
   const createRef = useRef(null);
   const navigate = useNavigate();
   const { isPaired, selectedCompany, companies, loadCompanies } = useAuth();
+  const [dashData, setDashData] = useState(null);
+  const [dashLoading, setDashLoading] = useState(true);
 
-  // Real API KPIs
-  const { data: realKPIs } = useCompanyData(
-    (guid) => guid ? api.fetchStockSummary(guid).then(r => ({ type: 'stock', ...r?.data })) : Promise.resolve(null),
-    [], null
-  );
+  const fmtL = n => n >= 100000 ? '₹' + (n/100000).toFixed(1) + 'L' : n > 0 ? '₹' + n.toLocaleString('en-IN') : '—';
+
+  useEffect(() => {
+    if (!selectedCompany?.guid) { setDashLoading(false); return; }
+    setDashLoading(true);
+    api.fetchDashboard({ companyGuid: selectedCompany.guid })
+      .then(res => { if (res?.data) setDashData(res.data); })
+      .catch(() => {})
+      .finally(() => setDashLoading(false));
+  }, [selectedCompany?.guid]);
+
+  const kpis = [
+    { label: 'Total Revenue',  value: dashLoading ? '...' : fmtL(dashData?.totalSales || 0),     change: '', up: true,  sub: selectedCompany?.name || 'FY 2025-26', color: '#059669' },
+    { label: 'Net Profit',     value: dashLoading ? '...' : fmtL(dashData?.netProfit || 0),      change: '', up: true,  sub: 'This FY', color: '#10B981' },
+    { label: 'Receivables',    value: dashLoading ? '...' : fmtL(dashData?.receivables || 0),    change: '', up: false, sub: 'Outstanding', color: '#F59E0B' },
+    { label: 'Payables',       value: dashLoading ? '...' : fmtL(dashData?.payables || 0),       change: '', up: false, sub: 'Outstanding', color: '#F43F5E' },
+    { label: 'Cash & Bank',    value: dashLoading ? '...' : fmtL((dashData?.cashBalance || 0) + (dashData?.bankBalance || 0)), change: '', up: true, sub: 'Balance', color: '#06B6D4' },
+    { label: 'Total Purchase', value: dashLoading ? '...' : fmtL(dashData?.totalPurchase || 0),  change: '', up: null, sub: 'This FY', color: '#8B5CF6' },
+  ];
   const [tallyPaired, setTallyPaired] = useState(isPaired);
   const [lastSyncTime, setLastSyncTime] = useState(null);
 
