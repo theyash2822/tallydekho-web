@@ -1,90 +1,238 @@
-import { useState } from 'react';
-import { ClipboardList, Plus, Edit, Trash2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ClipboardList, Plus, Edit, Trash2, Search, RefreshCw } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import KPICard from '../../components/KPICard';
 import Badge from '../../components/Badge';
 import Table from '../../components/Table';
 import Drawer from '../../components/Drawer';
-import { auditTrail } from '../../data/mockData';
+import { useAuth } from '../../contexts/AuthContext';
+import api from '../../services/api';
+import wsService from '../../services/websocket';
 
-const fmt = n => '₹' + n.toLocaleString('en-IN');
+const fmt = n => '₹' + Math.abs(n || 0).toLocaleString('en-IN');
 const actionVariant = { Created: 'green', Modified: 'yellow', Deleted: 'red' };
 const TABS = ['Day Book', 'My Entries'];
-const perDay = [{day:'1',count:4},{day:'2',count:7},{day:'3',count:3},{day:'4',count:8},{day:'5',count:5},{day:'6',count:6},{day:'7',count:9},{day:'8',count:4},{day:'9',count:7},{day:'10',count:8}];
 
-const cols = [
-  {key:'date',label:'Date'},
-  {key:'voucher',label:'Voucher No',render:v=><span className="font-mono text-xs text-[#059669]">{v}</span>},
-  {key:'type',label:'Type'},
-  {key:'ledger',label:'Ledger'},
-  {key:'drCr',label:'Dr/Cr',render:v=><span className={v==='Dr'?'text-emerald-600 font-semibold':'text-rose-500 font-semibold'}>{v}</span>},
-  {key:'amount',label:'Amount',render:v=>fmt(v)},
-  {key:'user',label:'User',render:v=><span className="text-[#787774]">{v}</span>},
-  {key:'action',label:'Action',render:v=><Badge label={v} variant={actionVariant[v]}/>},
-];
+// Map Tally voucher types to display labels
+const getVoucherTypeLabel = (type) => {
+  const map = {
+    'Sales': 'Sales Invoice',
+    'Purchase': 'Purchase Invoice',
+    'Payment': 'Payment Voucher',
+    'Receipt': 'Receipt Voucher',
+    'Journal': 'Journal Voucher',
+    'Contra': 'Contra Voucher',
+    'Credit Note': 'Credit Note',
+    'Debit Note': 'Debit Note',
+    'Sales Order': 'Sales Order',
+    'Purchase Order': 'Purchase Order',
+  };
+  return map[type] || type || 'Voucher';
+};
 
 export default function AuditTrail() {
   const [tab, setTab] = useState(0);
   const [drawer, setDrawer] = useState(null);
-  const myEntries = auditTrail.filter(e => e.user === 'Rajesh K.');
+  const [vouchers, setVouchers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState('All');
+  const { selectedCompany, token } = useAuth();
+
+  const loadData = async () => {
+    if (!token || !selectedCompany?.guid) { setLoading(false); return; }
+    setLoading(true);
+    try {
+      const res = await api.fetchVouchers({
+        companyGuid: selectedCompany.guid,
+        page: 1,
+        pageSize: 200,
+        searchText: search,
+      });
+      const list = res?.data?.vouchers || [];
+      setVouchers(list);
+    } catch (err) {
+      console.warn('Vouchers fetch error:', err.message);
+      setVouchers([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { loadData(); }, [selectedCompany?.guid, token]);
+  useEffect(() => {
+    const unsub = wsService.on('synced', () => loadData());
+    return unsub;
+  }, [selectedCompany?.guid]);
+
+  // Get unique voucher types for filter
+  const voucherTypes = ['All', ...Array.from(new Set(vouchers.map(v => v.voucher_type).filter(Boolean)))];
+
+  const filtered = vouchers.filter(v => {
+    const s = !search || (v.party_name || '').toLowerCase().includes(search.toLowerCase()) ||
+      (v.voucher_number || '').toLowerCase().includes(search.toLowerCase());
+    const t = typeFilter === 'All' || v.voucher_type === typeFilter;
+    return s && t;
+  });
+
+  // Activity per day chart
+  const activityByDay = (() => {
+    const map = {};
+    vouchers.forEach(v => {
+      if (!v.date) return;
+      const day = v.date.slice(-2) || '?';
+      map[day] = (map[day] || 0) + 1;
+    });
+    return Object.entries(map).slice(0, 12).map(([day, count]) => ({ day, count }));
+  })();
+
+  const summary = {
+    total: vouchers.length,
+    sales: vouchers.filter(v => v.voucher_type?.includes('Sales')).length,
+    purchase: vouchers.filter(v => v.voucher_type?.includes('Purchase')).length,
+    payment: vouchers.filter(v => v.voucher_type?.includes('Payment') || v.voucher_type?.includes('Receipt')).length,
+  };
+
+  const cols = [
+    { key: 'date', label: 'Date', render: v => <span className="text-[#787774]">{v || '—'}</span> },
+    { key: 'voucher_number', label: 'Voucher No', render: v => <span className="font-mono text-xs text-[#059669] font-semibold">{v || '—'}</span> },
+    { key: 'voucher_type', label: 'Type', render: v => <span className="text-sm text-[#1A1A1A]">{getVoucherTypeLabel(v)}</span> },
+    { key: 'party_name', label: 'Party', render: v => <span className="text-[#787774] truncate max-w-32 block">{v || '—'}</span> },
+    { key: 'amount', label: 'Amount', render: v => <span className="font-semibold text-[#1A1A1A]">{v ? fmt(v) : '—'}</span> },
+    { key: 'narration', label: 'Narration', render: v => <span className="text-xs text-[#AEACA8] truncate max-w-32 block">{v || '—'}</span> },
+  ];
 
   return (
     <div className="space-y-5">
-      <div><h1 className="text-xl font-semibold text-[#1A1A1A] tracking-tight">Audit Trail</h1><p className="text-sm text-[#787774] mt-0.5">April – July 2025</p></div>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-xl font-semibold text-[#1A1A1A] tracking-tight">Audit Trail</h1>
+          <p className="text-sm text-[#787774] mt-0.5">
+            {selectedCompany?.name || 'No company'} · {loading ? 'Loading...' : `${vouchers.length} vouchers`}
+          </p>
+        </div>
+        <button onClick={loadData} className="flex items-center gap-1.5 text-xs text-[#059669] font-medium hover:text-[#047857]">
+          <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
+        </button>
+      </div>
+
+      {/* KPIs */}
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Entries" value="8" sub="July 2025" icon={ClipboardList} accent="#059669"/>
-        <KPICard title="Created" value="6" icon={Plus} accent="#10B981"/>
-        <KPICard title="Modified" value="1" icon={Edit} accent="#F59E0B"/>
-        <KPICard title="Deleted" value="1" icon={Trash2} accent="#F43F5E"/>
+        <KPICard title="Total Vouchers" value={summary.total} icon={ClipboardList} accent="#059669" />
+        <KPICard title="Sales" value={summary.sales} icon={Plus} accent="#10B981" />
+        <KPICard title="Purchase" value={summary.purchase} icon={Edit} accent="#F59E0B" />
+        <KPICard title="Payments/Receipts" value={summary.payment} icon={Trash2} accent="#F43F5E" />
       </div>
+
+      {/* Chart + Latest */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-2 bg-white border border-[#E8E7E3] rounded-xl p-5">
-          <p className="text-sm font-semibold text-[#1A1A1A] mb-1">Activity per Day</p>
-          <p className="text-xs text-[#787774] mb-4">July 2025</p>
-          <ResponsiveContainer width="100%" height={150}>
-            <BarChart data={perDay} barSize={16}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F0EC" vertical={false}/>
-              <XAxis dataKey="day" tick={{fontSize:10,fill:'#787774'}} axisLine={false} tickLine={false}/>
-              <YAxis tick={{fontSize:10,fill:'#787774'}} axisLine={false} tickLine={false}/>
-              <Tooltip contentStyle={{fontSize:11,border:'1px solid #E8E7E3',borderRadius:8}}/>
-              <Bar dataKey="count" name="Entries" fill="#059669" radius={[4,4,0,0]}/>
-            </BarChart>
-          </ResponsiveContainer>
+        <div className="col-span-2 bg-white border border-[#E8E7E3] rounded-2xl p-5">
+          <p className="text-sm font-semibold text-[#1A1A1A] mb-1">Vouchers per Day</p>
+          <p className="text-xs text-[#787774] mb-4">Activity trend</p>
+          {activityByDay.length > 0 ? (
+            <ResponsiveContainer width="100%" height={150}>
+              <BarChart data={activityByDay} barSize={16}>
+                <CartesianGrid strokeDasharray="2 4" stroke="#F1F0EC" vertical={false} />
+                <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={{ fontSize: 11, border: '1px solid #E8E7E3', borderRadius: 8 }} />
+                <Bar dataKey="count" name="Vouchers" fill="#059669" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex items-center justify-center h-36 text-[#AEACA8] text-sm">
+              No data yet — sync from Tally to see activity
+            </div>
+          )}
         </div>
-        <div className="bg-white border border-[#E8E7E3] rounded-xl p-5">
+        <div className="bg-white border border-[#E8E7E3] rounded-2xl p-5">
           <p className="text-sm font-semibold text-[#1A1A1A] mb-3">Latest Entries</p>
-          <div className="space-y-2.5">
-            {auditTrail.slice(0,5).map((e,i)=>(
-              <div key={i} className="flex items-start gap-2.5 cursor-pointer hover:bg-[#F7F6F3] p-2 rounded-lg" onClick={()=>setDrawer(e)}>
-                <span className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${e.action==='Created'?'bg-emerald-500':e.action==='Modified'?'bg-amber-400':'bg-rose-500'}`}/>
-                <div>
-                  <p className="text-xs font-medium text-[#1A1A1A]">{e.voucher} – {e.type}</p>
-                  <p className="text-xs text-[#787774]">{e.date} · {e.user}</p>
+          {vouchers.length === 0 ? (
+            <p className="text-xs text-[#AEACA8] text-center py-6">No vouchers yet — sync from Desktop</p>
+          ) : (
+            <div className="space-y-2.5">
+              {vouchers.slice(0, 5).map((v, i) => (
+                <div key={i} className="flex items-start gap-2.5 cursor-pointer hover:bg-[#F7F6F3] p-1.5 rounded-lg" onClick={() => setDrawer(v)}>
+                  <span className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0 bg-[#059669]" />
+                  <div>
+                    <p className="text-xs font-medium text-[#1A1A1A]">{v.voucher_number} – {getVoucherTypeLabel(v.voucher_type)}</p>
+                    <p className="text-xs text-[#787774]">{v.party_name || '—'} · {v.date || '—'}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
-      <div className="bg-white border border-[#E8E7E3] rounded-xl">
+
+      {/* Day Book Table */}
+      <div className="bg-white border border-[#E8E7E3] rounded-2xl">
         <div className="flex border-b border-[#E8E7E3] px-1 pt-1">
-          {TABS.map((t,i)=>(
-            <button key={i} onClick={()=>setTab(i)} className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab===i?'text-[#059669] bg-[#ECFDF5]':'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F7F6F3]'}`}>{t}</button>
+          {TABS.map((t, i) => (
+            <button key={i} onClick={() => setTab(i)}
+              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#059669] bg-[#ECFDF5]' : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F7F6F3]'}`}>{t}
+            </button>
           ))}
         </div>
         <div className="p-5">
-          <Table columns={cols} data={tab===0?auditTrail:myEntries} onRowClick={setDrawer}/>
+          {/* Filters */}
+          <div className="flex gap-3 mb-4 flex-wrap">
+            <div className="relative flex-1 min-w-48">
+              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#AEACA8]" />
+              <input value={search} onChange={e => { setSearch(e.target.value); }}
+                placeholder="Search party or voucher no..."
+                className="notion-input pl-8 w-full text-sm" />
+            </div>
+            <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)} className="notion-input text-sm text-[#787774]">
+              {voucherTypes.map(t => <option key={t}>{t}</option>)}
+            </select>
+          </div>
+
+          {loading ? (
+            <div className="space-y-2">{[...Array(6)].map((_, i) => <div key={i} className="h-10 bg-[#F7F6F3] rounded-lg animate-pulse" />)}</div>
+          ) : filtered.length === 0 ? (
+            <div className="py-12 text-center text-[#AEACA8]">
+              <ClipboardList size={36} className="mx-auto mb-3 opacity-20" />
+              <p className="text-sm font-medium">No vouchers found</p>
+              <p className="text-xs mt-1">Sync from TallyDekho Desktop to see Day Book data</p>
+            </div>
+          ) : (
+            <Table columns={cols} data={filtered} onRowClick={setDrawer} />
+          )}
         </div>
       </div>
-      <Drawer open={!!drawer} onClose={()=>setDrawer(null)} title="Voucher Details">
-        {drawer&&(
-          <div className="space-y-3 text-sm">
-            {[['Date',drawer.date],['Voucher No',drawer.voucher],['Type',drawer.type],['Ledger',drawer.ledger],['Dr/Cr',drawer.drCr],['Amount',fmt(drawer.amount)],['User',drawer.user],['Action',drawer.action]].map(([l,v])=>(
-              <div key={l} className="flex justify-between py-2 border-b border-[#F1F0EC]">
-                <span className="text-[#787774]">{l}</span><span className="font-medium text-[#1A1A1A]">{v}</span>
+
+      {/* Voucher detail drawer */}
+      <Drawer open={!!drawer} onClose={() => setDrawer(null)} title={drawer?.voucher_number || 'Voucher Details'}>
+        {drawer && (
+          <div className="space-y-4">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="font-semibold text-[#1A1A1A]">{drawer.party_name || 'No party'}</p>
+                <p className="font-mono text-xs text-[#787774] mt-0.5">{drawer.voucher_number || '—'}</p>
               </div>
-            ))}
-            <button className="w-full py-2.5 mt-2 rounded-lg text-sm font-medium text-white" style={{background:'#059669'}}>View Full Voucher</button>
+              <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-[#ECFDF5] text-[#059669] border border-[#6EE7B7]">
+                {getVoucherTypeLabel(drawer.voucher_type)}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                ['Date', drawer.date || '—'],
+                ['Voucher No', drawer.voucher_number || '—'],
+                ['Type', getVoucherTypeLabel(drawer.voucher_type)],
+                ['Amount', drawer.amount ? fmt(drawer.amount) : '—'],
+                ['Reference', drawer.reference || '—'],
+                ['Narration', drawer.narration || '—'],
+              ].map(([l, v]) => (
+                <div key={l} className="p-3 bg-[#FBFAF8] rounded-xl border border-[#E8E7E3]">
+                  <p className="text-xs text-[#787774] mb-1">{l}</p>
+                  <p className="font-medium text-[#1A1A1A] text-sm break-all">{v}</p>
+                </div>
+              ))}
+            </div>
+            <button className="w-full py-2.5 rounded-lg text-sm font-medium text-white" style={{ background: '#059669' }}>
+              View Full Voucher
+            </button>
           </div>
         )}
       </Drawer>
