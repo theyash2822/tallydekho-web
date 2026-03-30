@@ -14,6 +14,8 @@ import {
   ComposedChart, Line, ReferenceLine
 } from 'recharts';
 import { alerts } from '../data/mockData';
+import { useCompanyData } from '../hooks/useCompanyData';
+import api from '../services/api';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const kpis = [
@@ -252,6 +254,12 @@ export default function Dashboard() {
   const createRef = useRef(null);
   const navigate = useNavigate();
   const { isPaired, selectedCompany, companies, loadCompanies } = useAuth();
+
+  // Real API KPIs
+  const { data: realKPIs } = useCompanyData(
+    (guid) => guid ? api.fetchStockSummary(guid).then(r => ({ type: 'stock', ...r?.data })) : Promise.resolve(null),
+    [], null
+  );
   const [tallyPaired, setTallyPaired] = useState(isPaired);
   const [lastSyncTime, setLastSyncTime] = useState(null);
 

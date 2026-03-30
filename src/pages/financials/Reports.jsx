@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import api from '../../services/api';
 import { TrendingUp, ChevronDown, ChevronRight } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import KPICard from '../../components/KPICard';
@@ -39,6 +41,18 @@ function ExpandRow({ label, amount, children, highlight }) {
 
 export default function Reports() {
   const [tab, setTab] = useState(0);
+  const { selectedCompany, token } = useAuth();
+  const [realPL, setRealPL] = useState(null);
+  const [realBS, setRealBS] = useState(null);
+  const [loadingReal, setLoadingReal] = useState(false);
+
+  useEffect(() => {
+    if (!token || !selectedCompany?.guid) return;
+    setLoadingReal(true);
+    Promise.all([
+      api.fetchVouchers({ companyGuid: selectedCompany.guid, page: 1, pageSize: 1 }).catch(() => null),
+    ]).finally(() => setLoadingReal(false));
+  }, [selectedCompany?.guid, token]);
   const totalDI = plData.income.directIncome.reduce((s, i) => s + i.amount, 0);
   const totalII = plData.income.indirectIncome.reduce((s, i) => s + i.amount, 0);
   const totalDE = plData.expenses.directExpense.reduce((s, i) => s + i.amount, 0);

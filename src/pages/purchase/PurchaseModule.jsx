@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import api from '../../services/api';
 import { ShoppingCart, FileText, Package, Search, Download } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import KPICard from '../../components/KPICard';
@@ -35,6 +37,35 @@ const orderCols = [
 
 export default function PurchaseModule() {
   const [tab, setTab] = useState(0);
+  const { selectedCompany, token } = useAuth();
+  const [invoices, setInvoices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [usingMock, setUsingMock] = useState(false);
+
+  useEffect(() => {
+    if (!token || !selectedCompany?.guid) {
+      setInvoices(purchaseInvoices);
+      setUsingMock(true);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    api.fetchVouchers({ companyGuid: selectedCompany.guid, voucherType: 'Purchase', page: 1, pageSize: 50 })
+      .then(res => {
+        const list = res?.data?.vouchers || [];
+        if (list.length > 0) {
+          setInvoices(list.map(v => ({
+            id: v.id, ref: v.voucher_number || v.guid?.slice(-8) || 'N/A',
+            vendor: v.party_name || 'Unknown', gstin: '',
+            date: v.date || '', amount: v.amount || 0,
+            status: 'Paid', mode: 'Bank', received: 'Complete',
+          })));
+          setUsingMock(false);
+        } else { setInvoices(purchaseInvoices); setUsingMock(true); }
+      })
+      .catch(() => { setInvoices(purchaseInvoices); setUsingMock(true); })
+      .finally(() => setLoading(false));
+  }, [selectedCompany?.guid, token]);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [drawer, setDrawer] = useState(null);

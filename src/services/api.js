@@ -57,6 +57,16 @@ export const fetchStockFilters = (companyGuid)       => post('/stock-filters',  
 export const fetchStocks       = (body, signal)      => post('/stocks',          body);
 export const fetchStockDetails = (body)              => post('/stock',           body);
 
+// ─── Vouchers ─────────────────────────────────────────────────────────────────
+export const fetchVouchers = (body) => post('/vouchers', body);
+
+// ─── Dashboard ────────────────────────────────────────────────────────────────
+export const fetchDashboard = (body) => post('/dashboard', body);
+
+// ─── Reports ──────────────────────────────────────────────────────────────────
+export const fetchReportsPL = (body) => post('/reports/pl', body);
+export const fetchReportsBS = (body) => post('/reports/balance-sheet', body);
+
 // ─── Default export (object style — matches mobile usage pattern) ─────────────
 const api = {
   // Auth
@@ -69,6 +79,8 @@ const api = {
   fetchLedgers, fetchLedgerDetails,
   // Stocks
   fetchStockSummary, fetchStockFilters, fetchStocks, fetchStockDetails,
+  // Vouchers & Reports
+  fetchVouchers, fetchDashboard, fetchReportsPL, fetchReportsBS,
 };
 
 export { WS_URL };
