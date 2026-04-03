@@ -40,9 +40,9 @@ const movementCols = [
   { key: 'date', label: 'Date', render: v => <span className="text-[#787774]">{v}</span> },
   { key: 'item', label: 'Item' },
   { key: 'type', label: 'Type', render: v => <Badge label={v} variant={movementVariant[v]} /> },
-  { key: 'qty', label: 'Qty', render: v => <span className={`font-bold ${v.startsWith('+') ? 'text-emerald-600' : 'text-rose-500'}`}>{v}</span> },
+  { key: 'qty', label: 'Qty', render: v => <span className={`font-bold ${v.startsWith('+') ? 'text-[#2D7D46]' : 'text-[#C0392B]'}`}>{v}</span> },
   { key: 'warehouse', label: 'Warehouse' },
-  { key: 'ref', label: 'Reference', render: v => <span className="font-mono text-xs text-[#059669]">{v}</span> },
+  { key: 'ref', label: 'Reference', render: v => <span className="font-mono text-xs text-[#3F5263]">{v}</span> },
   { key: 'balance', label: 'Balance', render: v => <span className="font-semibold">{v}</span> },
 ];
 
@@ -107,16 +107,16 @@ export default function InventoryModule() {
           <h1 className="text-xl font-semibold text-[#1A1A1A] tracking-tight">Inventory</h1>
           <p className="text-sm text-[#787774] mt-0.5">Stock management · July 2025</p>
         </div>
-        <button onClick={loadStocks} className="flex items-center gap-1.5 text-xs text-[#059669] font-medium hover:text-[#047857]">
+        <button onClick={loadStocks} className="flex items-center gap-1.5 text-xs text-[#3F5263] font-medium hover:text-[#526373]">
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Items" value={stockKPIs.totalItems} icon={Package} accent="#059669" />
-        <KPICard title="Total Value" value={fmt(stockKPIs.totalValue)} icon={Package} accent="#8B5CF6" />
-        <KPICard title="Low / Out of Stock" value={`${stockKPIs.lowStock} / ${stockKPIs.outOfStock}`} icon={AlertTriangle} accent="#F43F5E" />
-        <KPICard title="Warehouses" value={warehouses.length} icon={Warehouse} accent="#06B6D4" />
+        <KPICard title="Total Items" value={stockKPIs.totalItems} icon={Package} accent="#3F5263" />
+        <KPICard title="Total Value" value={fmt(stockKPIs.totalValue)} icon={Package} accent="#526373" />
+        <KPICard title="Low / Out of Stock" value={`${stockKPIs.lowStock} / ${stockKPIs.outOfStock}`} icon={AlertTriangle} accent="#C0392B" />
+        <KPICard title="Warehouses" value={warehouses.length} icon={Warehouse} accent="#798692" />
       </div>
 
       <div className="grid grid-cols-3 gap-4">
@@ -129,7 +129,7 @@ export default function InventoryModule() {
               <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#787774' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} unit="K" />
               <Tooltip formatter={v => ['₹' + v + 'K', 'Value']} contentStyle={{ fontSize: 11, borderRadius: 10, border: '1px solid #E8E7E3' }} />
-              <Bar dataKey="value" fill="#059669" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="value" fill="#3F5263" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -137,7 +137,7 @@ export default function InventoryModule() {
           <p className="text-sm font-semibold text-[#1A1A1A] mb-4">Stock Alerts</p>
           <div className="space-y-2">
             {stockItems.filter(s => s.status !== 'Normal').map(s => (
-              <div key={s.id} className={`px-3 py-2.5 rounded-xl text-xs font-medium border ${s.status === 'Out of Stock' ? 'bg-rose-50 border-rose-200 text-rose-700' : s.status === 'Low Stock' ? 'bg-amber-50 border-amber-200 text-amber-700' : 'bg-blue-50 border-blue-200 text-blue-700'}`}>
+              <div key={s.id} className={`px-3 py-2.5 rounded-xl text-xs font-medium border ${s.status === 'Out of Stock' ? 'bg-[#FDECEA] border-[#EDBBB8] text-[#C0392B]' : s.status === 'Low Stock' ? 'bg-[#FEF6E4] border-[#F0D49A] text-[#B45309]' : 'bg-[#EBF2FF] border-[#BAD0F8] text-[#2563EB]'}`}>
                 <p className="font-semibold">{s.name.split('–')[0]}</p>
                 <p className="opacity-75 mt-0.5">{s.status} · {s.qty} {s.unit} remaining</p>
               </div>
@@ -150,7 +150,7 @@ export default function InventoryModule() {
         <div className="flex border-b border-[#E8E7E3] px-1 pt-1 overflow-x-auto">
           {TABS.map((t, i) => (
             <button key={i} onClick={() => setTab(i)}
-              className={`px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#059669] bg-[#ECFDF5]' : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F7F6F3]'}`}>{t}
+              className={`px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#3F5263] bg-[#ECEEEF] font-semibold' : 'text-[#6B7280] hover:text-[#1C2B3A] hover:bg-[#F4F5F6]'}`}>{t}
             </button>
           ))}
         </div>
@@ -194,15 +194,15 @@ export default function InventoryModule() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               {Object.entries(drawer).filter(([k]) => k !== 'id').map(([k, v]) => (
-                <div key={k} className="p-3 bg-[#FBFAF8] rounded-xl border border-[#E8E7E3]">
+                <div key={k} className="p-3 bg-[#F4F5F6] rounded-xl border border-[#D9DCE0]">
                   <p className="text-xs text-[#787774] capitalize mb-1">{k.replace(/([A-Z])/g, ' $1')}</p>
                   <p className="font-medium text-[#1A1A1A] text-sm">{typeof v === 'number' ? (k === 'rate' || k === 'value' || k === 'totalValue' ? fmt(v) : v) : String(v)}</p>
                 </div>
               ))}
             </div>
             <div className="flex gap-2">
-              <button className="flex-1 py-2.5 rounded-lg text-sm font-medium text-white" style={{ background: '#059669' }}>Stock Transfer</button>
-              <button className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-[#E8E7E3] text-[#787774] hover:bg-[#F7F6F3]">Adjust Stock</button>
+              <button className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">Stock Transfer</button>
+              <button className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6] transition-colors">Adjust Stock</button>
             </div>
           </div>
         )}

@@ -8,10 +8,10 @@ import { stockItems } from '../data/inventoryMock';
 
 // Build search index from all modules
 const buildIndex = () => [
-  ...salesInvoices.map(i => ({ type: 'Sales Invoice', label: i.ref, sub: i.customer + ' · ' + i.date, path: '/sales', icon: TrendingUp, color: '#059669', amount: i.amount })),
-  ...purchaseInvoices.map(i => ({ type: 'Purchase', label: i.ref, sub: i.vendor + ' · ' + i.date, path: '/purchase', icon: ShoppingCart, color: '#8B5CF6', amount: i.amount })),
-  ...ledgerList.map(l => ({ type: 'Ledger', label: l.name, sub: l.group, path: '/ledgers', icon: BookOpen, color: '#F59E0B' })),
-  ...stockItems.map(s => ({ type: 'Stock Item', label: s.name, sub: s.category + ' · ' + s.qty + ' ' + s.unit, path: '/inventory', icon: Package, color: '#06B6D4' })),
+  ...salesInvoices.map(i => ({ type: 'Sales Invoice', label: i.ref, sub: i.customer + ' · ' + i.date, path: '/sales', icon: TrendingUp, color: '#3F5263', amount: i.amount })),
+  ...purchaseInvoices.map(i => ({ type: 'Purchase', label: i.ref, sub: i.vendor + ' · ' + i.date, path: '/purchase', icon: ShoppingCart, color: '#526373', amount: i.amount })),
+  ...ledgerList.map(l => ({ type: 'Ledger', label: l.name, sub: l.group, path: '/ledgers', icon: BookOpen, color: '#798692' })),
+  ...stockItems.map(s => ({ type: 'Stock Item', label: s.name, sub: s.category + ' · ' + s.qty + ' ' + s.unit, path: '/inventory', icon: Package, color: '#9FA9B1' })),
 ];
 
 const INDEX = buildIndex();
@@ -62,7 +62,7 @@ export default function GlobalSearch() {
           onFocus={() => setOpen(true)}
           onKeyDown={handleKey}
           placeholder="Search invoices, ledgers, items... (⌘K)"
-          className="w-full pl-8 pr-8 py-1.5 text-xs bg-[#F7F6F3] border border-[#E8E7E3] rounded-lg outline-none focus:border-[#059669] focus:ring-2 focus:bg-white transition-all placeholder:text-[#AEACA8]"
+          className="w-full pl-8 pr-8 py-1.5 text-xs bg-[#F4F5F6] border border-[#D9DCE0] rounded-lg outline-none focus:border-[#3F5263] focus:ring-2 focus:bg-white transition-all placeholder:text-[#9CA3AF]"
           style={{ '--tw-ring-color': '#05966920' }}
         />
         {query && (
@@ -80,7 +80,7 @@ export default function GlobalSearch() {
           ) : results.length === 0 ? (
             <div className="px-4 py-3">
               <p className="text-[10px] font-semibold text-[#AEACA8] uppercase tracking-widest mb-2">Quick navigate</p>
-              {[['Sales', '/sales', TrendingUp, '#059669'], ['Purchase', '/purchase', ShoppingCart, '#8B5CF6'], ['Inventory', '/inventory', Package, '#06B6D4'], ['Ledgers', '/ledgers', BookOpen, '#F59E0B']].map(([l, p, Icon, c]) => (
+              {[['Sales', '/sales', TrendingUp, '#3F5263'], ['Purchase', '/purchase', ShoppingCart, '#526373'], ['Inventory', '/inventory', Package, '#798692'], ['Ledgers', '/ledgers', BookOpen, '#9FA9B1']].map(([l, p, Icon, c]) => (
                 <button key={l} onClick={() => { navigate(p); setOpen(false); }}
                   className="flex items-center gap-2.5 w-full px-2 py-2 rounded-lg hover:bg-[#F7F6F3] text-left transition-colors">
                   <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: c + '20' }}>
@@ -97,7 +97,7 @@ export default function GlobalSearch() {
                 const Icon = item.icon;
                 return (
                   <button key={i} onClick={() => go(item)}
-                    className={`flex items-center gap-3 w-full px-4 py-2.5 text-left transition-colors ${selected === i ? 'bg-[#ECFDF5]' : 'hover:bg-[#F7F6F3]'}`}>
+                    className={`flex items-center gap-3 w-full px-4 py-2.5 text-left transition-colors ${selected === i ? 'bg-[#ECEEEF]' : 'hover:bg-[#F4F5F6]'}`}>
                     <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: item.color + '20' }}>
                       <Icon size={13} style={{ color: item.color }} />
                     </div>

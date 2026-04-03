@@ -24,7 +24,7 @@ const Toggle = ({label,sub,on}) => {
   return (
     <div className="flex items-center justify-between p-4 border border-[#E8E7E3] rounded-xl">
       <div><p className="text-sm font-medium text-[#1A1A1A]">{label}</p>{sub&&<p className="text-xs text-[#787774] mt-0.5">{sub}</p>}</div>
-      <button onClick={()=>setActive(p=>!p)} className={`w-10 h-5 rounded-full transition-colors relative ${active?'bg-[#059669]':'bg-[#E8E7E3]'}`}>
+      <button onClick={()=>setActive(p=>!p)} className={`w-10 h-5 rounded-full transition-colors relative ${active?'bg-[#3F5263]':'bg-[#D9DCE0]'}`}>
         <div className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-transform ${active?'translate-x-5':'translate-x-0.5'}`}/>
       </button>
     </div>
@@ -69,16 +69,16 @@ export default function Settings() {
             {GROUPS.map(g=>(
               <div key={g.key}>
                 <button onClick={()=>{setActiveGroup(g.key);setActiveSub(g.subs[0]);}}
-                  className={`w-full flex items-center gap-2.5 px-4 py-3 text-sm font-medium transition-colors border-b border-[#F1F0EC] last:border-0 ${activeGroup===g.key?'bg-[#ECFDF5] text-[#059669]':'text-[#787774] hover:bg-[#F7F6F3] hover:text-[#1A1A1A]'}`}>
+                  className={`w-full flex items-center gap-2.5 px-4 py-3 text-sm font-medium transition-colors border-b border-[#ECEEEF] last:border-0 ${activeGroup===g.key?'bg-[#ECEEEF] text-[#3F5263]':'text-[#6B7280] hover:bg-[#F4F5F6] hover:text-[#1C2B3A]'}`}>
                   <g.icon size={14} className="flex-shrink-0"/><span className="flex-1 text-left">{g.label}</span>
-                  <ChevronRight size={12} className={`transition-transform ${activeGroup===g.key?'rotate-90 text-[#059669]':'text-[#AEACA8]'}`}/>
+                  <ChevronRight size={12} className={`transition-transform ${activeGroup===g.key?'rotate-90 text-[#3F5263]':'text-[#9CA3AF]'}`}/>
                 </button>
                 {activeGroup===g.key&&(
                   <div className="bg-[#F7F6F3]">
                     {g.subs.map(sub=>(
                       <button key={sub} onClick={()=>setActiveSub(sub)}
-                        className={`w-full flex items-center gap-2 pl-9 pr-4 py-2 text-xs transition-colors ${activeSub===sub?'text-[#059669] font-semibold':'text-[#787774] hover:text-[#1A1A1A]'}`}>
-                        {activeSub===sub&&<span className="w-1.5 h-1.5 rounded-full bg-[#059669] flex-shrink-0"/>}{sub}
+                        className={`w-full flex items-center gap-2 pl-9 pr-4 py-2 text-xs transition-colors ${activeSub===sub?'text-[#3F5263] font-semibold':'text-[#6B7280] hover:text-[#1C2B3A]'}`}>
+                        {activeSub===sub&&<span className="w-1.5 h-1.5 rounded-full bg-[#3F5263] flex-shrink-0"/>}{sub}
                       </button>
                     ))}
                   </div>
@@ -98,8 +98,8 @@ export default function Settings() {
               <Field label="Phone" defaultValue="+91 98200 12345"/>
               <Field label="Role" defaultValue="Admin"/>
               <div className="flex gap-3 pt-2">
-                <button className="px-5 py-2 rounded-lg text-sm font-medium text-white" style={{background:'#059669'}}>Save</button>
-                <button className="px-5 py-2 rounded-lg text-sm font-medium text-[#787774] border border-[#E8E7E3] hover:bg-[#F7F6F3]">Cancel</button>
+                <button className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">Save</button>
+                <button className="px-5 py-2 rounded-lg text-sm font-medium text-[#6B7280] border border-[#D9DCE0] hover:bg-[#F4F5F6] transition-colors">Cancel</button>
               </div>
               <div className="pt-4 border-t border-[#E8E7E3]">
                 <button className="px-4 py-2 text-sm text-rose-600 bg-rose-50 border border-rose-200 rounded-lg hover:bg-rose-100">Delete Account</button>
@@ -115,7 +115,7 @@ export default function Settings() {
               <Field label="Address" defaultValue={company.address}/>
               <Field label="Phone" defaultValue={company.phone}/>
               <Field label="Email" defaultValue={company.email}/>
-              <button className="px-5 py-2 rounded-lg text-sm font-medium text-white" style={{background:'#059669'}}>Save</button>
+              <button className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">Save</button>
             </div>
           )}
           {activeGroup==='account'&&activeSub==='License'&&(
@@ -126,7 +126,7 @@ export default function Settings() {
                   <div key={l} className="p-4 bg-[#FBFAF8] rounded-xl border border-[#E8E7E3]">
                     <p className="text-xs text-[#787774] mb-1">{l}</p>
                     <p className="font-bold text-[#1A1A1A]">{v}</p>
-                    <button className="mt-2 text-xs text-[#059669] hover:underline">{cta}</button>
+                    <button className="mt-2 text-xs text-[#3F5263] hover:underline">{cta}</button>
                   </div>
                 ))}
               </div>
@@ -152,7 +152,7 @@ export default function Settings() {
                   <select className="notion-input w-full text-sm text-[#1A1A1A]">{opts.map(o=><option key={o}>{o}</option>)}</select>
                 </div>
               ))}
-              <button className="px-5 py-2 rounded-lg text-sm font-medium text-white" style={{background:'#059669'}}>Save</button>
+              <button className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">Save</button>
             </div>
           )}
           {activeGroup==='notifications'&&activeSub==='Channels & Quiet Hours'&&(
@@ -167,7 +167,7 @@ export default function Settings() {
                   <div><label className="text-xs text-[#787774] block mb-1.5">To</label><input type="time" defaultValue="08:00" className="notion-input w-full text-sm"/></div>
                 </div>
               </div>
-              <button className="px-5 py-2 rounded-lg text-sm font-medium text-white" style={{background:'#059669'}}>Save</button>
+              <button className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">Save</button>
             </div>
           )}
           {activeGroup==='integrations'&&activeSub==='Tally ERP Sync'&&(
@@ -175,9 +175,9 @@ export default function Settings() {
               <p className="text-base font-semibold text-[#1A1A1A]">Tally ERP Sync</p>
               {pairingState==='idle'&&(
                 <div className="space-y-4">
-                  <div className="p-4 bg-[#ECFDF5] rounded-xl border border-[#6EE7B7]">
-                    <p className="text-sm font-semibold text-[#059669] mb-1">How to pair</p>
-                    <ol className="text-xs text-[#047857] space-y-1 list-decimal list-inside">
+                  <div className="p-4 bg-[#ECEEEF] rounded-xl border border-[#C5CBD0]">
+                    <p className="text-sm font-semibold text-[#3F5263] mb-1">How to pair</p>
+                    <ol className="text-xs text-[#526373] space-y-1 list-decimal list-inside">
                       <li>Open TallyDekho Desktop on your Windows PC</li>
                       <li>Click "Generate Code" in the Pairing section</li>
                       <li>Enter the 6-digit code below</li>
@@ -194,7 +194,7 @@ export default function Settings() {
                     />
                     {pairingError && <p className="text-xs text-rose-500 mt-1">{pairingError}</p>}
                   </div>
-                  <button onClick={handlePair} className="px-5 py-2 rounded-lg text-sm font-medium text-white w-full" style={{background:'#059669'}}>Connect to Tally</button>
+                  <button onClick={handlePair} className="px-5 py-2 rounded-lg text-sm font-medium text-white w-full bg-[#3F5263] hover:bg-[#526373] transition-colors">Connect to Tally</button>
                 </div>
               )}
               {pairingState==='pairing'&&(
@@ -206,12 +206,12 @@ export default function Settings() {
               )}
               {(pairingState==='paired' || isPaired)&&(
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 text-sm">
+                  <div className="flex items-center gap-2 p-3 bg-[#E8F5ED] border border-[#A8D5BC] rounded-xl text-[#2D7D46] text-sm">
                     <Check size={14}/> Paired · Tally Prime connected
                   </div>
                   <div><p className="text-sm font-semibold text-[#1A1A1A] mb-2">Synced Companies</p>
                     {['Maaruji Tech','Demo India'].map(c=>(
-                      <div key={c} className="flex items-center gap-2 py-2 border-b border-[#F1F0EC] text-sm"><Check size={12} className="text-emerald-500"/>{c}</div>
+                      <div key={c} className="flex items-center gap-2 py-2 border-b border-[#ECEEEF] text-sm"><Check size={12} className="text-[#2D7D46]"/>{c}</div>
                     ))}
                   </div>
                   <button onClick={()=>setPairingState('idle')} className="px-4 py-2 text-sm text-rose-600 bg-rose-50 border border-rose-200 rounded-lg hover:bg-rose-100">Unpair</button>
@@ -223,13 +223,13 @@ export default function Settings() {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <p className="text-base font-semibold text-[#1A1A1A]">Bank Feeds</p>
-                <button className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{background:'#059669'}}>+ Add Bank</button>
+                <button className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">+ Add Bank</button>
               </div>
               {[['HDFC Bank','A/c XXXX 0259','Mumbai Branch'],['ICICI Bank','A/c XXXX 1147','BKC Branch']].map(([bank,acc,branch])=>(
                 <div key={bank} className="flex items-center justify-between p-4 border border-[#E8E7E3] rounded-xl">
                   <div><p className="font-medium text-[#1A1A1A] text-sm">{bank} · {acc}</p><p className="text-xs text-[#787774]">{branch}</p></div>
                   <div className="flex items-center gap-3">
-                    <span className="text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full font-medium">Active</span>
+                    <span className="text-xs text-[#2D7D46] bg-[#E8F5ED] px-2 py-1 rounded-full font-medium">Active</span>
                     <button className="text-xs text-rose-500 hover:underline">Remove</button>
                   </div>
                 </div>
@@ -244,14 +244,14 @@ export default function Settings() {
                   <div key={l} className="flex justify-between"><span className="text-[#787774]">{l}</span><span className="font-medium text-[#1A1A1A]">{v}</span></div>
                 ))}
               </div>
-              <div className="space-y-2">{['Terms of Service','Privacy Policy','OSS Licences'].map(l=><button key={l} className="block text-sm text-[#059669] hover:underline">{l}</button>)}</div>
+              <div className="space-y-2">{['Terms of Service','Privacy Policy','OSS Licences'].map(l=><button key={l} className="block text-sm text-[#3F5263] hover:underline">{l}</button>)}</div>
             </div>
           )}
           {activeGroup==='contact'&&activeSub==='Help Center'&&(
             <div className="space-y-4">
               <p className="text-base font-semibold text-[#1A1A1A]">Help Center</p>
-              <div className="p-4 rounded-xl text-center" style={{background:'linear-gradient(135deg,#ECFDF5,#F5F3FF)'}}>
-                <p className="text-sm font-medium text-[#059669]">Ask me anything about TallyDekho in your own language.</p>
+              <div className="p-4 rounded-xl text-center bg-[#ECEEEF]">
+                <p className="text-sm font-medium text-[#3F5263]">Ask me anything about TallyDekho in your own language.</p>
               </div>
               <div className="flex flex-wrap gap-2">
                 {['How to pair with Tally?','Purchase credits?','How to change GSTIN?','Export my data'].map(q=>(

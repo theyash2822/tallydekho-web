@@ -28,9 +28,9 @@ export default function SyncStatus() {
 
   if (syncing) {
     return (
-      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#ECFDF5] border border-[#6EE7B7]">
-        <RefreshCw size={11} className="animate-spin" style={{ color: '#059669' }} />
-        <span className="text-xs font-medium" style={{ color: '#059669' }}>Syncing…</span>
+      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#ECEEEF] border border-[#C5CBD0]">
+        <RefreshCw size={11} className="animate-spin text-[#3F5263]" />
+        <span className="text-xs font-medium text-[#3F5263]">Syncing…</span>
       </div>
     );
   }
@@ -46,9 +46,9 @@ export default function SyncStatus() {
 
   if (lastSync) {
     return (
-      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#ECFDF5]">
-        <CheckCircle size={11} style={{ color: '#059669' }} />
-        <span className="text-xs font-medium" style={{ color: '#059669' }}>Synced</span>
+      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#E8F5ED] border border-[#A8D5BC]">
+        <CheckCircle size={11} className="text-[#2D7D46]" />
+        <span className="text-xs font-medium text-[#2D7D46]">Synced</span>
       </div>
     );
   }
