@@ -62,7 +62,7 @@ export default function GlobalSearch() {
           onFocus={() => setOpen(true)}
           onKeyDown={handleKey}
           placeholder="Search invoices, ledgers, items... (⌘K)"
-          className="w-full pl-8 pr-8 py-1.5 text-xs bg-[#F4F5F6] border border-[#D9DCE0] rounded-lg outline-none focus:border-[#3F5263] focus:ring-2 focus:bg-white transition-all placeholder:text-[#9CA3AF]"
+          className="w-full pl-8 pr-8 py-1.5 text-xs bg-[#F5F4EF] border border-[#E9E8E3] rounded-lg outline-none focus:border-[#1A1A1A] focus:ring-2 focus:ring-black/8 focus:bg-white transition-all placeholder:text-[#AEACA8]"
           style={{ '--tw-ring-color': '#05966920' }}
         />
         {query && (
@@ -97,7 +97,7 @@ export default function GlobalSearch() {
                 const Icon = item.icon;
                 return (
                   <button key={i} onClick={() => go(item)}
-                    className={`flex items-center gap-3 w-full px-4 py-2.5 text-left transition-colors ${selected === i ? 'bg-[#ECEEEF]' : 'hover:bg-[#F4F5F6]'}`}>
+                    className={`flex items-center gap-3 w-full px-4 py-2.5 text-left transition-colors ${selected === i ? 'bg-[#F0EFE9]' : 'hover:bg-[#F5F4EF]'}`}>
                     <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: item.color + '20' }}>
                       <Icon size={13} style={{ color: item.color }} />
                     </div>

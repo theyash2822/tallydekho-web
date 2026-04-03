@@ -27,29 +27,29 @@ function UserMenu({ user, onLogout }) {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(p => !p)}
-        className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#E8EAEC] transition-colors"
+        className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F0EFE9] transition-colors"
       >
-        <div className="w-6 h-6 rounded-full bg-[#3F5263] flex items-center justify-center text-white text-[10px] font-semibold flex-shrink-0">
+        <div className="w-6 h-6 rounded-full bg-[#1A1A1A] flex items-center justify-center text-white text-[10px] font-semibold flex-shrink-0">
           {initials}
         </div>
-        <span className="text-xs font-medium text-[#1C2B3A] max-w-[80px] truncate hidden sm:block">
+        <span className="text-xs font-medium text-[#1A1A1A] max-w-[80px] truncate hidden sm:block">
           {displayName.split(' ')[0]}
         </span>
-        <ChevronDown size={11} className="text-[#9CA3AF]" />
+        <ChevronDown size={11} className="text-[#AEACA8]" />
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 mt-1.5 w-52 bg-white border border-[#D9DCE0] rounded-xl shadow-notion-lg z-50 py-1 overflow-hidden">
-          <div className="px-4 py-3 border-b border-[#ECEEEF]">
-            <p className="text-sm font-semibold text-[#1C2B3A] truncate">{displayName}</p>
-            <p className="text-xs text-[#9CA3AF] mt-0.5 truncate">{user?.mobileNumber || ''}</p>
+        <div className="absolute top-full right-0 mt-1.5 w-52 bg-white border border-[#E9E8E3] rounded-xl shadow-lg z-50 py-1 overflow-hidden">
+          <div className="px-4 py-3 border-b border-[#F0EFE9]">
+            <p className="text-sm font-semibold text-[#1A1A1A] truncate">{displayName}</p>
+            <p className="text-xs text-[#AEACA8] mt-0.5 truncate">{user?.mobileNumber || ''}</p>
           </div>
-          <button className="w-full text-left px-4 py-2.5 text-sm text-[#6B7280] hover:bg-[#F4F5F6] hover:text-[#1C2B3A] transition-colors">Profile</button>
-          <button className="w-full text-left px-4 py-2.5 text-sm text-[#6B7280] hover:bg-[#F4F5F6] hover:text-[#1C2B3A] transition-colors">Settings</button>
-          <div className="border-t border-[#ECEEEF] mt-1 pt-1">
+          <button className="w-full text-left px-4 py-2.5 text-sm text-[#787774] hover:bg-[#F5F4EF] hover:text-[#1A1A1A] transition-colors">Profile</button>
+          <button className="w-full text-left px-4 py-2.5 text-sm text-[#787774] hover:bg-[#F5F4EF] hover:text-[#1A1A1A] transition-colors">Settings</button>
+          <div className="border-t border-[#F0EFE9] mt-1 pt-1">
             <button
               onClick={() => { setOpen(false); onLogout(); }}
-              className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[#C0392B] hover:bg-[#FDECEA] transition-colors"
+              className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[#DC2626] hover:bg-[#FEF2F2] transition-colors"
             >
               <LogOut size={13} /> Sign out
             </button>
@@ -79,31 +79,31 @@ function CompanySwitcher() {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(p => !p)}
-        className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-[#E8EAEC] transition-colors"
+        className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-[#F0EFE9] transition-colors"
       >
-        <div className="w-5 h-5 rounded-md bg-[#3F5263] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
+        <div className="w-5 h-5 rounded-md bg-[#1A1A1A] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
           {displayName[0]}
         </div>
-        <span className="text-xs font-medium text-[#1C2B3A] max-w-[120px] truncate">
+        <span className="text-xs font-medium text-[#1A1A1A] max-w-[120px] truncate">
           {displayName.split(' ').slice(0, 2).join(' ')}
         </span>
-        <ChevronDown size={11} className={`text-[#9CA3AF] transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown size={11} className={`text-[#AEACA8] transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 mt-1.5 w-60 bg-white border border-[#D9DCE0] rounded-xl shadow-notion-lg z-50 py-1 overflow-hidden">
-          <p className="px-3 pt-2 pb-1.5 text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-widest">Switch Company</p>
+        <div className="absolute top-full right-0 mt-1.5 w-60 bg-white border border-[#E9E8E3] rounded-xl shadow-lg z-50 py-1 overflow-hidden">
+          <p className="px-3 pt-2 pb-1.5 text-[10px] font-semibold text-[#AEACA8] uppercase tracking-widest">Switch Company</p>
           {list.map(c => (
             <button
               key={c.guid || c.name}
               onClick={() => { selectCompany(c); setOpen(false); }}
-              className="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-[#F4F5F6] transition-colors text-left"
+              className="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-[#F5F4EF] transition-colors text-left"
             >
-              <div className="w-6 h-6 rounded-md bg-[#3F5263] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
+              <div className="w-6 h-6 rounded-md bg-[#1A1A1A] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
                 {c.name?.[0]}
               </div>
-              <span className="flex-1 text-sm text-[#1C2B3A] truncate font-medium">{c.name}</span>
-              {current?.guid === c.guid && <Check size={13} className="text-[#3F5263] flex-shrink-0" />}
+              <span className="flex-1 text-sm text-[#1A1A1A] truncate font-medium">{c.name}</span>
+              {current?.guid === c.guid && <Check size={13} className="text-[#1A1A1A] flex-shrink-0" />}
             </button>
           ))}
         </div>
@@ -189,24 +189,24 @@ export default function AppShell() {
   };
 
   return (
-    <div className="flex h-screen bg-[#F4F5F6] overflow-hidden">
+    <div className="flex h-screen overflow-hidden" style={{ background: '#F5F4EF' }}>
 
       {/* ── Sidebar ──────────────────────────────────────────────────────── */}
-      <aside className={`${sidebarOpen ? 'w-56' : 'w-14'} bg-white border-r border-[#D9DCE0] flex flex-col transition-all duration-200 flex-shrink-0`}>
+      <aside className={`${sidebarOpen ? 'w-56' : 'w-14'} bg-white border-r border-[#E9E8E3] flex flex-col transition-all duration-200 flex-shrink-0`}>
 
         {/* Logo */}
-        <div className="flex items-center gap-2.5 px-4 py-3.5 border-b border-[#ECEEEF]">
-          <div className="w-7 h-7 rounded-lg bg-[#3F5263] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">T</div>
-          {sidebarOpen && <span className="text-sm font-semibold text-[#1C2B3A] tracking-tight">TallyDekho</span>}
+        <div className="flex items-center gap-2.5 px-4 py-3.5 border-b border-[#F0EFE9]">
+          <div className="w-7 h-7 rounded-lg bg-[#1A1A1A] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">T</div>
+          {sidebarOpen && <span className="text-sm font-semibold text-[#1A1A1A] tracking-tight">TallyDekho</span>}
         </div>
 
         {/* Search */}
         {sidebarOpen && (
           <div className="px-3 pt-3 pb-2">
-            <div className="flex items-center gap-2 px-2.5 py-2 rounded-lg bg-[#F4F5F6] border border-[#ECEEEF] text-[#9CA3AF] text-xs cursor-pointer hover:border-[#D9DCE0] hover:bg-[#F0F1F3] transition-colors">
+            <div className="flex items-center gap-2 px-2.5 py-2 rounded-lg bg-[#F5F4EF] border border-[#E9E8E3] text-[#AEACA8] text-xs cursor-pointer hover:border-[#D4D3CE] transition-colors">
               <Search size={12} />
               <span>Search...</span>
-              <span className="ml-auto text-[10px] bg-[#ECEEEF] px-1.5 py-0.5 rounded font-medium">⌘K</span>
+              <span className="ml-auto text-[10px] bg-white px-1.5 py-0.5 rounded border border-[#E9E8E3] font-medium">⌘K</span>
             </div>
           </div>
         )}
@@ -218,7 +218,7 @@ export default function AppShell() {
               {group.label && sidebarOpen && (
                 <button
                   onClick={() => setCollapsed(p => ({ ...p, [group.label]: !p[group.label] }))}
-                  className="flex items-center justify-between w-full px-2 py-1 text-[10px] font-semibold text-[#B0B7BF] uppercase tracking-widest hover:text-[#6B7280] mt-2 transition-colors"
+                  className="flex items-center justify-between w-full px-2 py-1 text-[10px] font-semibold text-[#AEACA8] uppercase tracking-widest hover:text-[#787774] mt-2 transition-colors"
                 >
                   {group.label}
                   {collapsed[group.label] ? <ChevronRight size={10} /> : <ChevronDown size={10} />}
@@ -232,8 +232,8 @@ export default function AppShell() {
                   className={({ isActive }) =>
                     `flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-sm transition-colors ${
                       isActive
-                        ? 'bg-[#3F5263] text-white font-medium'
-                        : 'text-[#6B7280] hover:text-[#1C2B3A] hover:bg-[#F0F1F3]'
+                        ? 'bg-[#1A1A1A] text-white font-medium'
+                        : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F0EFE9]'
                     }`
                   }
                   title={!sidebarOpen ? item.label : undefined}
@@ -248,10 +248,10 @@ export default function AppShell() {
 
         {/* Footer */}
         {sidebarOpen && (
-          <div className="px-3 py-3 border-t border-[#ECEEEF]">
-            <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F0F1F3] cursor-pointer transition-colors">
-              <Building2 size={12} className="text-[#B0B7BF] flex-shrink-0" />
-              <span className="text-xs text-[#6B7280] truncate">Company</span>
+          <div className="px-3 py-3 border-t border-[#F0EFE9]">
+            <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F0EFE9] cursor-pointer transition-colors">
+              <Building2 size={12} className="text-[#AEACA8] flex-shrink-0" />
+              <span className="text-xs text-[#787774] truncate">Company</span>
             </div>
           </div>
         )}
@@ -261,16 +261,15 @@ export default function AppShell() {
       <div className="flex-1 flex flex-col overflow-hidden">
 
         {/* Topbar */}
-        <header className="h-12 bg-white border-b border-[#D9DCE0] flex items-center px-5 gap-3 flex-shrink-0">
+        <header className="h-12 bg-white border-b border-[#E9E8E3] flex items-center px-5 gap-3 flex-shrink-0">
           <button
             onClick={() => setSidebarOpen(p => !p)}
-            className="text-[#9CA3AF] hover:text-[#3F5263] transition-colors p-1 rounded-lg hover:bg-[#F0F1F3]"
+            className="text-[#AEACA8] hover:text-[#1A1A1A] transition-colors p-1 rounded-lg hover:bg-[#F0EFE9]"
           >
             <Menu size={16} />
           </button>
 
-          <span className="text-sm font-semibold text-[#1C2B3A] hidden md:block">{getBreadcrumb()}</span>
-
+          <span className="text-sm font-semibold text-[#1A1A1A] hidden md:block">{getBreadcrumb()}</span>
           <div className="flex-1" />
 
           <GlobalSearch />
@@ -279,23 +278,23 @@ export default function AppShell() {
           <div className="relative" ref={createRef}>
             <button
               onClick={() => setShowCreate(p => !p)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#3F5263] text-white hover:bg-[#526373] transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#1A1A1A] text-white hover:bg-[#333] transition-colors"
             >
               <Plus size={13} /> Create
               <ChevronDown size={11} className={`transition-transform ${showCreate ? 'rotate-180' : ''}`} />
             </button>
 
             {showCreate && (
-              <div className="absolute top-full right-0 mt-2 z-50 flex bg-white rounded-xl border border-[#D9DCE0] shadow-notion-lg overflow-hidden" style={{ minWidth: 360 }}>
-                <div className="w-36 border-r border-[#ECEEEF] py-1 bg-[#F4F5F6]">
+              <div className="absolute top-full right-0 mt-2 z-50 flex bg-white rounded-xl border border-[#E9E8E3] shadow-lg overflow-hidden" style={{ minWidth: 360 }}>
+                <div className="w-36 border-r border-[#F0EFE9] py-1 bg-[#F5F4EF]">
                   {createMenu.map(g => (
                     <button
                       key={g.label}
                       onMouseEnter={() => setHoveredGroup(g.label)}
                       className={`w-full flex items-center justify-between px-4 py-2.5 text-sm transition-colors ${
                         hoveredGroup === g.label
-                          ? 'bg-white text-[#3F5263] font-semibold border-r-2 border-[#3F5263]'
-                          : 'text-[#6B7280] hover:text-[#1C2B3A]'
+                          ? 'bg-white text-[#1A1A1A] font-semibold border-r-2 border-[#1A1A1A]'
+                          : 'text-[#787774] hover:text-[#1A1A1A]'
                       }`}
                     >
                       {g.label}<ChevronRight size={12} />
@@ -303,12 +302,12 @@ export default function AppShell() {
                   ))}
                 </div>
                 <div className="w-52 py-1">
-                  <p className="px-4 py-2 text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-widest">{hoveredGroup}</p>
+                  <p className="px-4 py-2 text-[10px] font-semibold text-[#AEACA8] uppercase tracking-widest">{hoveredGroup}</p>
                   {createMenu.find(g => g.label === hoveredGroup)?.items.map(item => (
                     <button
                       key={item}
                       onClick={() => { setActiveForm(item); setShowCreate(false); }}
-                      className="w-full text-left px-4 py-2 text-sm text-[#1C2B3A] hover:bg-[#F4F5F6] transition-colors"
+                      className="w-full text-left px-4 py-2 text-sm text-[#1A1A1A] hover:bg-[#F5F4EF] transition-colors"
                     >
                       {item}
                     </button>
@@ -319,13 +318,12 @@ export default function AppShell() {
           </div>
 
           <SyncStatus />
-          <div className="h-5 w-px bg-[#ECEEEF]" />
+          <div className="h-5 w-px bg-[#E9E8E3]" />
           <CompanySwitcher />
 
-          {/* Bell */}
           <button
             onClick={() => navigate('/notifications')}
-            className="relative text-[#9CA3AF] hover:text-[#3F5263] transition-colors p-1 rounded-lg hover:bg-[#F0F1F3]"
+            className="relative text-[#AEACA8] hover:text-[#1A1A1A] transition-colors p-1 rounded-lg hover:bg-[#F0EFE9]"
           >
             <Bell size={16} />
             {(() => {
@@ -334,7 +332,7 @@ export default function AppShell() {
                 const items = stored ? JSON.parse(stored) : null;
                 const count = Array.isArray(items) ? items.filter(n => !n.read).length : 0;
                 return count > 0 ? (
-                  <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#C0392B] text-white text-[9px] flex items-center justify-center font-bold">
+                  <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#DC2626] text-white text-[9px] flex items-center justify-center font-bold">
                     {count > 9 ? '9+' : count}
                   </span>
                 ) : null;
@@ -345,8 +343,8 @@ export default function AppShell() {
           <UserMenu user={user} onLogout={() => { logout(); navigate('/auth/login'); }} />
         </header>
 
-        {/* Page content */}
-        <main className="flex-1 overflow-y-auto bg-[#F4F5F6]">
+        {/* Content */}
+        <main className="flex-1 overflow-y-auto" style={{ background: '#F5F4EF' }}>
           <div className="px-8 py-6 w-full max-w-screen-2xl mx-auto">
             <Outlet />
           </div>

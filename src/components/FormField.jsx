@@ -67,7 +67,7 @@ export function Toggle({ label, checked, onChange }) {
     <label className="flex items-center gap-3 cursor-pointer">
       <div
         onClick={() => onChange && onChange(!checked)}
-        className={`w-9 h-5 rounded-full transition-colors relative cursor-pointer ${checked ? 'bg-[#3F5263]' : 'bg-[#D9DCE0]'}`}
+        className={`w-9 h-5 rounded-full transition-colors relative cursor-pointer ${checked ? 'bg-[#1A1A1A]' : 'bg-[#D4D3CE]'}`}
       >
         <div className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-transform shadow-sm ${checked ? 'translate-x-4' : 'translate-x-0.5'}`} />
       </div>

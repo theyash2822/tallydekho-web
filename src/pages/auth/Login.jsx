@@ -126,10 +126,10 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#F4F5F6]">
+    <div className="min-h-screen flex" style={{ background: '#F5F4EF' }}>
 
       {/* ── Left — brand panel ─────────────────────────────────────────── */}
-      <div className="hidden lg:flex lg:w-[44%] flex-col justify-between p-12 primary-gradient">
+      <div className="hidden lg:flex lg:w-[44%] flex-col justify-between p-12 brand-gradient">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center font-bold text-white text-sm">T</div>
           <span className="text-white font-semibold tracking-tight">TallyDekho</span>
@@ -167,7 +167,7 @@ export default function Login() {
       </div>
 
       {/* ── Right — form ──────────────────────────────────────────────── */}
-      <div className="flex-1 flex items-center justify-center p-6 bg-white">
+      <div className="flex-1 flex items-center justify-center p-6" style={{ background: '#F5F4EF' }}>
         <div className="w-full max-w-sm">
 
           {/* Mobile logo */}
@@ -207,7 +207,7 @@ export default function Login() {
             <button
               onClick={handleSendOTP}
               disabled={loading}
-              className="w-full h-11 rounded-xl text-sm font-semibold bg-[#3F5263] text-white hover:bg-[#526373] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
+              className="w-full h-11 rounded-xl text-sm font-semibold bg-[#1A1A1A] text-white hover:bg-[#333] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
             >
               {loading
                 ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
