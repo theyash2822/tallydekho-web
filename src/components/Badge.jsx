@@ -1,11 +1,11 @@
 const variants = {
-  green:  'bg-emerald-50 text-emerald-700 border border-emerald-200',
-  red:    'bg-rose-50 text-rose-600 border border-rose-200',
-  yellow: 'bg-amber-50 text-amber-700 border border-amber-200',
-  blue:   'bg-[#ECFDF5] text-[#059669] border border-[#059669] 200',
-  gray:   'bg-[#F1F0EC] text-[#787774] border border-[#E8E7E3]',
-  orange: 'bg-orange-50 text-orange-600 border border-orange-200',
-  purple: 'bg-violet-50 text-violet-600 border border-violet-200',
+  green:  'bg-[#E8F5ED] text-[#2D7D46] border border-[#A8D5BC]',
+  red:    'bg-[#FDECEA] text-[#C0392B] border border-[#EDBBB8]',
+  yellow: 'bg-[#FEF6E4] text-[#B45309] border border-[#F0D49A]',
+  blue:   'bg-[#EBF2FF] text-[#2563EB] border border-[#BAD0F8]',
+  gray:   'bg-[#F0F1F3] text-[#6B7280] border border-[#D9DCE0]',
+  orange: 'bg-[#FEF6E4] text-[#B45309] border border-[#F0D49A]',
+  purple: 'bg-[#F0F1F3] text-[#3F5263] border border-[#C5CBD0]',
 };
 
 export default function Badge({ label, variant = 'gray' }) {

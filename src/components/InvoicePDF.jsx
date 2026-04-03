@@ -44,7 +44,7 @@ export default function InvoicePDF({ open, onClose, invoice }) {
           body { font-family: 'Inter', Arial, sans-serif; font-size: 12px; color: #1A1A1A; }
           .invoice { max-width: 800px; margin: 20px auto; padding: 32px; }
           .header { display: flex; justify-content: space-between; margin-bottom: 32px; }
-          .logo { font-size: 22px; font-weight: 800; color: #059669; }
+          .logo { font-size: 22px; font-weight: 800; color: #3F5263; }
           .title { font-size: 28px; font-weight: 700; color: #1A1A1A; text-align: right; }
           .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
           .label { font-size: 10px; color: #787774; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.05em; }
@@ -54,7 +54,7 @@ export default function InvoicePDF({ open, onClose, invoice }) {
           td { padding: 10px 12px; border-bottom: 1px solid #F1F0EC; font-size: 12px; }
           .totals { margin-left: auto; width: 280px; }
           .total-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 12px; }
-          .grand-total { font-size: 16px; font-weight: 700; color: #059669; padding-top: 8px; border-top: 2px solid #059669; }
+          .grand-total { font-size: 16px; font-weight: 700; color: #3F5263; padding-top: 8px; border-top: 2px solid #3F5263; }
           .footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #E8E7E3; font-size: 10px; color: #787774; }
           @media print { @page { size: A4; margin: 0; } body { -webkit-print-color-adjust: exact; } }
         </style>
@@ -67,7 +67,7 @@ export default function InvoicePDF({ open, onClose, invoice }) {
             </div>
             <div style="text-align:right">
               <div class="title">TAX INVOICE</div>
-              <div style="margin-top:8px;color:#059669;font-size:16px;font-weight:700">${inv.ref}</div>
+              <div style="margin-top:8px;color:#3F5263;font-size:16px;font-weight:700">${inv.ref}</div>
               <div style="color:#787774;font-size:11px;margin-top:4px">Date: ${inv.date}</div>
             </div>
           </div>
@@ -139,8 +139,7 @@ export default function InvoicePDF({ open, onClose, invoice }) {
             </div>
             <div className="flex items-center gap-2">
               <button onClick={handlePrint}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium text-white hover:opacity-90 transition-opacity"
-                style={{ background: '#059669' }}>
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">
                 <Printer size={14} /> Print
               </button>
               <button onClick={handlePrint}
@@ -163,7 +162,7 @@ export default function InvoicePDF({ open, onClose, invoice }) {
               {/* Header */}
               <div className="flex justify-between items-start mb-8">
                 <div>
-                  <div className="text-2xl font-bold" style={{ color: '#059669' }}>TallyDekho</div>
+                  <div className="text-2xl font-bold text-[#3F5263]">TallyDekho</div>
                   <div className="text-xs text-[#787774] mt-2 space-y-0.5">
                     <p className="font-semibold text-[#1A1A1A]">Maaruji Industries Pvt. Ltd.</p>
                     <p>301, Mittal Court, Nariman Point, Mumbai – 400021</p>
@@ -172,7 +171,7 @@ export default function InvoicePDF({ open, onClose, invoice }) {
                 </div>
                 <div className="text-right">
                   <div className="text-3xl font-bold text-[#1A1A1A]">TAX INVOICE</div>
-                  <div className="text-lg font-bold mt-1" style={{ color: '#059669' }}>{inv.ref}</div>
+                  <div className="text-lg font-bold mt-1 text-[#3F5263]">{inv.ref}</div>
                   <div className="text-xs text-[#787774] mt-1">Date: {inv.date}</div>
                 </div>
               </div>
@@ -235,9 +234,9 @@ export default function InvoicePDF({ open, onClose, invoice }) {
                       <span className={`font-medium ${v < 0 ? 'text-rose-500' : 'text-[#1A1A1A]'}`}>{v < 0 ? '-' + fmt(Math.abs(v)) : fmt(v)}</span>
                     </div>
                   ))}
-                  <div className="flex justify-between py-2 border-t-2 mt-1" style={{ borderColor: '#059669' }}>
-                    <span className="font-bold text-[#1A1A1A] text-base">Grand Total</span>
-                    <span className="font-bold text-base" style={{ color: '#059669' }}>{fmt(inv.total)}</span>
+                  <div className="flex justify-between py-2 border-t-2 mt-1 border-[#3F5263]">
+                    <span className="font-bold text-[#1C2B3A] text-base">Grand Total</span>
+                    <span className="font-bold text-base text-[#3F5263]">{fmt(inv.total)}</span>
                   </div>
                 </div>
               </div>

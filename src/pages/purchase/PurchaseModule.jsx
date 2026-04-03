@@ -16,7 +16,7 @@ const statusVariant = { Paid: 'green', Unpaid: 'red', Partial: 'yellow', Open: '
 const receivedVariant = { Complete: 'green', Partial: 'yellow', Pending: 'red' };
 
 const invoiceCols = [
-  { key: 'ref', label: 'Invoice No', render: v => <span className="font-mono text-xs text-[#059669] font-semibold">{v}</span> },
+  { key: 'ref', label: 'Invoice No', render: v => <span className="font-mono text-xs text-[#3F5263] font-semibold">{v}</span> },
   { key: 'vendor', label: 'Vendor' },
   { key: 'gstin', label: 'GSTIN', render: v => <span className="font-mono text-xs text-[#787774]">{v}</span> },
   { key: 'date', label: 'Date', render: v => <span className="text-[#787774]">{v}</span> },
@@ -27,7 +27,7 @@ const invoiceCols = [
 ];
 
 const orderCols = [
-  { key: 'ref', label: 'PO No', render: v => <span className="font-mono text-xs text-[#059669] font-semibold">{v}</span> },
+  { key: 'ref', label: 'PO No', render: v => <span className="font-mono text-xs text-[#3F5263] font-semibold">{v}</span> },
   { key: 'vendor', label: 'Vendor' },
   { key: 'date', label: 'Date', render: v => <span className="text-[#787774]">{v}</span> },
   { key: 'amount', label: 'Amount', render: v => fmt(v) },
@@ -84,10 +84,10 @@ export default function PurchaseModule() {
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Purchase" value={fmt(purchaseKPIs.total)} icon={ShoppingCart} accent="#8B5CF6" trend={{ up: false, label: '3.1% vs Jun' }} />
-        <KPICard title="Total Tax (ITC)" value={fmt(purchaseKPIs.tax)} icon={FileText} accent="#F59E0B" />
-        <KPICard title="Avg Invoice" value={fmt(purchaseKPIs.avgInvoice)} icon={Package} accent="#06B6D4" />
-        <KPICard title="Total Bills" value={purchaseKPIs.count} icon={FileText} accent="#059669" />
+        <KPICard title="Total Purchase" value={fmt(purchaseKPIs.total)} icon={ShoppingCart} accent="#3F5263" trend={{ up: false, label: '3.1% vs Jun' }} />
+        <KPICard title="Total Tax (ITC)" value={fmt(purchaseKPIs.tax)} icon={FileText} accent="#B45309" />
+        <KPICard title="Avg Invoice" value={fmt(purchaseKPIs.avgInvoice)} icon={Package} accent="#526373" />
+        <KPICard title="Total Bills" value={purchaseKPIs.count} icon={FileText} accent="#798692" />
       </div>
 
       <div className="grid grid-cols-3 gap-4">
@@ -98,22 +98,22 @@ export default function PurchaseModule() {
             <AreaChart data={monthlySalesPurchase} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="pg2" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.02} />
+                  <stop offset="5%" stopColor="#526373" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="#526373" stopOpacity={0.02} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="2 4" stroke="#F1F0EC" vertical={false} />
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} tickFormatter={v => v / 100 + 'L'} />
               <Tooltip formatter={v => ['₹' + (v / 100).toFixed(1) + 'L', 'Purchase']} contentStyle={{ fontSize: 11, borderRadius: 10, border: '1px solid #E8E7E3' }} />
-              <Area type="monotone" dataKey="purchase" stroke="#8B5CF6" strokeWidth={2.5} fill="url(#pg2)" dot={false} activeDot={{ r: 4 }} />
+              <Area type="monotone" dataKey="purchase" stroke="#526373" strokeWidth={2.5} fill="url(#pg2)" dot={false} activeDot={{ r: 4, fill: '#526373' }} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
         <div className="bg-white border border-[#E8E7E3] rounded-2xl p-5">
           <p className="text-sm font-semibold text-[#1A1A1A] mb-4">Payment Status</p>
           <div className="space-y-3">
-            {[['Paid', purchaseKPIs.paid, '#059669'], ['Unpaid', purchaseKPIs.unpaid, '#F43F5E']].map(([l, v, c]) => (
+            {[['Paid', purchaseKPIs.paid, '#2D7D46'], ['Unpaid', purchaseKPIs.unpaid, '#C0392B']].map(([l, v, c]) => (
               <div key={l} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full" style={{ background: c }} />
@@ -139,7 +139,7 @@ export default function PurchaseModule() {
         <div className="flex border-b border-[#E8E7E3] px-1 pt-1">
           {TABS.map((t, i) => (
             <button key={i} onClick={() => setTab(i)}
-              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#059669] bg-[#ECFDF5]' : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F7F6F3]'}`}>{t}
+              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#3F5263] bg-[#ECEEEF] font-semibold' : 'text-[#6B7280] hover:text-[#1C2B3A] hover:bg-[#F4F5F6]'}`}>{t}
             </button>
           ))}
         </div>
@@ -176,15 +176,15 @@ export default function PurchaseModule() {
             </div>
             <div className="grid grid-cols-2 gap-3 text-sm">
               {Object.entries(drawer).filter(([k]) => k !== 'id').map(([k, v]) => (
-                <div key={k} className="p-3 bg-[#FBFAF8] rounded-xl border border-[#E8E7E3]">
+                <div key={k} className="p-3 bg-[#F4F5F6] rounded-xl border border-[#D9DCE0]">
                   <p className="text-xs text-[#787774] capitalize mb-1">{k.replace(/([A-Z])/g, ' $1')}</p>
                   <p className="font-medium text-[#1A1A1A] text-sm">{typeof v === 'number' ? fmt(v) : String(v)}</p>
                 </div>
               ))}
             </div>
             <div className="flex gap-2">
-              <button className="flex-1 py-2.5 rounded-lg text-sm font-medium text-white" style={{ background: '#059669' }}>View PDF</button>
-              <button className="px-4 py-2.5 rounded-lg text-sm text-[#787774] border border-[#E8E7E3] hover:bg-[#F7F6F3]">Share</button>
+              <button className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">View PDF</button>
+              <button className="px-4 py-2.5 rounded-lg text-sm text-[#6B7280] border border-[#D9DCE0] hover:bg-[#F4F5F6] transition-colors">Share</button>
             </div>
           </div>
         )}
