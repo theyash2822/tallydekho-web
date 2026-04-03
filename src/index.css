@@ -1,7 +1,6 @@
 /**
- * TallyDekho Web Portal — Global Styles
- * Base: Pure black & white. No warm tints. No decorative color.
- * Accent: Single teal for functional states only.
+ * TallyDekho — Global Styles
+ * Notion-style: warm off-whites, warm grays, single teal accent.
  */
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap');
 
@@ -11,52 +10,41 @@
 
 /* ── CSS Variables ─────────────────────────────────────────────────────────── */
 :root {
-  /* Brand */
   --brand:          #059669;
-  --brand-light:    #D1FAE5;
+  --brand-light:    #ECFDF5;
   --brand-dark:     #047857;
 
-  /* Surface */
-  --bg:             #FFFFFF;
-  --bg-raised:      #F9F9F9;
-  --bg-hover:       #F5F5F5;
-  --bg-active:      #EBEBEB;
-  --bg-inverse:     #111111;
+  --bg:             #F7F6F3;
+  --surface:        #FBFAF8;
+  --hover:          #F1F0EC;
+  --active:         #EBEBEA;
+  --border:         #E8E7E3;
+  --divider:        #EDEDEC;
 
-  /* Text */
-  --text-primary:   #000000;
-  --text-secondary: #4B4B4B;
-  --text-tertiary:  #8C8C8C;
+  --text-primary:   #1A1A1A;
+  --text-secondary: #787774;
+  --text-tertiary:  #AEACA8;
   --text-inverse:   #FFFFFF;
 
-  /* Border */
-  --border:         #E0E0E0;
-  --border-strong:  #B0B0B0;
-  --border-subtle:  #F0F0F0;
-
-  /* Semantic */
   --positive:       #059669;
-  --positive-bg:    #D1FAE5;
-  --negative:       #DC2626;
-  --negative-bg:    #FEE2E2;
+  --positive-bg:    #ECFDF5;
+  --negative:       #E5484D;
+  --negative-bg:    #FFF1F2;
   --caution:        #D97706;
-  --caution-bg:     #FEF3C7;
-  --neutral-info:   #2563EB;
-  --neutral-bg:     #DBEAFE;
+  --caution-bg:     #FEF9C3;
+  --info:           #3B82F6;
+  --info-bg:        #EFF6FF;
 }
 
 /* ── Reset ─────────────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 
 /* ── Base ──────────────────────────────────────────────────────────────────── */
-html {
-  font-size: 16px;
-  -webkit-text-size-adjust: 100%;
-}
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 14px;
   line-height: 1.5;
   background: var(--bg);
@@ -68,33 +56,23 @@ body {
 /* ── Scrollbar ─────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar          { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track    { background: transparent; }
-::-webkit-scrollbar-thumb    { background: #D0D0D0; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #A0A0A0; }
+::-webkit-scrollbar-thumb    { background: #D4D3CF; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #AEACA8; }
 
 /* ── Typography ────────────────────────────────────────────────────────────── */
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  color: var(--text-primary);
-  line-height: 1.25;
-  margin: 0;
-}
-
-p { margin: 0; color: var(--text-secondary); }
+h1, h2, h3, h4, h5, h6 { font-weight: 600; color: var(--text-primary); line-height: 1.25; margin: 0; }
+p { margin: 0; }
 
 /* ── Card ──────────────────────────────────────────────────────────────────── */
 .card {
   background: #FFFFFF;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 10px;
 }
-
-.card-hover {
-  transition: box-shadow 0.15s ease, border-color 0.15s ease;
-  cursor: pointer;
-}
+.card-hover { transition: box-shadow 0.15s ease, border-color 0.15s ease; }
 .card-hover:hover {
-  border-color: var(--border-strong);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: #C8C7C3;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.07);
 }
 
 /* ── Input ─────────────────────────────────────────────────────────────────── */
@@ -115,96 +93,60 @@ p { margin: 0; color: var(--text-secondary); }
 .input::placeholder { color: var(--text-tertiary); }
 .input:focus {
   border-color: var(--brand);
-  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.10);
 }
-.input:disabled {
-  background: var(--bg-hover);
-  color: var(--text-tertiary);
-  cursor: not-allowed;
-}
+.input:disabled { background: var(--hover); color: var(--text-tertiary); cursor: not-allowed; }
 
 /* ── Buttons ───────────────────────────────────────────────────────────────── */
-/* Primary — brand filled */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   height: 36px;
-  padding: 0 16px;
+  padding: 0 14px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   font-family: inherit;
   border-radius: 8px;
   border: none;
   cursor: pointer;
-  transition: background 0.15s ease, opacity 0.15s ease;
+  transition: background 0.12s ease, box-shadow 0.12s ease;
   white-space: nowrap;
+  user-select: none;
 }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn:active:not(:disabled) { transform: scale(0.98); }
 
-.btn-primary {
-  background: var(--brand);
-  color: #FFFFFF;
-}
-.btn-primary:hover:not(:disabled) { background: var(--brand-dark); }
+.btn-primary  { background: var(--brand); color: #fff; }
+.btn-primary:hover:not(:disabled)  { background: var(--brand-dark); }
 
-/* Secondary — white with border */
-.btn-secondary {
-  background: #FFFFFF;
-  color: var(--text-primary);
-  border: 1px solid var(--border);
-}
-.btn-secondary:hover:not(:disabled) { background: var(--bg-hover); }
+.btn-secondary { background: #fff; color: var(--text-primary); border: 1px solid var(--border); }
+.btn-secondary:hover:not(:disabled) { background: var(--hover); }
 
-/* Ghost — no border, just hover bg */
-.btn-ghost {
-  background: transparent;
-  color: var(--text-secondary);
-}
-.btn-ghost:hover:not(:disabled) {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-}
+.btn-ghost { background: transparent; color: var(--text-secondary); }
+.btn-ghost:hover:not(:disabled) { background: var(--hover); color: var(--text-primary); }
 
-/* Danger */
-.btn-danger {
-  background: var(--negative);
-  color: #FFFFFF;
-}
-.btn-danger:hover:not(:disabled) { background: #B91C1C; }
+.btn-danger { background: var(--negative); color: #fff; }
+.btn-danger:hover:not(:disabled) { background: #C83B3F; }
 
 /* ── Badge ─────────────────────────────────────────────────────────────────── */
 .badge {
-  display: inline-flex;
-  align-items: center;
-  height: 20px;
-  padding: 0 8px;
-  font-size: 11px;
-  font-weight: 600;
-  border-radius: 4px;
-  white-space: nowrap;
+  display: inline-flex; align-items: center;
+  height: 20px; padding: 0 7px;
+  font-size: 11px; font-weight: 600;
+  border-radius: 4px; white-space: nowrap;
 }
-.badge-positive  { background: var(--positive-bg); color: var(--positive); }
-.badge-negative  { background: var(--negative-bg); color: var(--negative); }
-.badge-caution   { background: var(--caution-bg);  color: var(--caution); }
-.badge-neutral   { background: var(--bg-active);   color: var(--text-secondary); }
+.badge-positive { background: var(--positive-bg); color: var(--positive); }
+.badge-negative { background: var(--negative-bg); color: var(--negative); }
+.badge-caution  { background: var(--caution-bg);  color: var(--caution); }
+.badge-neutral  { background: var(--active);       color: var(--text-secondary); }
 
 /* ── Divider ───────────────────────────────────────────────────────────────── */
-.divider {
-  height: 1px;
-  background: var(--border);
-  border: none;
-  margin: 0;
-}
+hr, .divider { height: 1px; background: var(--border); border: none; margin: 0; }
 
-/* ── Brand gradient (login / hero panels) ──────────────────────────────────── */
-.brand-gradient {
-  background: linear-gradient(160deg, #059669 0%, #047857 55%, #065F46 100%);
-}
+/* ── Brand gradient ────────────────────────────────────────────────────────── */
+.brand-gradient { background: linear-gradient(160deg, #059669 0%, #047857 55%, #065F46 100%); }
 
 /* ── Focus visible ─────────────────────────────────────────────────────────── */
-:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 2px;
-}
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
