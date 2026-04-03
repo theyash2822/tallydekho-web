@@ -9,18 +9,18 @@ import { expenses, expenseCategories, expenseKPIs } from '../../data/expensesMoc
 
 const fmt = n => '₹' + (n || 0).toLocaleString('en-IN');
 const statusVariant = { Paid: 'green', Unpaid: 'red' };
-const COLORS = ['#059669','#8B5CF6','#F59E0B','#F43F5E','#06B6D4'];
+const COLORS = ['#3F5263','#526373','#798692','#9FA9B1','#B2BAC1'];
 
 const cols = [
   { key: 'date', label: 'Date', render: v => <span className="text-[#787774]">{v}</span> },
-  { key: 'voucher', label: 'Voucher', render: v => <span className="font-mono text-xs text-[#059669]">{v}</span> },
+  { key: 'voucher', label: 'Voucher', render: v => <span className="font-mono text-xs text-[#3F5263] font-semibold">{v}</span> },
   { key: 'category', label: 'Category' },
   { key: 'ledger', label: 'Ledger', render: v => <span className="text-[#787774]">{v}</span> },
   { key: 'amount', label: 'Amount', render: v => <span className="font-semibold">{fmt(v)}</span> },
   { key: 'tax', label: 'Tax', render: v => v ? fmt(v) : <span className="text-[#AEACA8]">—</span> },
   { key: 'mode', label: 'Mode', render: v => <span className="text-xs text-[#787774]">{v}</span> },
   { key: 'status', label: 'Status', render: v => <Badge label={v} variant={statusVariant[v]} /> },
-  { key: 'attachment', label: 'Docs', render: v => v ? <span className="text-xs text-[#059669] font-medium">📎</span> : <span className="text-[#AEACA8]">—</span> },
+  { key: 'attachment', label: 'Docs', render: v => v ? <span className="text-xs text-[#3F5263] font-medium">📎</span> : <span className="text-[#C5CBD0]">—</span> },
 ];
 
 export default function ExpensesModule() {
@@ -45,10 +45,10 @@ export default function ExpensesModule() {
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Expenses" value={fmt(expenseKPIs.total)} icon={Receipt} accent="#F43F5E" />
-        <KPICard title="Total Tax" value={fmt(expenseKPIs.tax)} icon={Receipt} accent="#F59E0B" />
-        <KPICard title="Paid" value={expenseKPIs.paid} icon={Receipt} accent="#059669" />
-        <KPICard title="Unpaid" value={expenseKPIs.unpaid} icon={Receipt} accent="#F43F5E" />
+        <KPICard title="Total Expenses" value={fmt(expenseKPIs.total)} icon={Receipt} accent="#3F5263" />
+        <KPICard title="Total Tax"       value={fmt(expenseKPIs.tax)}   icon={Receipt} accent="#B45309" />
+        <KPICard title="Paid"            value={expenseKPIs.paid}       icon={Receipt} accent="#2D7D46" />
+        <KPICard title="Unpaid"          value={expenseKPIs.unpaid}     icon={Receipt} accent="#C0392B" />
       </div>
 
       <div className="grid grid-cols-3 gap-4">
@@ -61,7 +61,7 @@ export default function ExpensesModule() {
               <XAxis type="number" tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} tickFormatter={v => '₹' + (v / 1000) + 'K'} />
               <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#787774' }} axisLine={false} tickLine={false} width={80} />
               <Tooltip formatter={v => fmt(v)} contentStyle={{ fontSize: 11, borderRadius: 10, border: '1px solid #E8E7E3' }} />
-              <Bar dataKey="amount" fill="#F43F5E" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="amount" fill="#3F5263" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

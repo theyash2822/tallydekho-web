@@ -15,10 +15,10 @@ export default function EWayBill() {
     <div className="space-y-5">
       <div><h1 className="text-xl font-semibold text-[#1A1A1A] tracking-tight">E-Way Bill</h1><p className="text-sm text-[#787774] mt-0.5">July 2025</p></div>
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total EWBs" value="7" sub="July 2025" icon={Truck} accent="#059669" />
-        <KPICard title="Active" value="4" icon={CheckCircle} accent="#10B981" />
-        <KPICard title="Expiring Today" value="1" icon={AlertTriangle} accent="#F59E0B" />
-        <KPICard title="Cancelled" value="1" icon={XCircle} accent="#787774" />
+        <KPICard title="Total EWBs"    value="7" sub="July 2025" icon={Truck}         accent="#3F5263" />
+        <KPICard title="Active"         value="4"               icon={CheckCircle}  accent="#2D7D46" />
+        <KPICard title="Expiring Today" value="1"               icon={AlertTriangle} accent="#B45309" />
+        <KPICard title="Cancelled"      value="1"               icon={XCircle}       accent="#C0392B" />
       </div>
       <div className="grid grid-cols-3 gap-4">
         <div className="col-span-2 bg-white border border-[#E8E7E3] rounded-xl p-5">
@@ -30,7 +30,7 @@ export default function EWayBill() {
               <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={{ fontSize: 11, border: '1px solid #E8E7E3', borderRadius: 8 }} />
-              <Bar dataKey="count" name="EWBs" fill="#059669" radius={[4,4,0,0]} />
+              <Bar dataKey="count" name="EWBs" fill="#3F5263" radius={[4,4,0,0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -59,7 +59,7 @@ export default function EWayBill() {
             <tbody>
               {ewayBills.map((e, i) => (
                 <tr key={e.id} className="border-b border-[#F1F0EC] hover:bg-[#F7F6F3] cursor-pointer" onClick={() => setDrawer(e)}>
-                  <td className="px-4 py-3 font-mono text-xs text-[#059669]">{e.ewbNo}</td>
+                  <td className="px-4 py-3 font-mono text-xs text-[#3F5263] font-semibold">{e.ewbNo}</td>
                   <td className="px-4 py-3 text-[#787774]">{e.date}</td>
                   <td className="px-4 py-3 font-medium text-[#1A1A1A]">{e.party}</td>
                   <td className="px-4 py-3 text-[#787774] text-xs">{e.from} → {e.to}</td>
@@ -69,9 +69,9 @@ export default function EWayBill() {
                   <td className="px-4 py-3 text-[#787774]">{e.validity}</td>
                   <td className="px-4 py-3" onClick={ev => ev.stopPropagation()}>
                     <div className="flex gap-1">
-                      {e.status === 'Active' && <button className="px-2 py-1 text-xs bg-[#ECFDF5] text-[#059669] rounded-md hover:bg-[#D1FAE5]">Extend</button>}
-                      {e.status !== 'Cancelled' && <button className="px-2 py-1 text-xs bg-rose-50 text-rose-600 rounded-md hover:bg-rose-100">Cancel</button>}
-                      <button className="px-2 py-1 text-xs bg-[#F7F6F3] text-[#787774] rounded-md hover:bg-[#F1F0EC]">PDF</button>
+                      {e.status === 'Active' && <button className="px-2 py-1 text-xs bg-[#ECEEEF] text-[#3F5263] rounded-md hover:bg-[#D9DCE0]">Extend</button>}
+                      {e.status !== 'Cancelled' && <button className="px-2 py-1 text-xs bg-[#FDECEA] text-[#C0392B] rounded-md hover:bg-[#FAD8D5]">Cancel</button>}
+                      <button className="px-2 py-1 text-xs bg-[#F4F5F6] text-[#6B7280] rounded-md hover:bg-[#ECEEEF]">PDF</button>
                     </div>
                   </td>
                 </tr>
@@ -89,15 +89,15 @@ export default function EWayBill() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               {[['Date',drawer.date],['From',drawer.from],['To',drawer.to],['Mode',drawer.mode],['Vehicle',drawer.vehicle],['Amount',fmt(drawer.amount)],['Valid Till',drawer.validity]].map(([l,v]) => (
-                <div key={l} className="p-3 bg-[#FBFAF8] rounded-lg border border-[#E8E7E3]">
+                <div key={l} className="p-3 bg-[#F4F5F6] rounded-lg border border-[#D9DCE0]">
                   <p className="text-xs text-[#787774] mb-1">{l}</p>
                   <p className="font-medium text-[#1A1A1A] text-sm">{v}</p>
                 </div>
               ))}
             </div>
             <div className="flex gap-2">
-              <button className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{ background: '#059669' }}>View PDF</button>
-              <button className="px-4 py-2 rounded-lg text-sm font-medium text-[#787774] border border-[#E8E7E3] hover:bg-[#F7F6F3]">Share</button>
+              <button className="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">View PDF</button>
+              <button className="px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] border border-[#D9DCE0] hover:bg-[#F4F5F6] transition-colors">Share</button>
             </div>
           </div>
         )}

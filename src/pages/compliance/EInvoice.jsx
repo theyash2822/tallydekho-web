@@ -19,14 +19,14 @@ export default function EInvoice() {
   return (
     <div className="space-y-5">
       <div><h1 className="text-xl font-semibold text-[#1A1A1A] tracking-tight">E-Invoice</h1><p className="text-sm text-[#787774] mt-0.5">FY 2025-26 · July 2025 — Dashboard Only</p></div>
-      <div className="p-3 bg-[#ECFDF5] border border-[#059669] 200 rounded-xl text-xs text-[#059669] font-medium">
+      <div className="p-3 bg-[#ECEEEF] border border-[#C5CBD0] rounded-xl text-xs text-[#3F5263] font-medium">
         ℹ️ IRN generation, cancellation and retry are managed from <strong>Sales Register → IRN column</strong>.
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <KPICard title="IRNs Generated" value="46" sub="July 2025" icon={FileText} accent="#059669" />
-        <KPICard title="IRN Errors" value="9" sub="this month" icon={AlertTriangle} accent="#F43F5E" />
-        <KPICard title="IRNs Pending" value="3" icon={Clock} accent="#F59E0B" />
-        <KPICard title="Success Rate" value="80.4%" icon={CheckCircle} accent="#10B981" />
+        <KPICard title="IRNs Generated" value="46" sub="July 2025" icon={FileText}    accent="#3F5263" />
+        <KPICard title="IRN Errors"      value="9"  sub="this month" icon={AlertTriangle} accent="#C0392B" />
+        <KPICard title="IRNs Pending"    value="3"                   icon={Clock}         accent="#B45309" />
+        <KPICard title="Success Rate"    value="80.4%"               icon={CheckCircle}   accent="#2D7D46" />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2 bg-white border border-[#E8E7E3] rounded-xl p-5">
@@ -36,16 +36,16 @@ export default function EInvoice() {
             {daily.map(d => (
               <div key={d.day} className="flex flex-col items-center gap-1 flex-shrink-0">
                 <div className="flex flex-col-reverse items-center gap-0.5">
-                  <div className="w-7 rounded-t-md" style={{ height: d.count * 10, background: '#059669' }} />
-                  {d.errors > 0 && <div className="w-7 rounded-t-md" style={{ height: d.errors * 10, background: '#F43F5E' }} />}
+                  <div className="w-7 rounded-t-md" style={{ height: d.count * 10, background: '#3F5263' }} />
+                  {d.errors > 0 && <div className="w-7 rounded-t-md" style={{ height: d.errors * 10, background: '#C0392B' }} />}
                 </div>
                 <span className="text-[10px] text-[#787774]">{d.day}</span>
               </div>
             ))}
           </div>
           <div className="flex gap-4 mt-3 text-xs">
-            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-[#059669]" /><span className="text-[#787774]">Generated</span></div>
-            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-[#F43F5E]" /><span className="text-[#787774]">Errors</span></div>
+            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-[#3F5263]" /><span className="text-[#9CA3AF]">Generated</span></div>
+            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-[#C0392B]" /><span className="text-[#9CA3AF]">Errors</span></div>
           </div>
         </div>
         <div className="bg-white border border-[#E8E7E3] rounded-xl p-5">
@@ -58,7 +58,7 @@ export default function EInvoice() {
                   <span className="text-[#787774]">{e.count}x</span>
                 </div>
                 <div className="w-full bg-[#F1F0EC] rounded-full h-1.5">
-                  <div className="h-1.5 rounded-full bg-[#F43F5E]" style={{ width: `${e.pct}%` }} />
+                  <div className="h-1.5 rounded-full bg-[#C0392B]" style={{ width: `${e.pct}%` }} />
                 </div>
               </div>
             ))}
@@ -71,9 +71,9 @@ export default function EInvoice() {
           {recent.map((a,i) => (
             <div key={i} className="flex items-center gap-4 text-sm py-2.5 border-b border-[#F1F0EC] last:border-0">
               <span className="text-[#787774] text-xs w-16 flex-shrink-0">{a.time}</span>
-              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${a.status==='success'?'bg-emerald-500':a.status==='error'?'bg-rose-500':'bg-amber-400'}`} />
+              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${a.status==='success'?'bg-[#2D7D46]':a.status==='error'?'bg-[#C0392B]':'bg-[#B45309]'}`} />
               <span className="text-[#1A1A1A] flex-1">{a.event}</span>
-              <span className="font-mono text-xs text-[#059669]">{a.ref}</span>
+              <span className="font-mono text-xs text-[#3F5263] font-semibold">{a.ref}</span>
             </div>
           ))}
         </div>

@@ -12,10 +12,10 @@ const statusVariant = { Cleared: 'green', Pending: 'yellow', Reversed: 'red' };
 
 const paymentCols = [
   { key: 'date', label: 'Date', render: v => <span className="text-[#787774]">{v}</span> },
-  { key: 'voucher', label: 'Voucher', render: v => <span className="font-mono text-xs text-[#059669]">{v}</span> },
+  { key: 'voucher', label: 'Voucher', render: v => <span className="font-mono text-xs text-[#3F5263] font-semibold">{v}</span> },
   { key: 'party', label: 'Party' },
-  { key: 'ledger', label: 'Bank / Cash', render: v => <span className="text-xs text-[#787774]">{v}</span> },
-  { key: 'amount', label: 'Amount', render: v => <span className="font-semibold text-rose-500">{fmt(v)}</span> },
+  { key: 'ledger', label: 'Bank / Cash', render: v => <span className="text-xs text-[#6B7280]">{v}</span> },
+  { key: 'amount', label: 'Amount', render: v => <span className="font-semibold text-[#C0392B]">{fmt(v)}</span> },
   { key: 'mode', label: 'Mode', render: v => <span className="text-xs text-[#787774]">{v}</span> },
   { key: 'ref', label: 'Reference', render: v => v ? <span className="font-mono text-xs text-[#787774] truncate max-w-28 block">{v}</span> : <span className="text-[#AEACA8]">—</span> },
   { key: 'status', label: 'Status', render: v => <Badge label={v} variant={statusVariant[v]} /> },
@@ -23,10 +23,10 @@ const paymentCols = [
 
 const receiptCols = [
   { key: 'date', label: 'Date', render: v => <span className="text-[#787774]">{v}</span> },
-  { key: 'voucher', label: 'Voucher', render: v => <span className="font-mono text-xs text-[#059669]">{v}</span> },
+  { key: 'voucher', label: 'Voucher', render: v => <span className="font-mono text-xs text-[#3F5263] font-semibold">{v}</span> },
   { key: 'party', label: 'Party' },
-  { key: 'ledger', label: 'Bank / Cash', render: v => <span className="text-xs text-[#787774]">{v}</span> },
-  { key: 'amount', label: 'Amount', render: v => <span className="font-semibold text-emerald-600">{fmt(v)}</span> },
+  { key: 'ledger', label: 'Bank / Cash', render: v => <span className="text-xs text-[#6B7280]">{v}</span> },
+  { key: 'amount', label: 'Amount', render: v => <span className="font-semibold text-[#2D7D46]">{fmt(v)}</span> },
   { key: 'mode', label: 'Mode', render: v => <span className="text-xs text-[#787774]">{v}</span> },
   { key: 'ref', label: 'Reference', render: v => v ? <span className="font-mono text-xs text-[#787774]">{v.slice(0,16)}...</span> : <span className="text-[#AEACA8]">—</span> },
   { key: 'status', label: 'Status', render: v => <Badge label={v} variant={statusVariant[v]} /> },
@@ -48,10 +48,10 @@ export default function PaymentsModule() {
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Payments" value={fmt(paymentKPIs.totalPayments)} icon={ArrowUpRight} accent="#F43F5E" />
-        <KPICard title="Total Receipts" value={fmt(paymentKPIs.totalReceipts)} icon={ArrowDownLeft} accent="#059669" />
-        <KPICard title="Net Cash Flow" value={fmt(paymentKPIs.totalReceipts - paymentKPIs.totalPayments)} icon={CreditCard} accent="#8B5CF6" />
-        <KPICard title="Pending Payments" value={fmt(paymentKPIs.pendingPayments)} icon={CreditCard} accent="#F59E0B" />
+        <KPICard title="Total Payments"  value={fmt(paymentKPIs.totalPayments)} icon={ArrowUpRight}  accent="#C0392B" />
+        <KPICard title="Total Receipts"  value={fmt(paymentKPIs.totalReceipts)} icon={ArrowDownLeft} accent="#2D7D46" />
+        <KPICard title="Net Cash Flow"   value={fmt(paymentKPIs.totalReceipts - paymentKPIs.totalPayments)} icon={CreditCard} accent="#3F5263" />
+        <KPICard title="Pending Payments" value={fmt(paymentKPIs.pendingPayments)} icon={CreditCard} accent="#B45309" />
       </div>
 
       {/* Top parties */}
@@ -62,7 +62,7 @@ export default function PaymentsModule() {
             {payments.slice(0,4).map((p,i) => (
               <div key={i} className="flex justify-between items-center">
                 <span className="text-sm text-[#1A1A1A]">{p.party}</span>
-                <span className="text-sm font-semibold text-rose-500">{fmt(p.amount)}</span>
+                <span className="text-sm font-semibold text-[#C0392B]">{fmt(p.amount)}</span>
               </div>
             ))}
           </div>
@@ -73,7 +73,7 @@ export default function PaymentsModule() {
             {receipts.slice(0,4).map((r,i) => (
               <div key={i} className="flex justify-between items-center">
                 <span className="text-sm text-[#1A1A1A]">{r.party}</span>
-                <span className="text-sm font-semibold text-emerald-600">{fmt(r.amount)}</span>
+                <span className="text-sm font-semibold text-[#2D7D46]">{fmt(r.amount)}</span>
               </div>
             ))}
           </div>
@@ -84,7 +84,7 @@ export default function PaymentsModule() {
         <div className="flex border-b border-[#E8E7E3] px-1 pt-1">
           {TABS.map((t, i) => (
             <button key={i} onClick={() => setTab(i)}
-              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#059669] bg-[#ECFDF5]' : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F7F6F3]'}`}>{t}
+              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#3F5263] bg-[#ECEEEF] font-semibold' : 'text-[#6B7280] hover:text-[#1C2B3A] hover:bg-[#F4F5F6]'}`}>{t}
             </button>
           ))}
         </div>

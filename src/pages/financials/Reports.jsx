@@ -9,7 +9,7 @@ import { plData, balanceSheetData, trialBalance, profitTrend, monthlySalesPurcha
 const fmt = n => '₹' + n.toLocaleString('en-IN');
 const fmtL = n => '₹' + (n / 100000).toFixed(1) + 'L';
 const TABS = ['Profit & Loss', 'Balance Sheet', 'Trial Balance'];
-const COLORS = ['#059669','#8B5CF6','#10B981','#F59E0B','#F43F5E'];
+const COLORS = ['#3F5263','#526373','#798692','#9FA9B1','#B2BAC1'];
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
@@ -32,7 +32,7 @@ function ExpandRow({ label, amount, children, highlight }) {
             {label}
           </span>
         </td>
-        <td className={`px-4 py-3 text-right font-semibold ${highlight ? 'text-[#059669]' : 'text-[#1A1A1A]'}`}>{fmt(amount)}</td>
+        <td className={`px-4 py-3 text-right font-semibold ${highlight ? 'text-[#2D7D46]' : 'text-[#1C2B3A]'}`}>{fmt(amount)}</td>
       </tr>
       {open && children}
     </>
@@ -78,10 +78,10 @@ export default function Reports() {
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Revenue" value={fmtL(totalDI + totalII)} icon={TrendingUp} accent="#059669" trend={{ up: true, label: '14% vs Jun' }} />
-        <KPICard title="Total Expenses" value={fmtL(totalDE + totalIE)} icon={TrendingUp} accent="#F43F5E" />
-        <KPICard title="Net Profit" value={fmtL(netProfit)} icon={TrendingUp} accent="#10B981" trend={{ up: true, label: '2.5% vs Jun' }} />
-        <KPICard title="Closing Stock" value={fmtL(plData.closingStock)} icon={TrendingUp} accent="#F59E0B" />
+        <KPICard title="Total Revenue"  value={fmtL(totalDI + totalII)} icon={TrendingUp} accent="#3F5263" trend={{ up: true, label: '14% vs Jun' }} />
+        <KPICard title="Total Expenses" value={fmtL(totalDE + totalIE)} icon={TrendingUp} accent="#C0392B" />
+        <KPICard title="Net Profit"     value={fmtL(netProfit)}          icon={TrendingUp} accent="#2D7D46" trend={{ up: true, label: '2.5% vs Jun' }} />
+        <KPICard title="Closing Stock"  value={fmtL(plData.closingStock)} icon={TrendingUp} accent="#B45309" />
       </div>
 
       {/* Charts */}
@@ -93,15 +93,15 @@ export default function Reports() {
             <AreaChart data={profitTrend}>
               <defs>
                 <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#059669" stopOpacity={0.15} />
-                  <stop offset="95%" stopColor="#059669" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#3F5263" stopOpacity={0.18} />
+                  <stop offset="95%" stopColor="#3F5263" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F0EC" vertical={false} />
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} />
               <YAxis hide />
               <Tooltip formatter={v => fmt(v)} contentStyle={{ fontSize: 11, border: '1px solid #E8E7E3', borderRadius: 8 }} />
-              <Area type="monotone" dataKey="profit" stroke="#059669" strokeWidth={2} fill="url(#pg)" dot={{ r: 3, fill: '#059669', strokeWidth: 0 }} />
+              <Area type="monotone" dataKey="profit" stroke="#3F5263" strokeWidth={2} fill="url(#pg)" dot={{ r: 3, fill: '#3F5263', strokeWidth: 0 }} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -128,8 +128,8 @@ export default function Reports() {
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} />
               <YAxis hide />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="sales" fill="#059669" radius={[3,3,0,0]} />
-              <Bar dataKey="purchase" fill="#D1FAE5" radius={[3,3,0,0]} />
+              <Bar dataKey="sales" fill="#3F5263" radius={[3,3,0,0]} />
+              <Bar dataKey="purchase" fill="#C5CBD0" radius={[3,3,0,0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -139,7 +139,7 @@ export default function Reports() {
         <div className="flex border-b border-[#E8E7E3] px-1 pt-1">
           {TABS.map((t, i) => (
             <button key={i} onClick={() => setTab(i)}
-              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#059669] bg-[#ECFDF5]' : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F7F6F3]'}`}>{t}</button>
+              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#3F5263] bg-[#ECEEEF] font-semibold' : 'text-[#6B7280] hover:text-[#1C2B3A] hover:bg-[#F4F5F6]'}`}>{t}</button>
           ))}
         </div>
         <div className="p-5">
@@ -159,14 +159,14 @@ export default function Reports() {
                   <ExpandRow label="Indirect Income" amount={totalII}>
                     {plData.income.indirectIncome.map(i => <tr key={i.ledger} className="border-b border-[#F1F0EC] bg-[#FBFAF8]"><td className="px-4 py-2 text-[#787774] pl-10">{i.ledger}</td><td className="px-4 py-2 text-right text-[#787774]">{fmt(i.amount)}</td></tr>)}
                   </ExpandRow>
-                  <tr className="bg-emerald-50 border-b border-emerald-100"><td className="px-4 py-3 font-bold text-emerald-700">Gross Profit</td><td className="px-4 py-3 text-right font-bold text-emerald-700">{fmt(grossProfit)}</td></tr>
+                  <tr className="bg-[#E8F5ED] border-b border-[#A8D5BC]"><td className="px-4 py-3 font-bold text-[#2D7D46]">Gross Profit</td><td className="px-4 py-3 text-right font-bold text-[#2D7D46]">{fmt(grossProfit)}</td></tr>
                   <ExpandRow label="Direct Expense" amount={totalDE}>
                     {plData.expenses.directExpense.map(i => <tr key={i.ledger} className="border-b border-[#F1F0EC] bg-[#FBFAF8]"><td className="px-4 py-2 text-[#787774] pl-10">{i.ledger}</td><td className="px-4 py-2 text-right text-[#787774]">{fmt(i.amount)}</td></tr>)}
                   </ExpandRow>
                   <ExpandRow label="Indirect Expense" amount={totalIE}>
                     {plData.expenses.indirectExpense.map(i => <tr key={i.ledger} className="border-b border-[#F1F0EC] bg-[#FBFAF8]"><td className="px-4 py-2 text-[#787774] pl-10">{i.ledger}</td><td className="px-4 py-2 text-right text-[#787774]">{fmt(i.amount)}</td></tr>)}
                   </ExpandRow>
-                  <tr className="bg-[#ECFDF5]"><td className="px-4 py-3 font-bold text-[#059669] text-base">Net Profit</td><td className="px-4 py-3 text-right font-bold text-[#059669] text-base">{fmt(netProfit)}</td></tr>
+                  <tr className="bg-[#E8F5ED]"><td className="px-4 py-3 font-bold text-[#2D7D46] text-base">Net Profit</td><td className="px-4 py-3 text-right font-bold text-[#2D7D46] text-base">{fmt(netProfit)}</td></tr>
                 </tbody>
               </table>
             </div>
@@ -188,7 +188,7 @@ export default function Reports() {
                         ))}
                       </div>
                     ))}
-                    <div className="flex justify-between py-2.5 mt-2 border-t-2 border-[#059669] font-bold text-[#059669]">
+                    <div className="flex justify-between py-2.5 mt-2 border-t-2 border-[#3F5263] font-bold text-[#3F5263]">
                       <span>Total {title}</span><span>{fmt(total)}</span>
                     </div>
                   </div>
