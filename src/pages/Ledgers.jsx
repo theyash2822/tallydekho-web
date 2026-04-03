@@ -18,9 +18,9 @@ const movementData = [
 
 function SkeletonRow() {
   return (
-    <tr className="border-b border-[#F1F0EC]">
+    <tr className="border-b border-[#ECEEEF]">
       {[1,2,3,4,5,6,7].map(i => (
-        <td key={i} className="px-4 py-3"><div className="h-3 bg-[#F1F0EC] rounded animate-pulse" /></td>
+        <td key={i} className="px-4 py-3"><div className="h-3 bg-[#ECEEEF] rounded animate-pulse" /></td>
       ))}
     </tr>
   );
@@ -78,21 +78,21 @@ export default function Ledgers() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-[#1A1A1A] tracking-tight">Ledgers</h1>
-          <p className="text-sm text-[#787774] mt-0.5">
+          <h1 className="page-title">Ledgers</h1>
+          <p className="page-subtitle">
             {selectedCompany?.name || 'All companies'} · {loading ? 'Loading...' : `${ledgers.length} ledgers`}
           </p>
         </div>
-        <button onClick={() => load(search, 1)} className="flex items-center gap-1.5 text-xs text-[#059669] hover:text-[#047857] font-medium">
+        <button onClick={() => load(search, 1)} className="flex items-center gap-1.5 text-xs text-[#3F5263] hover:text-[#526373] font-medium">
           <RefreshCw size={13} /> Refresh
         </button>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Ledgers" value={loading ? '—' : ledgers.length} icon={BookOpen} accent="#059669"/>
-        <KPICard title="Active" value={loading ? '—' : ledgers.filter(l => l.status !== 'Inactive').length} icon={BookOpen} accent="#10B981"/>
-        <KPICard title="Debit Balance" value={loading ? '—' : ledgers.filter(l => getType(l) === 'Dr').length} icon={BookOpen} accent="#F59E0B"/>
-        <KPICard title="Credit Balance" value={loading ? '—' : ledgers.filter(l => getType(l) === 'Cr').length} icon={BookOpen} accent="#8B5CF6"/>
+        <KPICard title="Total Ledgers" value={loading ? '—' : ledgers.length} icon={BookOpen} accent="#3F5263"/>
+        <KPICard title="Active" value={loading ? '—' : ledgers.filter(l => l.status !== 'Inactive').length} icon={BookOpen} accent="#526373"/>
+        <KPICard title="Debit Balance" value={loading ? '—' : ledgers.filter(l => getType(l) === 'Dr').length} icon={BookOpen} accent="#2D7D46"/>
+        <KPICard title="Credit Balance" value={loading ? '—' : ledgers.filter(l => getType(l) === 'Cr').length} icon={BookOpen} accent="#C0392B"/>
       </div>
 
       {error && (
@@ -116,7 +116,7 @@ export default function Ledgers() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-[#FBFAF8] border-b border-[#E8E7E3]">
+            <thead className="bg-[#F4F5F6] border-b border-[#D9DCE0]"
               <tr>{['Ledger Name','Group','Opening Balance','Closing Balance','Dr/Cr','GSTIN','Status'].map(h => (
                 <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-[#787774] uppercase whitespace-nowrap">{h}</th>
               ))}</tr>
@@ -128,7 +128,7 @@ export default function Ledgers() {
                 <tr><td colSpan={7} className="text-center py-12 text-[#787774]">No ledgers found</td></tr>
               ) : filtered.map((l, i) => (
                 <tr key={l.guid || l.GUID || i}
-                  className="border-b border-[#F1F0EC] hover:bg-[#F7F6F3] cursor-pointer"
+                  className="border-b border-[#ECEEEF] hover:bg-[#F4F5F6] cursor-pointer"
                   onClick={() => { setDrawer(l); setLedgerTab(0); }}>
                   <td className="px-4 py-3 font-medium text-[#1A1A1A]">{getName(l)}</td>
                   <td className="px-4 py-3 text-[#787774]">{getGroup(l)}</td>
@@ -168,8 +168,7 @@ export default function Ledgers() {
               else pg = page - 2 + i;
               return (
                 <button key={pg} onClick={() => { setPage(pg); load(search, pg, pageSize); }}
-                  className={`w-8 h-8 text-xs font-medium rounded-lg transition-colors ${pg === page ? 'text-white' : 'border border-[#E8E7E3] text-[#787774] hover:bg-[#F7F6F3]'}`}
-                  style={pg === page ? { background: '#059669' } : {}}>
+                  className={`w-8 h-8 text-xs font-medium rounded-lg transition-colors ${pg === page ? 'text-white bg-[#3F5263]' : 'border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]'}`}>
                   {pg}
                 </button>
               );
