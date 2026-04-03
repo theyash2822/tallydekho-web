@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Landmark, ArrowLeftRight, CreditCard, FileBarChart2,
   ShieldCheck, Truck, FileText, Receipt, BookOpen, ClipboardList,
   Sparkles, Settings, ChevronDown, ChevronRight, Menu, Bell, Building2,
-  Search, Plus, User, Check, TrendingUp, ShoppingCart, Package, LogOut
+  Search, Plus, Check, TrendingUp, ShoppingCart, Package, LogOut
 } from 'lucide-react';
 import CreateModal from '../components/CreateModal';
 import { useAuth } from '../contexts/AuthContext';
@@ -27,29 +27,29 @@ function UserMenu({ user, onLogout }) {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(p => !p)}
-        className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F1F0EC] transition-colors"
+        className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#E8EAEC] transition-colors"
       >
-        <div className="w-6 h-6 rounded-full bg-[#1A1A1A] flex items-center justify-center text-white text-[10px] font-semibold flex-shrink-0">
+        <div className="w-6 h-6 rounded-full bg-[#3F5263] flex items-center justify-center text-white text-[10px] font-semibold flex-shrink-0">
           {initials}
         </div>
-        <span className="text-xs font-medium text-[#1A1A1A] max-w-[80px] truncate hidden sm:block">
+        <span className="text-xs font-medium text-[#1C2B3A] max-w-[80px] truncate hidden sm:block">
           {displayName.split(' ')[0]}
         </span>
-        <ChevronDown size={11} className="text-[#AEACA8]" />
+        <ChevronDown size={11} className="text-[#9CA3AF]" />
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 mt-1.5 w-52 bg-white border border-[#E8E7E3] rounded-xl shadow-notion-lg z-50 py-1 overflow-hidden">
-          <div className="px-4 py-3 border-b border-[#EDEDEC]">
-            <p className="text-sm font-semibold text-[#1A1A1A] truncate">{displayName}</p>
-            <p className="text-xs text-[#AEACA8] mt-0.5 truncate">{user?.mobileNumber || ''}</p>
+        <div className="absolute top-full right-0 mt-1.5 w-52 bg-white border border-[#D9DCE0] rounded-xl shadow-notion-lg z-50 py-1 overflow-hidden">
+          <div className="px-4 py-3 border-b border-[#ECEEEF]">
+            <p className="text-sm font-semibold text-[#1C2B3A] truncate">{displayName}</p>
+            <p className="text-xs text-[#9CA3AF] mt-0.5 truncate">{user?.mobileNumber || ''}</p>
           </div>
-          <button className="w-full text-left px-4 py-2.5 text-sm text-[#787774] hover:bg-[#F7F6F3] hover:text-[#1A1A1A] transition-colors">Profile</button>
-          <button className="w-full text-left px-4 py-2.5 text-sm text-[#787774] hover:bg-[#F7F6F3] hover:text-[#1A1A1A] transition-colors">Settings</button>
-          <div className="border-t border-[#EDEDEC] mt-1 pt-1">
+          <button className="w-full text-left px-4 py-2.5 text-sm text-[#6B7280] hover:bg-[#F4F5F6] hover:text-[#1C2B3A] transition-colors">Profile</button>
+          <button className="w-full text-left px-4 py-2.5 text-sm text-[#6B7280] hover:bg-[#F4F5F6] hover:text-[#1C2B3A] transition-colors">Settings</button>
+          <div className="border-t border-[#ECEEEF] mt-1 pt-1">
             <button
               onClick={() => { setOpen(false); onLogout(); }}
-              className="w-full flex items-center gap-2 text-left px-4 py-2.5 text-sm text-[#E5484D] hover:bg-[#FFF1F2] transition-colors"
+              className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[#C0392B] hover:bg-[#FDECEA] transition-colors"
             >
               <LogOut size={13} /> Sign out
             </button>
@@ -79,31 +79,31 @@ function CompanySwitcher() {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(p => !p)}
-        className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-[#F1F0EC] transition-colors"
+        className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-[#E8EAEC] transition-colors"
       >
-        <div className="w-5 h-5 rounded-md bg-[#059669] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
+        <div className="w-5 h-5 rounded-md bg-[#3F5263] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
           {displayName[0]}
         </div>
-        <span className="text-xs font-medium text-[#1A1A1A] max-w-[120px] truncate">
+        <span className="text-xs font-medium text-[#1C2B3A] max-w-[120px] truncate">
           {displayName.split(' ').slice(0, 2).join(' ')}
         </span>
-        <ChevronDown size={11} className={`text-[#AEACA8] transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown size={11} className={`text-[#9CA3AF] transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 mt-1.5 w-60 bg-white border border-[#E8E7E3] rounded-xl shadow-notion-lg z-50 py-1 overflow-hidden">
-          <p className="px-3 pt-2 pb-1.5 text-[10px] font-bold text-[#AEACA8] uppercase tracking-widest">Switch Company</p>
+        <div className="absolute top-full right-0 mt-1.5 w-60 bg-white border border-[#D9DCE0] rounded-xl shadow-notion-lg z-50 py-1 overflow-hidden">
+          <p className="px-3 pt-2 pb-1.5 text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-widest">Switch Company</p>
           {list.map(c => (
             <button
               key={c.guid || c.name}
               onClick={() => { selectCompany(c); setOpen(false); }}
-              className="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-[#F7F6F3] transition-colors text-left"
+              className="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-[#F4F5F6] transition-colors text-left"
             >
-              <div className="w-6 h-6 rounded-md bg-[#059669] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
+              <div className="w-6 h-6 rounded-md bg-[#3F5263] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
                 {c.name?.[0]}
               </div>
-              <span className="flex-1 text-sm text-[#1A1A1A] truncate font-medium">{c.name}</span>
-              {current?.guid === c.guid && <Check size={13} className="text-[#059669] flex-shrink-0" />}
+              <span className="flex-1 text-sm text-[#1C2B3A] truncate font-medium">{c.name}</span>
+              {current?.guid === c.guid && <Check size={13} className="text-[#3F5263] flex-shrink-0" />}
             </button>
           ))}
         </div>
@@ -112,20 +112,17 @@ function CompanySwitcher() {
   );
 }
 
-// ─── Nav config ───────────────────────────────────────────────────────────────
+// ─── Nav ──────────────────────────────────────────────────────────────────────
 const navGroups = [
-  {
-    label: null,
-    items: [{ label: 'Dashboard', icon: LayoutDashboard, path: '/' }],
-  },
+  { label: null, items: [{ label: 'Dashboard', icon: LayoutDashboard, path: '/' }] },
   {
     label: 'Transactions',
     items: [
-      { label: 'Sales',                icon: TrendingUp,     path: '/sales' },
-      { label: 'Purchase',             icon: ShoppingCart,   path: '/purchase' },
-      { label: 'Inventory',            icon: Package,        path: '/inventory' },
-      { label: 'Expenses',             icon: Receipt,        path: '/expenses' },
-      { label: 'Payments & Receipts',  icon: CreditCard,     path: '/payments' },
+      { label: 'Sales',               icon: TrendingUp,    path: '/sales' },
+      { label: 'Purchase',            icon: ShoppingCart,  path: '/purchase' },
+      { label: 'Inventory',           icon: Package,       path: '/inventory' },
+      { label: 'Expenses',            icon: Receipt,       path: '/expenses' },
+      { label: 'Payments & Receipts', icon: CreditCard,    path: '/payments' },
     ],
   },
   {
@@ -140,11 +137,11 @@ const navGroups = [
   {
     label: 'Compliance',
     items: [
-      { label: 'GST',          icon: ShieldCheck,   path: '/compliance/gst' },
-      { label: 'E-Way Bill',   icon: Truck,         path: '/compliance/eway-bill' },
-      { label: 'E-Invoice',    icon: FileText,      path: '/compliance/einvoice' },
-      { label: 'Other Taxes',  icon: Receipt,       path: '/compliance/other-taxes' },
-      { label: 'Audit Trail',  icon: ClipboardList, path: '/compliance/audit-trail' },
+      { label: 'GST',         icon: ShieldCheck,   path: '/compliance/gst' },
+      { label: 'E-Way Bill',  icon: Truck,         path: '/compliance/eway-bill' },
+      { label: 'E-Invoice',   icon: FileText,      path: '/compliance/einvoice' },
+      { label: 'Other Taxes', icon: Receipt,       path: '/compliance/other-taxes' },
+      { label: 'Audit Trail', icon: ClipboardList, path: '/compliance/audit-trail' },
     ],
   },
   {
@@ -165,7 +162,7 @@ const createMenu = [
   { label: 'Financials', items: ['Record Payment','Record Receipt','Record Expense'] },
 ];
 
-// ─── AppShell ──────────────────────────────────────────────────────────────────
+// ─── Shell ────────────────────────────────────────────────────────────────────
 export default function AppShell() {
   const [collapsed, setCollapsed] = useState({});
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -183,8 +180,6 @@ export default function AppShell() {
     return () => document.removeEventListener('mousedown', h);
   }, []);
 
-  const toggleGroup = label => setCollapsed(p => ({ ...p, [label]: !p[label] }));
-
   const getBreadcrumb = () => {
     const path = location.pathname;
     if (path === '/') return 'Dashboard';
@@ -194,24 +189,24 @@ export default function AppShell() {
   };
 
   return (
-    <div className="flex h-screen bg-[#F7F6F3] overflow-hidden">
+    <div className="flex h-screen bg-[#F4F5F6] overflow-hidden">
 
       {/* ── Sidebar ──────────────────────────────────────────────────────── */}
-      <aside className={`${sidebarOpen ? 'w-56' : 'w-14'} bg-[#FBFAF8] border-r border-[#E8E7E3] flex flex-col transition-all duration-200 flex-shrink-0`}>
+      <aside className={`${sidebarOpen ? 'w-56' : 'w-14'} bg-white border-r border-[#D9DCE0] flex flex-col transition-all duration-200 flex-shrink-0`}>
 
         {/* Logo */}
-        <div className="flex items-center gap-2.5 px-4 py-3.5 border-b border-[#E8E7E3]">
-          <div className="w-7 h-7 rounded-lg bg-[#059669] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">T</div>
-          {sidebarOpen && <span className="text-sm font-semibold text-[#1A1A1A] tracking-tight">TallyDekho</span>}
+        <div className="flex items-center gap-2.5 px-4 py-3.5 border-b border-[#ECEEEF]">
+          <div className="w-7 h-7 rounded-lg bg-[#3F5263] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">T</div>
+          {sidebarOpen && <span className="text-sm font-semibold text-[#1C2B3A] tracking-tight">TallyDekho</span>}
         </div>
 
         {/* Search */}
         {sidebarOpen && (
           <div className="px-3 pt-3 pb-2">
-            <div className="flex items-center gap-2 px-2.5 py-2 rounded-lg bg-[#F1F0EC] text-[#AEACA8] text-xs cursor-pointer hover:bg-[#EBEBEA] transition-colors">
+            <div className="flex items-center gap-2 px-2.5 py-2 rounded-lg bg-[#F4F5F6] border border-[#ECEEEF] text-[#9CA3AF] text-xs cursor-pointer hover:border-[#D9DCE0] hover:bg-[#F0F1F3] transition-colors">
               <Search size={12} />
               <span>Search...</span>
-              <span className="ml-auto text-[10px] bg-white/70 px-1.5 py-0.5 rounded font-medium text-[#AEACA8]">⌘K</span>
+              <span className="ml-auto text-[10px] bg-[#ECEEEF] px-1.5 py-0.5 rounded font-medium">⌘K</span>
             </div>
           </div>
         )}
@@ -222,8 +217,8 @@ export default function AppShell() {
             <div key={gi} className="mb-1">
               {group.label && sidebarOpen && (
                 <button
-                  onClick={() => toggleGroup(group.label)}
-                  className="flex items-center justify-between w-full px-2 py-1 text-[10px] font-semibold text-[#AEACA8] uppercase tracking-widest hover:text-[#787774] mt-2 transition-colors"
+                  onClick={() => setCollapsed(p => ({ ...p, [group.label]: !p[group.label] }))}
+                  className="flex items-center justify-between w-full px-2 py-1 text-[10px] font-semibold text-[#B0B7BF] uppercase tracking-widest hover:text-[#6B7280] mt-2 transition-colors"
                 >
                   {group.label}
                   {collapsed[group.label] ? <ChevronRight size={10} /> : <ChevronDown size={10} />}
@@ -237,8 +232,8 @@ export default function AppShell() {
                   className={({ isActive }) =>
                     `flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-sm transition-colors ${
                       isActive
-                        ? 'bg-[#059669] text-white font-medium shadow-sm'
-                        : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F1F0EC]'
+                        ? 'bg-[#3F5263] text-white font-medium'
+                        : 'text-[#6B7280] hover:text-[#1C2B3A] hover:bg-[#F0F1F3]'
                     }`
                   }
                   title={!sidebarOpen ? item.label : undefined}
@@ -253,10 +248,10 @@ export default function AppShell() {
 
         {/* Footer */}
         {sidebarOpen && (
-          <div className="px-3 py-3 border-t border-[#E8E7E3]">
-            <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F1F0EC] cursor-pointer transition-colors">
-              <Building2 size={12} className="text-[#AEACA8] flex-shrink-0" />
-              <span className="text-xs text-[#787774] truncate">Company</span>
+          <div className="px-3 py-3 border-t border-[#ECEEEF]">
+            <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F0F1F3] cursor-pointer transition-colors">
+              <Building2 size={12} className="text-[#B0B7BF] flex-shrink-0" />
+              <span className="text-xs text-[#6B7280] truncate">Company</span>
             </div>
           </div>
         )}
@@ -266,44 +261,41 @@ export default function AppShell() {
       <div className="flex-1 flex flex-col overflow-hidden">
 
         {/* Topbar */}
-        <header className="h-12 bg-white border-b border-[#E8E7E3] flex items-center px-5 gap-3 flex-shrink-0">
-
+        <header className="h-12 bg-white border-b border-[#D9DCE0] flex items-center px-5 gap-3 flex-shrink-0">
           <button
             onClick={() => setSidebarOpen(p => !p)}
-            className="text-[#AEACA8] hover:text-[#1A1A1A] transition-colors p-1 rounded-lg hover:bg-[#F1F0EC]"
+            className="text-[#9CA3AF] hover:text-[#3F5263] transition-colors p-1 rounded-lg hover:bg-[#F0F1F3]"
           >
             <Menu size={16} />
           </button>
 
-          {/* Breadcrumb */}
-          <span className="text-sm font-semibold text-[#1A1A1A] hidden md:block">{getBreadcrumb()}</span>
+          <span className="text-sm font-semibold text-[#1C2B3A] hidden md:block">{getBreadcrumb()}</span>
 
           <div className="flex-1" />
 
-          {/* Search */}
           <GlobalSearch />
 
           {/* Create+ */}
           <div className="relative" ref={createRef}>
             <button
               onClick={() => setShowCreate(p => !p)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#059669] text-white hover:bg-[#047857] transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#3F5263] text-white hover:bg-[#526373] transition-colors"
             >
               <Plus size={13} /> Create
               <ChevronDown size={11} className={`transition-transform ${showCreate ? 'rotate-180' : ''}`} />
             </button>
 
             {showCreate && (
-              <div className="absolute top-full right-0 mt-2 z-50 flex bg-white rounded-xl border border-[#E8E7E3] shadow-notion-lg overflow-hidden" style={{ minWidth: 360 }}>
-                <div className="w-36 border-r border-[#E8E7E3] py-1 bg-[#FBFAF8]">
+              <div className="absolute top-full right-0 mt-2 z-50 flex bg-white rounded-xl border border-[#D9DCE0] shadow-notion-lg overflow-hidden" style={{ minWidth: 360 }}>
+                <div className="w-36 border-r border-[#ECEEEF] py-1 bg-[#F4F5F6]">
                   {createMenu.map(g => (
                     <button
                       key={g.label}
                       onMouseEnter={() => setHoveredGroup(g.label)}
                       className={`w-full flex items-center justify-between px-4 py-2.5 text-sm transition-colors ${
                         hoveredGroup === g.label
-                          ? 'bg-white text-[#059669] font-semibold border-r-2 border-[#059669]'
-                          : 'text-[#787774] hover:text-[#1A1A1A]'
+                          ? 'bg-white text-[#3F5263] font-semibold border-r-2 border-[#3F5263]'
+                          : 'text-[#6B7280] hover:text-[#1C2B3A]'
                       }`}
                     >
                       {g.label}<ChevronRight size={12} />
@@ -311,12 +303,12 @@ export default function AppShell() {
                   ))}
                 </div>
                 <div className="w-52 py-1">
-                  <p className="px-4 py-2 text-[10px] font-bold text-[#AEACA8] uppercase tracking-widest">{hoveredGroup}</p>
+                  <p className="px-4 py-2 text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-widest">{hoveredGroup}</p>
                   {createMenu.find(g => g.label === hoveredGroup)?.items.map(item => (
                     <button
                       key={item}
                       onClick={() => { setActiveForm(item); setShowCreate(false); }}
-                      className="w-full text-left px-4 py-2 text-sm text-[#1A1A1A] hover:bg-[#F7F6F3] transition-colors"
+                      className="w-full text-left px-4 py-2 text-sm text-[#1C2B3A] hover:bg-[#F4F5F6] transition-colors"
                     >
                       {item}
                     </button>
@@ -326,19 +318,14 @@ export default function AppShell() {
             )}
           </div>
 
-          {/* Sync */}
           <SyncStatus />
-
-          {/* Divider */}
-          <div className="h-5 w-px bg-[#E8E7E3]" />
-
-          {/* Company */}
+          <div className="h-5 w-px bg-[#ECEEEF]" />
           <CompanySwitcher />
 
           {/* Bell */}
           <button
             onClick={() => navigate('/notifications')}
-            className="relative text-[#AEACA8] hover:text-[#1A1A1A] transition-colors p-1 rounded-lg hover:bg-[#F1F0EC]"
+            className="relative text-[#9CA3AF] hover:text-[#3F5263] transition-colors p-1 rounded-lg hover:bg-[#F0F1F3]"
           >
             <Bell size={16} />
             {(() => {
@@ -347,7 +334,7 @@ export default function AppShell() {
                 const items = stored ? JSON.parse(stored) : null;
                 const count = Array.isArray(items) ? items.filter(n => !n.read).length : 0;
                 return count > 0 ? (
-                  <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#E5484D] text-white text-[9px] flex items-center justify-center font-bold">
+                  <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#C0392B] text-white text-[9px] flex items-center justify-center font-bold">
                     {count > 9 ? '9+' : count}
                   </span>
                 ) : null;
@@ -355,12 +342,11 @@ export default function AppShell() {
             })()}
           </button>
 
-          {/* User */}
           <UserMenu user={user} onLogout={() => { logout(); navigate('/auth/login'); }} />
         </header>
 
-        {/* Content */}
-        <main className="flex-1 overflow-y-auto bg-[#F7F6F3]">
+        {/* Page content */}
+        <main className="flex-1 overflow-y-auto bg-[#F4F5F6]">
           <div className="px-8 py-6 w-full max-w-screen-2xl mx-auto">
             <Outlet />
           </div>
