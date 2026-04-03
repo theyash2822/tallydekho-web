@@ -33,9 +33,12 @@ const cashFlowData = [
 ];
 const gstData = [
   { name: 'CGST', value: 125000, color: '#3F5263' },
-  { name: 'SGST', value: 98000,  color: '#798692' },
-  { name: 'IGST', value: 45000,  color: '#B2BAC1' },
+  { name: 'SGST', value: 98000,  color: '#0D9488' },
+  { name: 'IGST', value: 45000,  color: '#D97706' },
 ];
+
+// Customer avatar colors — distinct per rank
+const CUSTOMER_COLORS = ['#3F5263','#0D9488','#D97706','#E5484D','#798692'];
 const plData = [
   { month: 'Feb', gross: 8.2,  net: 4.1 },
   { month: 'Mar', gross: 9.5,  net: 5.2 },
@@ -224,10 +227,10 @@ export default function Dashboard() {
             <ResponsiveContainer width="100%" height={220}>
               <AreaChart data={revenueData} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
                 <defs>
-                  {[['r','#3F5263'],['p','#798692'],['e','#C0392B']].map(([id,c]) => (
+                  {[['r','#3F5263'],['p','#D97706'],['e','#E5484D']].map(([id,c]) => (
                     <linearGradient key={id} id={`g${id}`} x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%"  stopColor={c} stopOpacity={0.25} />
-                      <stop offset="100%" stopColor={c} stopOpacity={0.02} />
+                      <stop offset="0%"  stopColor={c} stopOpacity={0.18} />
+                      <stop offset="100%" stopColor={c} stopOpacity={0.01} />
                     </linearGradient>
                   ))}
                 </defs>
@@ -236,12 +239,12 @@ export default function Dashboard() {
                 <YAxis tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} unit="K" />
                 <Tooltip content={<ChartTip />} />
                 <Area type="monotone" dataKey="revenue"  name="Revenue"  stroke="#3F5263" strokeWidth={2.5} fill="url(#gr)" dot={false} activeDot={{ r: 4, fill: '#3F5263', strokeWidth: 2, stroke: '#fff' }} />
-                <Area type="monotone" dataKey="purchase" name="Purchase" stroke="#798692" strokeWidth={2}   fill="url(#gp)" dot={false} activeDot={{ r: 3, fill: '#798692', strokeWidth: 2, stroke: '#fff' }} />
-                <Area type="monotone" dataKey="expenses" name="Expenses" stroke="#C0392B" strokeWidth={2}   fill="url(#ge)" dot={false} activeDot={{ r: 3, fill: '#C0392B', strokeWidth: 2, stroke: '#fff' }} />
+                <Area type="monotone" dataKey="purchase" name="Purchase" stroke="#D97706" strokeWidth={2}   fill="url(#gp)" dot={false} activeDot={{ r: 3, fill: '#D97706', strokeWidth: 2, stroke: '#fff' }} />
+                <Area type="monotone" dataKey="expenses" name="Expenses" stroke="#E5484D" strokeWidth={2}   fill="url(#ge)" dot={false} activeDot={{ r: 3, fill: '#E5484D', strokeWidth: 2, stroke: '#fff' }} />
               </AreaChart>
             </ResponsiveContainer>
             <div className="flex gap-5 mt-3 pt-3 border-t border-[#ECEEEF]">
-              {[['Revenue','#3F5263','₹45.8L'],['Purchase','#798692','₹28.4L'],['Expenses','#C0392B','₹11.2L']].map(([l,c,v]) => (
+              {[['Revenue','#3F5263','₹45.8L'],['Purchase','#D97706','₹28.4L'],['Expenses','#E5484D','₹11.2L']].map(([l,c,v]) => (
                 <div key={l} className="flex items-center gap-2">
                   <div className="w-3 h-1.5 rounded-full" style={{ background: c }} />
                   <span className="text-xs text-[#9CA3AF]">{l}</span>
@@ -299,12 +302,12 @@ export default function Dashboard() {
               <YAxis tickFormatter={v => Math.abs(v) + 'K'} tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTip />} />
               <ReferenceLine y={0} stroke="#D9DCE0" strokeWidth={1} />
-              <Bar dataKey="inflow"  name="Inflow"  fill="#3F5263" radius={[3,3,0,0]} />
-              <Bar dataKey="outflow" name="Outflow" fill="#C5CBD0" radius={[0,0,3,3]} />
+              <Bar dataKey="inflow"  name="Inflow"  fill="#0D9488" radius={[3,3,0,0]} />
+              <Bar dataKey="outflow" name="Outflow" fill="#ECEEEF" radius={[0,0,3,3]} />
             </BarChart>
           </ResponsiveContainer>
           <div className="flex gap-4 mt-2 pt-2 border-t border-[#ECEEEF]">
-            <div className="flex items-center gap-1.5"><div className="w-2.5 h-1.5 rounded-full bg-[#3F5263]" /><span className="text-xs text-[#9CA3AF]">Inflow</span></div>
+            <div className="flex items-center gap-1.5"><div className="w-2.5 h-1.5 rounded-full bg-[#0D9488]" /><span className="text-xs text-[#9CA3AF]">Inflow</span></div>
             <div className="flex items-center gap-1.5"><div className="w-2.5 h-1.5 rounded-full bg-[#C5CBD0]" /><span className="text-xs text-[#9CA3AF]">Outflow</span></div>
           </div>
         </ChartCard>
@@ -317,14 +320,15 @@ export default function Dashboard() {
               <YAxis yAxisId="l" tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} unit="%" />
               <YAxis yAxisId="r" orientation="right" tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} unit="%" />
               <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #D9DCE0' }} formatter={v => [v + '%']} />
-              <Bar yAxisId="l" dataKey="gross" name="Gross %" fill="#ECEEEF" radius={[3,3,0,0]} />
+              <Bar yAxisId="l" dataKey="gross" name="Gross %" fill="#D9DCE0" radius={[3,3,0,0]} />
               <Bar yAxisId="l" dataKey="net"   name="Net %"   fill="#3F5263" radius={[3,3,0,0]} />
-              <Line yAxisId="r" type="monotone" dataKey="net" stroke="#526373" strokeWidth={2.5} dot={{ r: 3, fill: '#526373', strokeWidth: 0 }} activeDot={{ r: 4 }} />
+              <Line yAxisId="r" type="monotone" dataKey="net" stroke="#0D9488" strokeWidth={2.5} dot={{ r: 3, fill: '#0D9488', strokeWidth: 0 }} activeDot={{ r: 4 }} />
             </ComposedChart>
           </ResponsiveContainer>
           <div className="flex gap-4 mt-2 pt-2 border-t border-[#ECEEEF]">
-            <div className="flex items-center gap-1.5"><div className="w-2.5 h-1.5 rounded-sm bg-[#ECEEEF] border border-[#D9DCE0]" /><span className="text-xs text-[#9CA3AF]">Gross %</span></div>
+            <div className="flex items-center gap-1.5"><div className="w-2.5 h-1.5 rounded-sm bg-[#D9DCE0]" /><span className="text-xs text-[#9CA3AF]">Gross %</span></div>
             <div className="flex items-center gap-1.5"><div className="w-2.5 h-1.5 rounded-sm bg-[#3F5263]" /><span className="text-xs text-[#9CA3AF]">Net %</span></div>
+            <div className="flex items-center gap-1.5"><div className="w-2.5 h-1.5 rounded-full bg-[#0D9488]" /><span className="text-xs text-[#9CA3AF]">Trend</span></div>
           </div>
         </ChartCard>
 
@@ -332,7 +336,7 @@ export default function Dashboard() {
           <div className="space-y-3 mt-1">
             {topCustomers.map((c, i) => (
               <div key={i} className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-full bg-[#3F5263] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
+                <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0" style={{ background: CUSTOMER_COLORS[i] }}>
                   {c.name[0]}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -341,7 +345,7 @@ export default function Dashboard() {
                     <span className="text-xs font-semibold text-[#1C2B3A] ml-2 flex-shrink-0">{c.amount}</span>
                   </div>
                   <div className="w-full bg-[#ECEEEF] rounded-full h-1.5">
-                    <div className="h-1.5 rounded-full bg-[#3F5263] transition-all" style={{ width: `${c.pct}%` }} />
+                    <div className="h-1.5 rounded-full transition-all" style={{ width: `${c.pct}%`, background: CUSTOMER_COLORS[i] }} />
                   </div>
                 </div>
               </div>
