@@ -12,21 +12,20 @@ const LEDGER_TABS = ['Details', 'Vouchers', 'Balance Trend', 'GST Info'];
 
 // Vouchers linked to a ledger — via voucher_items ledger_name
 function LedgerVouchers({ ledger, companyGuid }) {
+  // ALL hooks at the top — never after a conditional return
   const [vouchers, setVouchers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [source, setSource] = useState('');
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
 
   useEffect(() => {
     if (!ledger || !companyGuid) return;
     setLoading(true);
     setVouchers([]);
+    setSelectedVoucher(null);
     const name = (ledger.name || ledger.NAME || '').trim();
 
     api.fetchLedgerVouchers({ companyGuid, ledgerName: name, page: 1, pageSize: 25 })
-      .then(r => {
-        setVouchers(r?.data?.vouchers || []);
-        setSource(r?.data?.source || '');
-      })
+      .then(r => setVouchers(r?.data?.vouchers || []))
       .catch(() => setVouchers([]))
       .finally(() => setLoading(false));
   }, [ledger?.guid, companyGuid]);
@@ -37,7 +36,7 @@ function LedgerVouchers({ ledger, companyGuid }) {
     </div>
   );
 
-  const [selectedVoucher, setSelectedVoucher] = useState(null);
+  // No hooks below this line
 
   if (vouchers.length === 0) return (
     <div className="py-8 text-center">
@@ -165,8 +164,7 @@ export default function Ledgers() {
   const [total,   setTotal]           = useState(0);
   const [drawer,  setDrawer]          = useState(null);
   const [ledgerTab, setLedgerTab]     = useState(0);
-  const [ledgerVouchers, setLedgerVouchers] = useState([]);
-  const [voucherLoading, setVoucherLoading] = useState(false);
+
 
   const companyGuid = selectedCompany?.guid;
 
@@ -330,10 +328,9 @@ export default function Ledgers() {
                       <tr
                         key={l.guid || l.GUID || i}
                         className="border-b border-[#ECEEEF] hover:bg-[#F4F5F6] cursor-pointer transition-colors"
-                        onClick={async () => {
+                        onClick={() => {
                           setDrawer(l);
                           setLedgerTab(0);
-                          setLedgerVouchers([]);
                         }}
                       >
                         <td className="px-4 py-3 font-medium text-[#1C2B3A]">{getName(l)}</td>
