@@ -37,35 +37,80 @@ function LedgerVouchers({ ledger, companyGuid }) {
     </div>
   );
 
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
+
   if (vouchers.length === 0) return (
     <div className="py-8 text-center">
       <FileText size={24} className="mx-auto mb-2 text-[#D9DCE0]" />
       <p className="text-sm text-[#9CA3AF]">No vouchers found for this ledger</p>
-      <p className="text-xs text-[#C5CBD0] mt-1">Vouchers appear when this party has transactions</p>
+      <p className="text-xs text-[#C5CBD0] mt-1">Vouchers appear when this party has transactions in Tally</p>
     </div>
   );
 
+  if (selectedVoucher) {
+    return (
+      <div className="space-y-4">
+        <button onClick={() => setSelectedVoucher(null)}
+          className="flex items-center gap-1.5 text-xs text-[#3F5263] hover:text-[#526373] font-medium">
+          ← Back to vouchers
+        </button>
+        <div className="flex justify-between items-start">
+          <div>
+            <span className="text-xs font-semibold text-[#3F5263] bg-[#ECEEEF] px-2 py-0.5 rounded">{selectedVoucher.voucher_type}</span>
+            <p className="font-semibold text-[#1C2B3A] mt-1">{selectedVoucher.voucher_number}</p>
+          </div>
+          <span className={`text-lg font-bold ${parseFloat(selectedVoucher.amount) > 0 ? 'text-[#2D7D46]' : 'text-[#9CA3AF]'}`}>
+            {fmt(selectedVoucher.amount)}
+          </span>
+        </div>
+        <div className="space-y-0">
+          {[['Date', selectedVoucher.date || '—'],
+            ['Party', selectedVoucher.party_name || '—'],
+            ['Narration', selectedVoucher.narration || '—'],
+            ['Reference', selectedVoucher.reference || '—'],
+          ].map(([l, v]) => v !== '—' && (
+            <div key={l} className="flex justify-between py-2.5 border-b border-[#F4F5F6] last:border-0">
+              <span className="text-xs text-[#9CA3AF]">{l}</span>
+              <span className="text-sm font-medium text-[#1C2B3A] text-right max-w-[200px]">{v}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-0">
-      <p className="text-xs text-[#9CA3AF] mb-3">{vouchers.length} voucher{vouchers.length !== 1 ? 's' : ''} found</p>
+      <p className="text-xs text-[#9CA3AF] mb-3">{vouchers.length} voucher{vouchers.length !== 1 ? 's' : ''} found · click to view details</p>
       {vouchers.map(v => (
-        <div key={v.id} className="py-3 border-b border-[#F4F5F6] last:border-0 hover:bg-[#F4F5F6] -mx-1 px-1 rounded-lg cursor-pointer transition-colors">
+        <div key={v.id}
+          className="py-3 border-b border-[#F4F5F6] last:border-0 hover:bg-[#F4F5F6] -mx-1 px-1 rounded-lg cursor-pointer transition-colors"
+          onClick={() => setSelectedVoucher(v)}
+        >
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-[#3F5263] bg-[#ECEEEF] px-1.5 py-0.5 rounded">{v.voucher_type}</span>
+                <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
+                  v.voucher_type?.includes('Sales') ? 'bg-[#F0FDF4] text-[#2D7D46]' :
+                  v.voucher_type?.includes('Purchase') ? 'bg-[#FFFBEB] text-[#B45309]' :
+                  v.voucher_type?.includes('Payment') ? 'bg-[#FEF2F2] text-[#C0392B]' :
+                  v.voucher_type?.includes('Receipt') ? 'bg-[#F0FDF4] text-[#2D7D46]' :
+                  'bg-[#ECEEEF] text-[#3F5263]'
+                }`}>{v.voucher_type || 'Voucher'}</span>
                 <span className="font-mono text-xs text-[#9CA3AF]">{v.voucher_number}</span>
               </div>
               <div className="flex items-center gap-3 mt-1">
-                <span className="text-xs text-[#9CA3AF]">{v.date}</span>
-                {v.party_name && <span className="text-xs text-[#6B7280] truncate">{v.party_name}</span>}
+                <span className="text-xs text-[#9CA3AF]">{v.date || '—'}</span>
+                {v.party_name && v.party_name !== ledger?.name && (
+                  <span className="text-xs text-[#6B7280] truncate max-w-32">{v.party_name}</span>
+                )}
               </div>
               {v.narration && <p className="text-xs text-[#9CA3AF] mt-0.5 truncate">{v.narration}</p>}
             </div>
             <span className={`text-sm font-bold flex-shrink-0 ${
-              parseFloat(v.amount) > 0 ? 'text-[#2D7D46]' : 'text-[#C0392B]'
+              parseFloat(v.amount) > 0 ? 'text-[#2D7D46]' : 'text-[#9CA3AF]'
             }`}>
-              {fmt(v.amount)}
+              {parseFloat(v.amount) > 0 ? fmt(v.amount) : '—'}
             </span>
           </div>
         </div>
@@ -412,7 +457,7 @@ export default function Ledgers() {
 
             {/* Tab: Vouchers */}
             {ledgerTab === 1 && (
-              <LedgerVouchers ledger={drawer} companyGuid={companyGuid} />
+              <LedgerVouchers ledger={drawer} companyGuid={companyGuid} key={drawer?.guid} />
             )}
 
             {/* Tab: Details */}
