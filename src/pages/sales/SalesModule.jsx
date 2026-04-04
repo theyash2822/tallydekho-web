@@ -6,6 +6,7 @@ import Badge from '../../components/Badge';
 import Table from '../../components/Table';
 import Drawer from '../../components/Drawer';
 import InvoicePDF from '../../components/InvoicePDF';
+import VoucherDetail from '../../components/VoucherDetail';
 import { monthlySalesPurchase } from '../../data/mockData';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
@@ -273,6 +274,7 @@ export default function SalesModule() {
 
       <InvoicePDF open={!!pdfInvoice} onClose={() => setPdfInvoice(null)} invoice={pdfInvoice} />
 
+
       <Drawer open={!!drawer} onClose={() => setDrawer(null)} title={drawer?.ref || 'Details'}>
         {drawer && (
           <div className="space-y-4">
@@ -292,7 +294,7 @@ export default function SalesModule() {
               ))}
             </div>
             <div className="flex gap-2">
-              <button onClick={() => setPdfInvoice(drawer.rawData)} className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">View PDF</button>
+              <button onClick={() => setPdfInvoice(drawer)} className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">View PDF</button>
               <button className="px-4 py-2.5 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6] transition-colors">Share</button>
             </div>
           </div>

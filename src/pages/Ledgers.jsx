@@ -6,6 +6,7 @@ import Badge from '../components/Badge';
 import Drawer from '../components/Drawer';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
+import VoucherDetail from '../components/VoucherDetail';
 
 const fmt = n => '₹' + Math.abs(n || 0).toLocaleString('en-IN');
 const LEDGER_TABS = ['Details', 'Vouchers', 'Balance Trend', 'GST Info'];
@@ -48,33 +49,12 @@ function LedgerVouchers({ ledger, companyGuid }) {
 
   if (selectedVoucher) {
     return (
-      <div className="space-y-4">
-        <button onClick={() => setSelectedVoucher(null)}
-          className="flex items-center gap-1.5 text-xs text-[#3F5263] hover:text-[#526373] font-medium">
-          ← Back to vouchers
-        </button>
-        <div className="flex justify-between items-start">
-          <div>
-            <span className="text-xs font-semibold text-[#3F5263] bg-[#ECEEEF] px-2 py-0.5 rounded">{selectedVoucher.voucher_type}</span>
-            <p className="font-semibold text-[#1C2B3A] mt-1">{selectedVoucher.voucher_number}</p>
-          </div>
-          <span className={`text-lg font-bold ${parseFloat(selectedVoucher.amount) > 0 ? 'text-[#2D7D46]' : 'text-[#9CA3AF]'}`}>
-            {fmt(selectedVoucher.amount)}
-          </span>
-        </div>
-        <div className="space-y-0">
-          {[['Date', selectedVoucher.date || '—'],
-            ['Party', selectedVoucher.party_name || '—'],
-            ['Narration', selectedVoucher.narration || '—'],
-            ['Reference', selectedVoucher.reference || '—'],
-          ].map(([l, v]) => v !== '—' && (
-            <div key={l} className="flex justify-between py-2.5 border-b border-[#F4F5F6] last:border-0">
-              <span className="text-xs text-[#9CA3AF]">{l}</span>
-              <span className="text-sm font-medium text-[#1C2B3A] text-right max-w-[200px]">{v}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <VoucherDetail
+        voucherId={selectedVoucher.id}
+        companyGuid={companyGuid}
+        companyName={ledger?.company_name}
+        onBack={() => setSelectedVoucher(null)}
+      />
     );
   }
 
