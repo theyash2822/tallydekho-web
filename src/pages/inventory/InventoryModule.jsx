@@ -85,17 +85,27 @@ export default function InventoryModule() {
     }
   }, [selectedCompany?.guid, categoryFilter]);
 
-  useEffect(() => { loadStocks(1, '', 'All'); setPage(1); }, [selectedCompany?.guid]);
+  // Reload whenever company changes
   useEffect(() => {
-    const unsub = wsService.on('synced', () => loadStocks(1, search, categoryFilter));
+    setStockItems([]);
+    setTotal(0);
+    setPage(1);
+    setSearch('');
+    setCategoryFilter('All');
+    if (selectedCompany?.guid) loadStocks(1, '', 'All');
+  }, [selectedCompany?.guid]); // eslint-disable-line
+
+  useEffect(() => {
+    const unsub = wsService.on('synced', () => { if (selectedCompany?.guid) loadStocks(1, search, categoryFilter); });
     return unsub;
   }, [selectedCompany?.guid]);
 
-  // Debounced search
+  // Debounced search + filter
   useEffect(() => {
+    if (!selectedCompany?.guid) return;
     const t = setTimeout(() => { loadStocks(1, search, categoryFilter); setPage(1); }, 400);
     return () => clearTimeout(t);
-  }, [search, categoryFilter]);
+  }, [search, categoryFilter, selectedCompany?.guid]); // eslint-disable-line
 
   const totalPages = Math.ceil(total / pageSize);
   const alerts = stockItems.filter(s => s.status !== 'Normal').slice(0, 5);

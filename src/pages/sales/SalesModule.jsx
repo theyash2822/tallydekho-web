@@ -91,17 +91,26 @@ export default function SalesModule() {
     }
   }, [companyGuid, token]);
 
-  useEffect(() => { loadData(1, ''); setPage(1); }, [companyGuid, token]);
+  // Reload whenever company changes
   useEffect(() => {
-    const unsub = wsService.on('synced', () => loadData(1, ''));
+    setInvoices([]);
+    setTotal(0);
+    setPage(1);
+    setSearch('');
+    if (companyGuid) loadData(1, '');
+  }, [companyGuid]); // eslint-disable-line
+
+  useEffect(() => {
+    const unsub = wsService.on('synced', () => { if (companyGuid) loadData(1, search); });
     return unsub;
   }, [companyGuid]);
 
   // Debounced search
   useEffect(() => {
+    if (!companyGuid) return;
     const t = setTimeout(() => { loadData(1, search); setPage(1); }, 400);
     return () => clearTimeout(t);
-  }, [search]);
+  }, [search, companyGuid]); // eslint-disable-line
 
   const filtered = invoices.filter(r =>
     statusFilter === 'All' || r.status === statusFilter

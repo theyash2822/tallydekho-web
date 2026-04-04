@@ -145,8 +145,16 @@ export default function Ledgers() {
     }
   }, [companyGuid, pageSize]);
 
-  // Initial load + company change
-  useEffect(() => { load('', 1); setPage(1); }, [companyGuid]);
+  // Reload whenever company changes
+  useEffect(() => {
+    setLedgers([]);
+    setTotal(0);
+    setPage(1);
+    setSearch('');
+    setGroupFilter('All');
+    setTypeFilter('All');
+    if (companyGuid) load('', 1);
+  }, [companyGuid]); // eslint-disable-line
 
   // Debounced search
   useEffect(() => {

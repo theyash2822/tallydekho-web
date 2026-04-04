@@ -133,6 +133,7 @@ export default function Dashboard() {
   const fmtL = n => n >= 100000 ? '₹' + (n/100000).toFixed(1) + 'L' : n > 0 ? '₹' + n.toLocaleString('en-IN') : '—';
 
   useEffect(() => {
+    setDashData(null);
     if (!selectedCompany?.guid) { setDashLoading(false); return; }
     setDashLoading(true);
     api.fetchDashboard({ companyGuid: selectedCompany.guid })
