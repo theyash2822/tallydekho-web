@@ -207,7 +207,7 @@ export default function Login() {
             <button
               onClick={handleSendOTP}
               disabled={loading}
-              className="w-full h-11 rounded-xl text-sm font-semibold bg-[#1A1A1A] text-white hover:bg-[#333] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
+              className="w-full h-11 rounded-xl text-sm font-semibold bg-[#1C2B3A] text-white hover:bg-[#333] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
             >
               {loading
                 ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

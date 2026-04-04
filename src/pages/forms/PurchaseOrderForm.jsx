@@ -17,17 +17,17 @@ export default function PurchaseOrderForm({ onClose }) {
   if (submitted) {
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
-        <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center border border-emerald-200">
+        <div className="w-16 h-16 rounded-full bg-[#F0FDF4] flex items-center justify-center border border-[#BBF7D0]">
           <CheckCircle size={32} className="text-emerald-500" />
         </div>
-        <p className="text-base font-semibold text-[#1A1A1A]">Purchase Order Created!</p>
-        <p className="text-sm text-[#787774]">PO-2025-0089</p>
+        <p className="text-base font-semibold text-[#1C2B3A]">Purchase Order Created!</p>
+        <p className="text-sm text-[#6B7280]">PO-2025-0089</p>
         <div className="flex gap-3 mt-2">
-          <button className="px-4 py-2 rounded-lg text-sm font-medium text-white flex items-center gap-2" style={{ background: '#059669' }}>
+          <button className="px-4 py-2 rounded-lg text-sm font-medium text-white flex items-center gap-2" style={{ background: '#3F5263' }}>
             Convert to Purchase Invoice <ArrowRight size={13} />
           </button>
-          <button className="px-4 py-2 rounded-lg text-sm font-medium border border-[#E8E7E3] text-[#787774]">Share PDF</button>
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#E8E7E3] text-[#787774]">Close</button>
+          <button className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280]">Share PDF</button>
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280]">Close</button>
         </div>
       </div>
     );
@@ -38,8 +38,8 @@ export default function PurchaseOrderForm({ onClose }) {
       <div className="grid grid-cols-2 gap-4">
         <FormField label="Entry Type">
           <div className="flex gap-2">
-            <button onClick={() => setIsOptional(false)} className={`flex-1 py-2 rounded-lg text-sm font-medium border transition-colors ${!isOptional ? 'bg-[#ECFDF5] text-[#059669] border-[#6EE7B7]' : 'border-[#E8E7E3] text-[#787774]'}`}>Regular</button>
-            <button onClick={() => setIsOptional(true)} className={`flex-1 py-2 rounded-lg text-sm font-medium border transition-colors ${isOptional ? 'bg-[#ECFDF5] text-[#059669] border-[#6EE7B7]' : 'border-[#E8E7E3] text-[#787774]'}`}>Optional</button>
+            <button onClick={() => setIsOptional(false)} className={`flex-1 py-2 rounded-lg text-sm font-medium border transition-colors ${!isOptional ? 'bg-[#ECEEEF] text-[#3F5263] border-[#C5CBD0]' : 'border-[#D9DCE0] text-[#6B7280]'}`}>Regular</button>
+            <button onClick={() => setIsOptional(true)} className={`flex-1 py-2 rounded-lg text-sm font-medium border transition-colors ${isOptional ? 'bg-[#ECEEEF] text-[#3F5263] border-[#C5CBD0]' : 'border-[#D9DCE0] text-[#6B7280]'}`}>Optional</button>
           </div>
         </FormField>
         <FormField label="PO Number"><Input defaultValue="PO-2025-0089" readOnly /></FormField>

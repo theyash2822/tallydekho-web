@@ -10,15 +10,15 @@ const fmt = n => '₹' + n.toLocaleString('en-IN');
 const statusVariant = { Remitted: 'green', Pending: 'yellow', Overdue: 'red' };
 const TAX_TABS = ['TDS','TCS','Import Duty','Export Duty','Excise','VAT','Cess'];
 const kpis = {
-  TDS:[{t:'Deducted',v:'₹42,000',a:'#059669'},{t:'Remitted',v:'₹29,250',a:'#10B981'},{t:'Pending Pay',v:'₹12,750',a:'#F59E0B'},{t:'Late Fee',v:'—',a:'#787774'}],
-  TCS:[{t:'Collected',v:'₹18,200',a:'#059669'},{t:'Remitted',v:'₹18,200',a:'#10B981'},{t:'Pending Pay',v:'—',a:'#F59E0B'},{t:'Late Fee',v:'—',a:'#787774'}],
+  TDS:[{t:'Deducted',v:'₹42,000',a:'#3F5263'},{t:'Remitted',v:'₹29,250',a:'#2D7D46'},{t:'Pending Pay',v:'₹12,750',a:'#F59E0B'},{t:'Late Fee',v:'—',a:'#6B7280'}],
+  TCS:[{t:'Collected',v:'₹18,200',a:'#3F5263'},{t:'Remitted',v:'₹18,200',a:'#2D7D46'},{t:'Pending Pay',v:'—',a:'#F59E0B'},{t:'Late Fee',v:'—',a:'#6B7280'}],
 };
 const lateChallans = [{party:'IT Services Co.',due:'07 Jul 2025',amount:9500,daysLate:3},{party:'Sunrise Electricals',due:'07 Jul 2025',amount:3000,daysLate:3}];
 const tdsCols = [
   {key:'date',label:'Date'},
-  {key:'voucher',label:'Voucher',render:v=><span className="font-mono text-xs text-[#787774]">{v}</span>},
+  {key:'voucher',label:'Voucher',render:v=><span className="font-mono text-xs text-[#6B7280]">{v}</span>},
   {key:'party',label:'Party'},
-  {key:'section',label:'Section',render:v=><span className="font-mono text-xs bg-[#F1F0EC] px-1.5 py-0.5 rounded">{v}</span>},
+  {key:'section',label:'Section',render:v=><span className="font-mono text-xs bg-[#F0EFE9] px-1.5 py-0.5 rounded">{v}</span>},
   {key:'amount',label:'Amount',render:v=>fmt(v)},
   {key:'challan',label:'Challan',render:v=>v||<span className="text-amber-500 text-xs">Pending</span>},
   {key:'status',label:'Status',render:v=><Badge label={v} variant={statusVariant[v]}/>},
@@ -32,11 +32,11 @@ export default function OtherTaxes() {
 
   return (
     <div className="space-y-5">
-      <div><h1 className="text-xl font-semibold text-[#1A1A1A] tracking-tight">Other Taxes</h1><p className="text-sm text-[#787774] mt-0.5">FY 2025-26 · July 2025</p></div>
-      <div className="bg-white border border-[#E8E7E3] rounded-xl">
-        <div className="flex border-b border-[#E8E7E3] px-1 pt-1 overflow-x-auto">
+      <div><h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Other Taxes</h1><p className="text-sm text-[#6B7280] mt-0.5">FY 2025-26 · July 2025</p></div>
+      <div className="bg-white border border-[#D9DCE0] rounded-xl">
+        <div className="flex border-b border-[#D9DCE0] px-1 pt-1 overflow-x-auto">
           {TAX_TABS.map(t=>(
-            <button key={t} onClick={()=>setTaxTab(t)} className={`px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors rounded-t-lg mr-1 ${taxTab===t?'text-[#059669] bg-[#ECFDF5]':'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F7F6F3]'}`}>{t}</button>
+            <button key={t} onClick={()=>setTaxTab(t)} className={`px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors rounded-t-lg mr-1 ${taxTab===t?'text-[#3F5263] bg-[#ECEEEF]':'text-[#6B7280] hover:text-[#1C2B3A] hover:bg-[#F4F5F6]'}`}>{t}</button>
           ))}
         </div>
         <div className="p-5 space-y-5">
@@ -50,8 +50,8 @@ export default function OtherTaxes() {
                 {lateChallans.map((c,i)=>(
                   <div key={i} className="flex justify-between items-center text-sm">
                     <span className="text-amber-700 font-medium">{c.party}</span>
-                    <span className="font-semibold text-[#1A1A1A]">{fmt(c.amount)}</span>
-                    <span className="text-xs text-rose-600 font-medium">{c.daysLate} days overdue</span>
+                    <span className="font-semibold text-[#1C2B3A]">{fmt(c.amount)}</span>
+                    <span className="text-xs text-[#C0392B] font-medium">{c.daysLate} days overdue</span>
                   </div>
                 ))}
               </div>
@@ -61,12 +61,12 @@ export default function OtherTaxes() {
             <>
               <div className="flex justify-between items-center">
                 <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search party, voucher, section..." className="notion-input w-64 text-sm"/>
-                <button className="px-3 py-1.5 border border-[#E8E7E3] text-[#787774] text-xs rounded-lg hover:bg-[#F7F6F3]">Export CSV</button>
+                <button className="px-3 py-1.5 border border-[#D9DCE0] text-[#6B7280] text-xs rounded-lg hover:bg-[#F4F5F6]">Export CSV</button>
               </div>
               <Table columns={tdsCols} data={filtered} onRowClick={setDrawer}/>
             </>
           ):(
-            <div className="py-12 text-center text-[#787774]">
+            <div className="py-12 text-center text-[#6B7280]">
               <Receipt size={32} className="mx-auto mb-3 opacity-20"/>
               <p className="text-sm font-medium">No {taxTab} records for July 2025</p>
             </div>
@@ -77,11 +77,11 @@ export default function OtherTaxes() {
         {drawer&&(
           <div className="space-y-3 text-sm">
             {[['Date',drawer.date],['Voucher',drawer.voucher],['Party',drawer.party],['Section',drawer.section],['Amount',fmt(drawer.amount)],['Challan',drawer.challan||'Pending'],['Status',drawer.status]].map(([l,v])=>(
-              <div key={l} className="flex justify-between py-2 border-b border-[#F1F0EC]">
-                <span className="text-[#787774]">{l}</span><span className="font-medium text-[#1A1A1A]">{v}</span>
+              <div key={l} className="flex justify-between py-2 border-b border-[#F0EFE9]">
+                <span className="text-[#6B7280]">{l}</span><span className="font-medium text-[#1C2B3A]">{v}</span>
               </div>
             ))}
-            <button className="w-full py-2.5 mt-2 rounded-lg text-sm font-medium text-white" style={{background:'#059669'}}>Mark as Remitted</button>
+            <button className="w-full py-2.5 mt-2 rounded-lg text-sm font-medium text-white" style={{background:'#3F5263'}}>Mark as Remitted</button>
           </div>
         )}
       </Drawer>

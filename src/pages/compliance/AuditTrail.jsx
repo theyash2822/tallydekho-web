@@ -103,69 +103,69 @@ export default function AuditTrail() {
   };
 
   const cols = [
-    { key: 'date', label: 'Date', render: v => <span className="text-[#787774]">{v || '—'}</span> },
-    { key: 'voucher_number', label: 'Voucher No', render: v => <span className="font-mono text-xs text-[#059669] font-semibold">{v || '—'}</span> },
-    { key: 'voucher_type', label: 'Type', render: v => <span className="text-sm text-[#1A1A1A]">{getVoucherTypeLabel(v)}</span> },
-    { key: 'party_name', label: 'Party', render: v => <span className="text-[#787774] truncate max-w-32 block">{v || '—'}</span> },
-    { key: 'amount', label: 'Amount', render: v => <span className="font-semibold text-[#1A1A1A]">{v ? fmt(v) : '—'}</span> },
-    { key: 'narration', label: 'Narration', render: v => <span className="text-xs text-[#AEACA8] truncate max-w-32 block">{v || '—'}</span> },
+    { key: 'date', label: 'Date', render: v => <span className="text-[#6B7280]">{v || '—'}</span> },
+    { key: 'voucher_number', label: 'Voucher No', render: v => <span className="font-mono text-xs text-[#3F5263] font-semibold">{v || '—'}</span> },
+    { key: 'voucher_type', label: 'Type', render: v => <span className="text-sm text-[#1C2B3A]">{getVoucherTypeLabel(v)}</span> },
+    { key: 'party_name', label: 'Party', render: v => <span className="text-[#6B7280] truncate max-w-32 block">{v || '—'}</span> },
+    { key: 'amount', label: 'Amount', render: v => <span className="font-semibold text-[#1C2B3A]">{v ? fmt(v) : '—'}</span> },
+    { key: 'narration', label: 'Narration', render: v => <span className="text-xs text-[#9CA3AF] truncate max-w-32 block">{v || '—'}</span> },
   ];
 
   return (
     <div className="space-y-5">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-xl font-semibold text-[#1A1A1A] tracking-tight">Audit Trail</h1>
-          <p className="text-sm text-[#787774] mt-0.5">
+          <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Audit Trail</h1>
+          <p className="text-sm text-[#6B7280] mt-0.5">
             {selectedCompany?.name || 'No company'} · {loading ? 'Loading...' : `${vouchers.length} vouchers`}
           </p>
         </div>
-        <button onClick={loadData} className="flex items-center gap-1.5 text-xs text-[#059669] font-medium hover:text-[#047857]">
+        <button onClick={loadData} className="flex items-center gap-1.5 text-xs text-[#3F5263] font-medium hover:text-[#526373]">
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
       </div>
 
       {/* KPIs */}
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Vouchers" value={summary.total} icon={ClipboardList} accent="#059669" />
-        <KPICard title="Sales" value={summary.sales} icon={Plus} accent="#10B981" />
+        <KPICard title="Total Vouchers" value={summary.total} icon={ClipboardList} accent="#3F5263" />
+        <KPICard title="Sales" value={summary.sales} icon={Plus} accent="#2D7D46" />
         <KPICard title="Purchase" value={summary.purchase} icon={Edit} accent="#F59E0B" />
-        <KPICard title="Payments/Receipts" value={summary.payment} icon={Trash2} accent="#F43F5E" />
+        <KPICard title="Payments/Receipts" value={summary.payment} icon={Trash2} accent="#C0392B" />
       </div>
 
       {/* Chart + Latest */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-2 bg-white border border-[#E8E7E3] rounded-2xl p-5">
-          <p className="text-sm font-semibold text-[#1A1A1A] mb-1">Vouchers per Day</p>
-          <p className="text-xs text-[#787774] mb-4">Activity trend</p>
+        <div className="col-span-2 bg-white border border-[#D9DCE0] rounded-2xl p-5">
+          <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Vouchers per Day</p>
+          <p className="text-xs text-[#6B7280] mb-4">Activity trend</p>
           {activityByDay.length > 0 ? (
             <ResponsiveContainer width="100%" height={150}>
               <BarChart data={activityByDay} barSize={16}>
-                <CartesianGrid strokeDasharray="2 4" stroke="#F1F0EC" vertical={false} />
-                <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ fontSize: 11, border: '1px solid #E8E7E3', borderRadius: 8 }} />
-                <Bar dataKey="count" name="Vouchers" fill="#059669" radius={[4, 4, 0, 0]} />
+                <CartesianGrid strokeDasharray="2 4" stroke="#F0EFE9" vertical={false} />
+                <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#6B7280' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: '#6B7280' }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={{ fontSize: 11, border: '1px solid #D9DCE0', borderRadius: 8 }} />
+                <Bar dataKey="count" name="Vouchers" fill="#3F5263" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex items-center justify-center h-36 text-[#AEACA8] text-sm">
+            <div className="flex items-center justify-center h-36 text-[#9CA3AF] text-sm">
               No data yet — sync from Tally to see activity
             </div>
           )}
         </div>
-        <div className="bg-white border border-[#E8E7E3] rounded-2xl p-5">
-          <p className="text-sm font-semibold text-[#1A1A1A] mb-3">Latest Entries</p>
+        <div className="bg-white border border-[#D9DCE0] rounded-2xl p-5">
+          <p className="text-sm font-semibold text-[#1C2B3A] mb-3">Latest Entries</p>
           {vouchers.length === 0 ? (
-            <p className="text-xs text-[#AEACA8] text-center py-6">No vouchers yet — sync from Desktop</p>
+            <p className="text-xs text-[#9CA3AF] text-center py-6">No vouchers yet — sync from Desktop</p>
           ) : (
             <div className="space-y-2.5">
               {vouchers.slice(0, 5).map((v, i) => (
-                <div key={i} className="flex items-start gap-2.5 cursor-pointer hover:bg-[#F7F6F3] p-1.5 rounded-lg" onClick={() => setDrawer(v)}>
-                  <span className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0 bg-[#059669]" />
+                <div key={i} className="flex items-start gap-2.5 cursor-pointer hover:bg-[#F4F5F6] p-1.5 rounded-lg" onClick={() => setDrawer(v)}>
+                  <span className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0 bg-[#3F5263]" />
                   <div>
-                    <p className="text-xs font-medium text-[#1A1A1A]">{v.voucher_number} – {getVoucherTypeLabel(v.voucher_type)}</p>
-                    <p className="text-xs text-[#787774]">{v.party_name || '—'} · {v.date || '—'}</p>
+                    <p className="text-xs font-medium text-[#1C2B3A]">{v.voucher_number} – {getVoucherTypeLabel(v.voucher_type)}</p>
+                    <p className="text-xs text-[#6B7280]">{v.party_name || '—'} · {v.date || '—'}</p>
                   </div>
                 </div>
               ))}
@@ -175,11 +175,11 @@ export default function AuditTrail() {
       </div>
 
       {/* Day Book Table */}
-      <div className="bg-white border border-[#E8E7E3] rounded-2xl">
-        <div className="flex border-b border-[#E8E7E3] px-1 pt-1">
+      <div className="bg-white border border-[#D9DCE0] rounded-2xl">
+        <div className="flex border-b border-[#D9DCE0] px-1 pt-1">
           {TABS.map((t, i) => (
             <button key={i} onClick={() => setTab(i)}
-              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#059669] bg-[#ECFDF5]' : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F7F6F3]'}`}>{t}
+              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#3F5263] bg-[#ECEEEF]' : 'text-[#6B7280] hover:text-[#1C2B3A] hover:bg-[#F4F5F6]'}`}>{t}
             </button>
           ))}
         </div>
@@ -188,39 +188,39 @@ export default function AuditTrail() {
           <div className="flex gap-3 mb-4 flex-wrap items-center">
             {/* Search */}
             <div className="relative flex-1 min-w-48">
-              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#AEACA8]" />
+              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
               <input value={search} onChange={e => setSearch(e.target.value)}
                 placeholder="Search party or voucher no..."
                 className="notion-input pl-8 w-full text-sm" />
             </div>
             {/* Voucher type */}
-            <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)} className="notion-input text-sm text-[#787774]">
+            <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)} className="notion-input text-sm text-[#6B7280]">
               {voucherTypes.map(t => <option key={t}>{t}</option>)}
             </select>
             {/* Date range */}
-            <div className="flex items-center gap-2 bg-white border border-[#E8E7E3] rounded-lg px-3 py-1.5">
-              <span className="text-xs text-[#AEACA8] flex-shrink-0">From</span>
+            <div className="flex items-center gap-2 bg-white border border-[#D9DCE0] rounded-lg px-3 py-1.5">
+              <span className="text-xs text-[#9CA3AF] flex-shrink-0">From</span>
               <input
                 type="date"
                 value={fromDate}
                 onChange={e => setFromDate(e.target.value)}
-                className="text-xs text-[#1A1A1A] outline-none bg-transparent"
+                className="text-xs text-[#1C2B3A] outline-none bg-transparent"
               />
             </div>
-            <div className="flex items-center gap-2 bg-white border border-[#E8E7E3] rounded-lg px-3 py-1.5">
-              <span className="text-xs text-[#AEACA8] flex-shrink-0">To</span>
+            <div className="flex items-center gap-2 bg-white border border-[#D9DCE0] rounded-lg px-3 py-1.5">
+              <span className="text-xs text-[#9CA3AF] flex-shrink-0">To</span>
               <input
                 type="date"
                 value={toDate}
                 onChange={e => setToDate(e.target.value)}
-                className="text-xs text-[#1A1A1A] outline-none bg-transparent"
+                className="text-xs text-[#1C2B3A] outline-none bg-transparent"
               />
             </div>
             {/* Clear dates */}
             {(fromDate || toDate) && (
               <button
                 onClick={() => { setFromDate(''); setToDate(''); }}
-                className="text-xs text-rose-500 hover:text-rose-600 font-medium px-2 py-1.5 hover:bg-rose-50 rounded-lg transition-colors"
+                className="text-xs text-[#C0392B] hover:text-[#C0392B] font-medium px-2 py-1.5 hover:bg-[#FEF2F2] rounded-lg transition-colors"
               >
                 Clear dates
               </button>
@@ -228,9 +228,9 @@ export default function AuditTrail() {
           </div>
 
           {loading ? (
-            <div className="space-y-2">{[...Array(6)].map((_, i) => <div key={i} className="h-10 bg-[#F7F6F3] rounded-lg animate-pulse" />)}</div>
+            <div className="space-y-2">{[...Array(6)].map((_, i) => <div key={i} className="h-10 bg-[#F4F5F6] rounded-lg animate-pulse" />)}</div>
           ) : (tab === 0 ? filtered : myEntries).length === 0 ? (
-            <div className="py-12 text-center text-[#AEACA8]">
+            <div className="py-12 text-center text-[#9CA3AF]">
               <ClipboardList size={36} className="mx-auto mb-3 opacity-20" />
               <p className="text-sm font-medium">No vouchers found</p>
               <p className="text-xs mt-1">Sync from TallyDekho Desktop to see Day Book data</p>
@@ -247,10 +247,10 @@ export default function AuditTrail() {
           <div className="space-y-4">
             <div className="flex justify-between items-start">
               <div>
-                <p className="font-semibold text-[#1A1A1A]">{drawer.party_name || 'No party'}</p>
-                <p className="font-mono text-xs text-[#787774] mt-0.5">{drawer.voucher_number || '—'}</p>
+                <p className="font-semibold text-[#1C2B3A]">{drawer.party_name || 'No party'}</p>
+                <p className="font-mono text-xs text-[#6B7280] mt-0.5">{drawer.voucher_number || '—'}</p>
               </div>
-              <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-[#ECFDF5] text-[#059669] border border-[#6EE7B7]">
+              <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-[#ECEEEF] text-[#3F5263] border border-[#C5CBD0]">
                 {getVoucherTypeLabel(drawer.voucher_type)}
               </span>
             </div>
@@ -263,13 +263,13 @@ export default function AuditTrail() {
                 ['Reference', drawer.reference || '—'],
                 ['Narration', drawer.narration || '—'],
               ].map(([l, v]) => (
-                <div key={l} className="p-3 bg-[#FBFAF8] rounded-xl border border-[#E8E7E3]">
-                  <p className="text-xs text-[#787774] mb-1">{l}</p>
-                  <p className="font-medium text-[#1A1A1A] text-sm break-all">{v}</p>
+                <div key={l} className="p-3 bg-[#F9F9F9] rounded-xl border border-[#D9DCE0]">
+                  <p className="text-xs text-[#6B7280] mb-1">{l}</p>
+                  <p className="font-medium text-[#1C2B3A] text-sm break-all">{v}</p>
                 </div>
               ))}
             </div>
-            <button className="w-full py-2.5 rounded-lg text-sm font-medium text-white" style={{ background: '#059669' }}>
+            <button className="w-full py-2.5 rounded-lg text-sm font-medium text-white" style={{ background: '#3F5263' }}>
               View Full Voucher
             </button>
           </div>

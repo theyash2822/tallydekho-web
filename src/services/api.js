@@ -48,8 +48,9 @@ export const updatePairing     = (body)        => put('/pairing',         body);
 export const fetchCompanies = () => get('/companies');
 
 // ─── Ledgers ──────────────────────────────────────────────────────────────────
-export const fetchLedgers      = (body) => post('/ledgers', body);   // { companyGuid, page, searchText }
-export const fetchLedgerDetails= (body) => post('/ledger',  body);   // { companyGuid, ledgerGuid }
+export const fetchLedgers        = (body) => post('/ledgers', body);
+export const fetchLedgerDetails  = (body) => post('/ledger',  body);
+export const fetchLedgerVouchers = (body) => post('/ledger-vouchers', body); // { companyGuid, ledgerName, page, pageSize }
 
 // ─── Stocks ───────────────────────────────────────────────────────────────────
 export const fetchStockSummary = (companyGuid)       => post('/stock-dashboard', { companyGuid });
@@ -76,7 +77,7 @@ const api = {
   // Companies
   fetchCompanies,
   // Ledgers
-  fetchLedgers, fetchLedgerDetails,
+  fetchLedgers, fetchLedgerDetails, fetchLedgerVouchers,
   // Stocks
   fetchStockSummary, fetchStockFilters, fetchStocks, fetchStockDetails,
   // Vouchers & Reports

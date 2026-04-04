@@ -19,15 +19,15 @@ export default function VoucherForm({ onClose }) {
   if (submitted) {
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
-        <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center border border-emerald-200">
+        <div className="w-16 h-16 rounded-full bg-[#F0FDF4] flex items-center justify-center border border-[#BBF7D0]">
           <CheckCircle size={32} className="text-emerald-500" />
         </div>
-        <p className="text-base font-semibold text-[#1A1A1A]">{type} Voucher Created!</p>
-        <p className="text-sm text-[#787774]">VCH-2025-{String(Math.floor(Math.random() * 9000) + 1000)}</p>
+        <p className="text-base font-semibold text-[#1C2B3A]">{type} Voucher Created!</p>
+        <p className="text-sm text-[#6B7280]">VCH-2025-{String(Math.floor(Math.random() * 9000) + 1000)}</p>
         <div className="flex gap-3 mt-2">
-          <button className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{ background: '#059669' }}>Share PDF</button>
-          <button onClick={() => setSubmitted(false)} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#E8E7E3] text-[#787774]">New Voucher</button>
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#E8E7E3] text-[#787774]">Close</button>
+          <button className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{ background: '#3F5263' }}>Share PDF</button>
+          <button onClick={() => setSubmitted(false)} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280]">New Voucher</button>
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280]">Close</button>
         </div>
       </div>
     );
@@ -40,8 +40,8 @@ export default function VoucherForm({ onClose }) {
         <div className="flex gap-2">
           {VOUCHER_TYPES.map(t => (
             <button key={t} onClick={() => setType(t)}
-              className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-colors ${type === t ? 'text-white border-transparent' : 'border-[#E8E7E3] text-[#787774] hover:border-[#059669] hover:text-[#059669]'}`}
-              style={type === t ? { background: 'linear-gradient(135deg,#059669,#047857)' } : {}}>
+              className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-colors ${type === t ? 'text-white border-transparent' : 'border-[#D9DCE0] text-[#6B7280] hover:border-[#3F5263] hover:text-[#3F5263]'}`}
+              style={type === t ? { background: 'linear-gradient(135deg,#3F5263,#526373)' } : {}}>
               {t}
             </button>
           ))}
@@ -81,19 +81,19 @@ export default function VoucherForm({ onClose }) {
       {type === 'Journal' && (
         <>
           <SectionTitle title="Journal Entries" subtitle="Debit and Credit legs" />
-          <div className="overflow-x-auto rounded-xl border border-[#E8E7E3]">
+          <div className="overflow-x-auto rounded-xl border border-[#D9DCE0]">
             <table className="w-full text-sm">
-              <thead className="bg-[#FBFAF8] border-b border-[#E8E7E3]">
-                <tr>{['Ledger', 'Dr/Cr', 'Amount (₹)', 'Narration'].map(h => <th key={h} className="px-4 py-2.5 text-left text-xs font-semibold text-[#787774]">{h}</th>)}</tr>
+              <thead className="bg-[#F9F9F9] border-b border-[#D9DCE0]">
+                <tr>{['Ledger', 'Dr/Cr', 'Amount (₹)', 'Narration'].map(h => <th key={h} className="px-4 py-2.5 text-left text-xs font-semibold text-[#6B7280]">{h}</th>)}</tr>
               </thead>
               <tbody>
                 {[0, 1].map(i => (
-                  <tr key={i} className="border-b border-[#F1F0EC]">
+                  <tr key={i} className="border-b border-[#F0EFE9]">
                     <td className="px-3 py-2"><Select options={LEDGERS_ALL} placeholder="Select ledger" /></td>
                     <td className="px-3 py-2">
                       <div className="flex gap-1">
                         {['Dr', 'Cr'].map(d => (
-                          <button key={d} className="px-2.5 py-1 rounded text-xs font-medium border border-[#E8E7E3] hover:border-[#059669] hover:text-[#059669]">{d}</button>
+                          <button key={d} className="px-2.5 py-1 rounded text-xs font-medium border border-[#D9DCE0] hover:border-[#3F5263] hover:text-[#3F5263]">{d}</button>
                         ))}
                       </div>
                     </td>

@@ -10,25 +10,22 @@ import api from '../services/api';
 const fmt = n => '₹' + Math.abs(n || 0).toLocaleString('en-IN');
 const LEDGER_TABS = ['Details', 'Vouchers', 'Balance Trend', 'GST Info'];
 
-// Vouchers linked to a ledger — search by party name
+// Vouchers linked to a ledger — via voucher_items ledger_name
 function LedgerVouchers({ ledger, companyGuid }) {
   const [vouchers, setVouchers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [source, setSource] = useState('');
 
   useEffect(() => {
     if (!ledger || !companyGuid) return;
     setLoading(true);
+    setVouchers([]);
     const name = (ledger.name || ledger.NAME || '').trim();
 
-    // Search vouchers by party name (ledger name)
-    api.fetchVouchers({ companyGuid, searchText: name, page: 1, pageSize: 25 })
+    api.fetchLedgerVouchers({ companyGuid, ledgerName: name, page: 1, pageSize: 25 })
       .then(r => {
-        const all = r?.data?.vouchers || [];
-        // Filter to vouchers where this ledger is the party
-        const matched = all.filter(v =>
-          v.party_name?.toLowerCase() === name.toLowerCase()
-        );
-        setVouchers(matched.length > 0 ? matched : all);
+        setVouchers(r?.data?.vouchers || []);
+        setSource(r?.data?.source || '');
       })
       .catch(() => setVouchers([]))
       .finally(() => setLoading(false));

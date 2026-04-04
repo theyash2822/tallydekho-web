@@ -44,18 +44,18 @@ export default function AddLedgerForm({ onClose }) {
   if (submitted) {
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
-        <div className="w-16 h-16 rounded-full bg-[#ECFDF5] flex items-center justify-center border border-[#6EE7B7]">
-          <CheckCircle size={32} style={{ color: '#059669' }} />
+        <div className="w-16 h-16 rounded-full bg-[#ECEEEF] flex items-center justify-center border border-[#C5CBD0]">
+          <CheckCircle size={32} style={{ color: '#3F5263' }} />
         </div>
-        <p className="text-base font-semibold text-[#1A1A1A]">Ledger Created!</p>
-        <p className="text-sm text-[#787774]">{form.name} · {form.group}</p>
-        <p className="text-xs text-[#AEACA8]">Will sync to Tally on next desktop sync</p>
+        <p className="text-base font-semibold text-[#1C2B3A]">Ledger Created!</p>
+        <p className="text-sm text-[#6B7280]">{form.name} · {form.group}</p>
+        <p className="text-xs text-[#9CA3AF]">Will sync to Tally on next desktop sync</p>
         <div className="flex gap-3 mt-2">
           <button onClick={() => { setSubmitted(false); setForm({ name:'',group:'Sundry Debtors',alias:'',phone:'',email:'',address:'',gstin:'',regType:'Regular',pan:'',bankName:'',accountNo:'',ifsc:'',branch:'',openingBalance:'',openingType:'Dr',narration:'' }); }}
-            className="px-4 py-2 rounded-lg text-sm font-medium border border-[#E8E7E3] text-[#787774] hover:bg-[#F7F6F3]">
+            className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]">
             Add Another
           </button>
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{ background: '#059669' }}>Done</button>
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{ background: '#3F5263' }}>Done</button>
         </div>
       </div>
     );
@@ -69,12 +69,12 @@ export default function AddLedgerForm({ onClose }) {
         <div className="col-span-2">
           <FormField label="Ledger Name" required>
             <Input value={form.name} onChange={e => set('name', e.target.value)} placeholder="e.g. ABC Traders, HDFC Bank CA" />
-            {errors.name && <p className="text-xs text-rose-500 mt-1">{errors.name}</p>}
+            {errors.name && <p className="text-xs text-[#C0392B] mt-1">{errors.name}</p>}
           </FormField>
         </div>
         <FormField label="Group" required>
           <Select options={GROUPS} value={form.group} onChange={e => set('group', e.target.value)} />
-          {errors.group && <p className="text-xs text-rose-500 mt-1">{errors.group}</p>}
+          {errors.group && <p className="text-xs text-[#C0392B] mt-1">{errors.group}</p>}
         </FormField>
         <FormField label="Alias / Short Name" hint="Optional alternate name">
           <Input value={form.alias} onChange={e => set('alias', e.target.value)} placeholder="Optional" />
@@ -95,10 +95,10 @@ export default function AddLedgerForm({ onClose }) {
       <SectionTitle title="GST Details" />
       <Toggle label="This ledger has GST registration" checked={hasGST} onChange={setHasGST} />
       {hasGST && (
-        <div className="grid grid-cols-2 gap-4 p-4 bg-[#F7F6F3] rounded-xl border border-[#E8E7E3]">
+        <div className="grid grid-cols-2 gap-4 p-4 bg-[#F4F5F6] rounded-xl border border-[#D9DCE0]">
           <FormField label="GSTIN" hint="15-character GST number">
             <Input value={form.gstin} onChange={e => set('gstin', e.target.value.toUpperCase())} placeholder="27AABCM1234F1Z5" />
-            {errors.gstin && <p className="text-xs text-rose-500 mt-1">{errors.gstin}</p>}
+            {errors.gstin && <p className="text-xs text-[#C0392B] mt-1">{errors.gstin}</p>}
           </FormField>
           <FormField label="Registration Type">
             <Select options={REG_TYPES} value={form.regType} onChange={e => set('regType', e.target.value)} />
@@ -111,7 +111,7 @@ export default function AddLedgerForm({ onClose }) {
       <SectionTitle title="Bank Details" />
       <Toggle label="Add bank account details" checked={hasBankDetails} onChange={setHasBankDetails} />
       {hasBankDetails && (
-        <div className="grid grid-cols-2 gap-4 p-4 bg-[#F7F6F3] rounded-xl border border-[#E8E7E3]">
+        <div className="grid grid-cols-2 gap-4 p-4 bg-[#F4F5F6] rounded-xl border border-[#D9DCE0]">
           <FormField label="Bank Name"><Input value={form.bankName} onChange={e => set('bankName', e.target.value)} placeholder="HDFC Bank" /></FormField>
           <FormField label="Account Number"><Input value={form.accountNo} onChange={e => set('accountNo', e.target.value)} placeholder="00001234567890" /></FormField>
           <FormField label="IFSC Code"><Input value={form.ifsc} onChange={e => set('ifsc', e.target.value.toUpperCase())} placeholder="HDFC0001234" /></FormField>
@@ -129,8 +129,8 @@ export default function AddLedgerForm({ onClose }) {
           <div className="flex gap-2">
             {['Dr', 'Cr'].map(t => (
               <button key={t} onClick={() => set('openingType', t)}
-                className={`flex-1 py-2 rounded-lg text-sm font-medium border transition-colors ${form.openingType === t ? 'text-white border-transparent' : 'border-[#E8E7E3] text-[#787774]'}`}
-                style={form.openingType === t ? { background: '#059669' } : {}}>
+                className={`flex-1 py-2 rounded-lg text-sm font-medium border transition-colors ${form.openingType === t ? 'text-white border-transparent' : 'border-[#D9DCE0] text-[#6B7280]'}`}
+                style={form.openingType === t ? { background: '#3F5263' } : {}}>
                 {t === 'Dr' ? 'Debit (Dr)' : 'Credit (Cr)'}
               </button>
             ))}
@@ -145,10 +145,10 @@ export default function AddLedgerForm({ onClose }) {
 
       {/* Actions */}
       <div className="flex gap-3 pt-2">
-        <button onClick={handleSubmit} className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90" style={{ background: '#059669' }}>
+        <button onClick={handleSubmit} className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90" style={{ background: '#3F5263' }}>
           Create Ledger
         </button>
-        <button onClick={onClose} className="px-5 py-2.5 rounded-lg text-sm font-medium border border-[#E8E7E3] text-[#787774] hover:bg-[#F7F6F3]">
+        <button onClick={onClose} className="px-5 py-2.5 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]">
           Cancel
         </button>
       </div>

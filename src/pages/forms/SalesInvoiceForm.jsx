@@ -26,12 +26,12 @@ export default function SalesInvoiceForm({ onClose, onSubmit }) {
         <div className="w-16 h-16 rounded-full bg-[#E8F5ED] flex items-center justify-center border border-[#A8D5BC]">
           <CheckCircle size={32} className="text-[#2D7D46]" />
         </div>
-        <p className="text-base font-semibold text-[#1A1A1A]">Invoice Created Successfully!</p>
-        <p className="text-sm text-[#787774]">INV-2025-0783 · ₹{(subtotal + tax).toLocaleString('en-IN')}</p>
+        <p className="text-base font-semibold text-[#1C2B3A]">Invoice Created Successfully!</p>
+        <p className="text-sm text-[#6B7280]">INV-2025-0783 · ₹{(subtotal + tax).toLocaleString('en-IN')}</p>
         <div className="flex gap-3 mt-2">
           <button className="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">Share PDF</button>
-          <button onClick={() => setSubmitted(false)} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#E8E7E3] text-[#787774] hover:bg-[#F7F6F3]">Create Another</button>
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#E8E7E3] text-[#787774] hover:bg-[#F7F6F3]">Close</button>
+          <button onClick={() => setSubmitted(false)} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]">Create Another</button>
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]">Close</button>
         </div>
       </div>
     );
@@ -84,7 +84,7 @@ export default function SalesInvoiceForm({ onClose, onSubmit }) {
         <Toggle label="Attach UPI QR Code" checked={upiQR} onChange={setUpiQR} />
         <Toggle label="Collect Payment Now" checked={collectNow} onChange={setCollectNow} />
         {collectNow && (
-          <div className="grid grid-cols-2 gap-4 p-4 bg-[#F7F6F3] rounded-xl border border-[#E8E7E3]">
+          <div className="grid grid-cols-2 gap-4 p-4 bg-[#F4F5F6] rounded-xl border border-[#D9DCE0]">
             <FormField label="Payment Mode"><Select options={['Cash', 'Bank Transfer', 'UPI', 'Cheque']} /></FormField>
             <FormField label="Amount Received"><Input type="number" placeholder="0.00" prefix="₹" /></FormField>
             <FormField label="Reference / UTR No"><Input placeholder="Optional" /></FormField>

@@ -24,14 +24,14 @@ export default function DeliveryNoteForm({ onClose }) {
   if (submitted) {
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
-        <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center border border-emerald-200">
+        <div className="w-16 h-16 rounded-full bg-[#F0FDF4] flex items-center justify-center border border-[#BBF7D0]">
           <CheckCircle size={32} className="text-emerald-500" />
         </div>
-        <p className="text-base font-semibold text-[#1A1A1A]">Delivery Note Created!</p>
-        <p className="text-sm text-[#787774]">DLV-2025-0067</p>
+        <p className="text-base font-semibold text-[#1C2B3A]">Delivery Note Created!</p>
+        <p className="text-sm text-[#6B7280]">DLV-2025-0067</p>
         <div className="flex gap-3 mt-2">
-          <button className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{ background: '#059669' }}>Share PDF</button>
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#E8E7E3] text-[#787774]">Close</button>
+          <button className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{ background: '#3F5263' }}>Share PDF</button>
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280]">Close</button>
         </div>
       </div>
     );
@@ -61,13 +61,13 @@ export default function DeliveryNoteForm({ onClose }) {
       <SectionTitle title="Items to Dispatch" />
       <div className="space-y-2">
         {items.map((item) => (
-          <div key={item.id} className="flex items-center justify-between p-3 bg-[#FBFAF8] border border-[#E8E7E3] rounded-xl">
+          <div key={item.id} className="flex items-center justify-between p-3 bg-[#F9F9F9] border border-[#D9DCE0] rounded-xl">
             <div className="flex items-center gap-4 text-sm">
-              <span className="font-medium text-[#1A1A1A]">{item.name}</span>
-              <span className="text-[#787774]">Qty: {item.qty}</span>
-              <span className="font-semibold text-[#1A1A1A]">₹{item.amount.toLocaleString('en-IN')}</span>
+              <span className="font-medium text-[#1C2B3A]">{item.name}</span>
+              <span className="text-[#6B7280]">Qty: {item.qty}</span>
+              <span className="font-semibold text-[#1C2B3A]">₹{item.amount.toLocaleString('en-IN')}</span>
             </div>
-            <button className="w-6 h-6 flex items-center justify-center rounded text-[#AEACA8] hover:text-[#059669]">
+            <button className="w-6 h-6 flex items-center justify-center rounded text-[#9CA3AF] hover:text-[#3F5263]">
               <Edit2 size={12} />
             </button>
           </div>
@@ -75,20 +75,20 @@ export default function DeliveryNoteForm({ onClose }) {
       </div>
 
       {showItemForm ? (
-        <div className="p-4 border border-[#059669] rounded-xl bg-[#ECFDF5] space-y-3">
-          <p className="text-xs font-semibold text-[#059669]">Add Dispatch Item</p>
+        <div className="p-4 border border-[#3F5263] rounded-xl bg-[#ECEEEF] space-y-3">
+          <p className="text-xs font-semibold text-[#3F5263]">Add Dispatch Item</p>
           <div className="grid grid-cols-3 gap-3">
             <FormField label="Product Name" required><Input value={draft.name} onChange={e => setDraft(p => ({ ...p, name: e.target.value }))} /></FormField>
             <FormField label="Qty"><Input type="number" value={draft.qty} onChange={e => setDraft(p => ({ ...p, qty: e.target.value }))} /></FormField>
             <FormField label="Rate (₹)"><Input type="number" value={draft.rate} onChange={e => setDraft(p => ({ ...p, rate: e.target.value }))} /></FormField>
           </div>
           <div className="flex gap-2">
-            <button onClick={addItem} className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{ background: '#059669' }}>Add Item</button>
-            <button onClick={() => setShowItemForm(false)} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#E8E7E3] text-[#787774]">Cancel</button>
+            <button onClick={addItem} className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{ background: '#3F5263' }}>Add Item</button>
+            <button onClick={() => setShowItemForm(false)} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280]">Cancel</button>
           </div>
         </div>
       ) : (
-        <button onClick={() => setShowItemForm(true)} className="flex items-center gap-1.5 text-sm font-medium text-[#059669]">
+        <button onClick={() => setShowItemForm(true)} className="flex items-center gap-1.5 text-sm font-medium text-[#3F5263]">
           <Plus size={14} /> {items.length > 0 ? 'Add Another Item' : 'Add Dispatch Item'}
         </button>
       )}

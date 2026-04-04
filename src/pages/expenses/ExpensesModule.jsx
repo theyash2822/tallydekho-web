@@ -12,13 +12,13 @@ const statusVariant = { Paid: 'green', Unpaid: 'red' };
 const COLORS = ['#3F5263','#526373','#798692','#9FA9B1','#B2BAC1'];
 
 const cols = [
-  { key: 'date', label: 'Date', render: v => <span className="text-[#787774]">{v}</span> },
+  { key: 'date', label: 'Date', render: v => <span className="text-[#6B7280]">{v}</span> },
   { key: 'voucher', label: 'Voucher', render: v => <span className="font-mono text-xs text-[#3F5263] font-semibold">{v}</span> },
   { key: 'category', label: 'Category' },
-  { key: 'ledger', label: 'Ledger', render: v => <span className="text-[#787774]">{v}</span> },
+  { key: 'ledger', label: 'Ledger', render: v => <span className="text-[#6B7280]">{v}</span> },
   { key: 'amount', label: 'Amount', render: v => <span className="font-semibold">{fmt(v)}</span> },
-  { key: 'tax', label: 'Tax', render: v => v ? fmt(v) : <span className="text-[#AEACA8]">—</span> },
-  { key: 'mode', label: 'Mode', render: v => <span className="text-xs text-[#787774]">{v}</span> },
+  { key: 'tax', label: 'Tax', render: v => v ? fmt(v) : <span className="text-[#9CA3AF]">—</span> },
+  { key: 'mode', label: 'Mode', render: v => <span className="text-xs text-[#6B7280]">{v}</span> },
   { key: 'status', label: 'Status', render: v => <Badge label={v} variant={statusVariant[v]} /> },
   { key: 'attachment', label: 'Docs', render: v => v ? <span className="text-xs text-[#3F5263] font-medium">📎</span> : <span className="text-[#C5CBD0]">—</span> },
 ];
@@ -40,8 +40,8 @@ export default function ExpensesModule() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold text-[#1A1A1A] tracking-tight">Expenses</h1>
-        <p className="text-sm text-[#787774] mt-0.5">July 2025</p>
+        <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Expenses</h1>
+        <p className="text-sm text-[#6B7280] mt-0.5">July 2025</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
@@ -52,27 +52,27 @@ export default function ExpensesModule() {
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-2 bg-white border border-[#E8E7E3] rounded-2xl p-5">
-          <p className="text-sm font-semibold text-[#1A1A1A] mb-1">Expense by Category</p>
-          <p className="text-xs text-[#787774] mb-4">July 2025</p>
+        <div className="col-span-2 bg-white border border-[#D9DCE0] rounded-2xl p-5">
+          <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Expense by Category</p>
+          <p className="text-xs text-[#6B7280] mb-4">July 2025</p>
           <ResponsiveContainer width="100%" height={170}>
             <BarChart data={expenseCategories} barSize={28} layout="vertical" margin={{ left: 80 }}>
-              <CartesianGrid strokeDasharray="2 4" stroke="#F1F0EC" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} tickFormatter={v => '₹' + (v / 1000) + 'K'} />
-              <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#787774' }} axisLine={false} tickLine={false} width={80} />
-              <Tooltip formatter={v => fmt(v)} contentStyle={{ fontSize: 11, borderRadius: 10, border: '1px solid #E8E7E3' }} />
+              <CartesianGrid strokeDasharray="2 4" stroke="#F0EFE9" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 10, fill: '#6B7280' }} axisLine={false} tickLine={false} tickFormatter={v => '₹' + (v / 1000) + 'K'} />
+              <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#6B7280' }} axisLine={false} tickLine={false} width={80} />
+              <Tooltip formatter={v => fmt(v)} contentStyle={{ fontSize: 11, borderRadius: 10, border: '1px solid #D9DCE0' }} />
               <Bar dataKey="amount" fill="#3F5263" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <div className="bg-white border border-[#E8E7E3] rounded-2xl p-5">
-          <p className="text-sm font-semibold text-[#1A1A1A] mb-3">Category Mix</p>
+        <div className="bg-white border border-[#D9DCE0] rounded-2xl p-5">
+          <p className="text-sm font-semibold text-[#1C2B3A] mb-3">Category Mix</p>
           <ResponsiveContainer width="100%" height={130}>
             <PieChart>
               <Pie data={expenseCategories} cx="50%" cy="50%" innerRadius={35} outerRadius={60} dataKey="amount" paddingAngle={2}>
                 {expenseCategories.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
               </Pie>
-              <Tooltip formatter={v => fmt(v)} contentStyle={{ fontSize: 11, borderRadius: 10, border: '1px solid #E8E7E3' }} />
+              <Tooltip formatter={v => fmt(v)} contentStyle={{ fontSize: 11, borderRadius: 10, border: '1px solid #D9DCE0' }} />
             </PieChart>
           </ResponsiveContainer>
           <div className="space-y-1.5 mt-2">
@@ -80,29 +80,29 @@ export default function ExpensesModule() {
               <div key={i} className="flex justify-between text-xs">
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full" style={{ background: COLORS[i] }} />
-                  <span className="text-[#787774] truncate max-w-24">{c.name}</span>
+                  <span className="text-[#6B7280] truncate max-w-24">{c.name}</span>
                 </div>
-                <span className="font-semibold text-[#1A1A1A]">{c.pct}%</span>
+                <span className="font-semibold text-[#1C2B3A]">{c.pct}%</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="bg-white border border-[#E8E7E3] rounded-2xl p-5">
+      <div className="bg-white border border-[#D9DCE0] rounded-2xl p-5">
         <div className="flex gap-3 mb-4 flex-wrap">
           <div className="relative flex-1 min-w-48">
-            <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#AEACA8]" />
+            <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
             <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search category or voucher..."
               className="notion-input pl-8 w-full text-sm" />
           </div>
-          <select value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)} className="notion-input text-sm text-[#787774]">
+          <select value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)} className="notion-input text-sm text-[#6B7280]">
             {categories.map(c => <option key={c}>{c}</option>)}
           </select>
-          <select value={modeFilter} onChange={e => setModeFilter(e.target.value)} className="notion-input text-sm text-[#787774]">
+          <select value={modeFilter} onChange={e => setModeFilter(e.target.value)} className="notion-input text-sm text-[#6B7280]">
             {['All', 'Cash', 'Bank', 'Credit'].map(m => <option key={m}>{m}</option>)}
           </select>
-          <button className="flex items-center gap-1.5 px-3 py-2 border border-[#E8E7E3] rounded-lg text-xs text-[#787774] hover:bg-[#F7F6F3]">
+          <button className="flex items-center gap-1.5 px-3 py-2 border border-[#D9DCE0] rounded-lg text-xs text-[#6B7280] hover:bg-[#F4F5F6]">
             <Download size={12} /> Export
           </button>
         </div>
@@ -114,22 +114,22 @@ export default function ExpensesModule() {
           <div className="space-y-4">
             <div className="flex justify-between items-start">
               <div>
-                <p className="font-semibold text-[#1A1A1A]">{drawer.category}</p>
-                <p className="font-mono text-xs text-[#787774] mt-0.5">{drawer.voucher}</p>
+                <p className="font-semibold text-[#1C2B3A]">{drawer.category}</p>
+                <p className="font-mono text-xs text-[#6B7280] mt-0.5">{drawer.voucher}</p>
               </div>
               <Badge label={drawer.status} variant={statusVariant[drawer.status]} />
             </div>
             <div className="grid grid-cols-2 gap-3">
               {[['Date',drawer.date],['Ledger',drawer.ledger],['Amount',fmt(drawer.amount)],['Tax',fmt(drawer.tax)],['Mode',drawer.mode],['Attachment',drawer.attachment?'Yes':'No']].map(([l,v])=>(
-                <div key={l} className="p-3 bg-[#FBFAF8] rounded-xl border border-[#E8E7E3]">
-                  <p className="text-xs text-[#787774] mb-1">{l}</p>
-                  <p className="font-medium text-[#1A1A1A] text-sm">{v}</p>
+                <div key={l} className="p-3 bg-[#F9F9F9] rounded-xl border border-[#D9DCE0]">
+                  <p className="text-xs text-[#6B7280] mb-1">{l}</p>
+                  <p className="font-medium text-[#1C2B3A] text-sm">{v}</p>
                 </div>
               ))}
             </div>
             <div className="flex gap-2">
-              <button className="flex-1 py-2.5 rounded-lg text-sm font-medium text-white" style={{ background: '#059669' }}>View PDF</button>
-              <button className="px-4 py-2.5 rounded-lg text-sm text-[#787774] border border-[#E8E7E3] hover:bg-[#F7F6F3]">Edit</button>
+              <button className="flex-1 py-2.5 rounded-lg text-sm font-medium text-white" style={{ background: '#3F5263' }}>View PDF</button>
+              <button className="px-4 py-2.5 rounded-lg text-sm text-[#6B7280] border border-[#D9DCE0] hover:bg-[#F4F5F6]">Edit</button>
             </div>
           </div>
         )}
