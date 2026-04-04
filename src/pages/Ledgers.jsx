@@ -10,7 +10,7 @@ import api from '../services/api';
 const fmt = n => '₹' + Math.abs(n || 0).toLocaleString('en-IN');
 const LEDGER_TABS = ['Details', 'Vouchers', 'Balance Trend', 'GST Info'];
 
-// Vouchers linked to a ledger (by party name match)
+// Vouchers linked to a ledger — search by party name
 function LedgerVouchers({ ledger, companyGuid }) {
   const [vouchers, setVouchers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,9 +18,18 @@ function LedgerVouchers({ ledger, companyGuid }) {
   useEffect(() => {
     if (!ledger || !companyGuid) return;
     setLoading(true);
-    const name = ledger.name || ledger.NAME || '';
-    api.fetchVouchers({ companyGuid, searchText: name, page: 1, pageSize: 20 })
-      .then(r => setVouchers(r?.data?.vouchers || []))
+    const name = (ledger.name || ledger.NAME || '').trim();
+
+    // Search vouchers by party name (ledger name)
+    api.fetchVouchers({ companyGuid, searchText: name, page: 1, pageSize: 25 })
+      .then(r => {
+        const all = r?.data?.vouchers || [];
+        // Filter to vouchers where this ledger is the party
+        const matched = all.filter(v =>
+          v.party_name?.toLowerCase() === name.toLowerCase()
+        );
+        setVouchers(matched.length > 0 ? matched : all);
+      })
       .catch(() => setVouchers([]))
       .finally(() => setLoading(false));
   }, [ledger?.guid, companyGuid]);
@@ -35,19 +44,33 @@ function LedgerVouchers({ ledger, companyGuid }) {
     <div className="py-8 text-center">
       <FileText size={24} className="mx-auto mb-2 text-[#D9DCE0]" />
       <p className="text-sm text-[#9CA3AF]">No vouchers found for this ledger</p>
+      <p className="text-xs text-[#C5CBD0] mt-1">Vouchers appear when this party has transactions</p>
     </div>
   );
 
   return (
     <div className="space-y-0">
-      <p className="text-xs text-[#9CA3AF] mb-3">{vouchers.length} vouchers found</p>
+      <p className="text-xs text-[#9CA3AF] mb-3">{vouchers.length} voucher{vouchers.length !== 1 ? 's' : ''} found</p>
       {vouchers.map(v => (
-        <div key={v.id} className="flex items-center justify-between py-2.5 border-b border-[#F4F5F6] last:border-0">
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-[#1C2B3A] truncate">{v.voucher_type} · {v.voucher_number}</p>
-            <p className="text-xs text-[#9CA3AF] mt-0.5">{v.date}</p>
+        <div key={v.id} className="py-3 border-b border-[#F4F5F6] last:border-0 hover:bg-[#F4F5F6] -mx-1 px-1 rounded-lg cursor-pointer transition-colors">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-[#3F5263] bg-[#ECEEEF] px-1.5 py-0.5 rounded">{v.voucher_type}</span>
+                <span className="font-mono text-xs text-[#9CA3AF]">{v.voucher_number}</span>
+              </div>
+              <div className="flex items-center gap-3 mt-1">
+                <span className="text-xs text-[#9CA3AF]">{v.date}</span>
+                {v.party_name && <span className="text-xs text-[#6B7280] truncate">{v.party_name}</span>}
+              </div>
+              {v.narration && <p className="text-xs text-[#9CA3AF] mt-0.5 truncate">{v.narration}</p>}
+            </div>
+            <span className={`text-sm font-bold flex-shrink-0 ${
+              parseFloat(v.amount) > 0 ? 'text-[#2D7D46]' : 'text-[#C0392B]'
+            }`}>
+              {fmt(v.amount)}
+            </span>
           </div>
-          <span className="text-sm font-semibold text-[#1C2B3A] ml-4">{fmt(v.amount)}</span>
         </div>
       ))}
     </div>

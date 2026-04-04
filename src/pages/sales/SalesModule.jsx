@@ -33,38 +33,58 @@ export default function SalesModule() {
   const companyGuid = selectedCompany?.guid;
 
   const loadData = useCallback(async (pg = 1, searchText = '') => {
-    if (!token || !companyGuid) { setLoading(false); return; }
+    if (!companyGuid) { setLoading(false); return; }
     setLoading(true);
     try {
-      // Fetch all sales-type vouchers — try each type
-      const results = await Promise.all(
-        SALES_TYPES.map(vt =>
-          api.fetchVouchers({ companyGuid, voucherType: vt, page: pg, pageSize, searchText }).catch(() => null)
-        )
-      );
-      const allVouchers = results.flatMap(r => r?.data?.vouchers || []);
-      const totalCount = results.reduce((s, r) => s + (r?.data?.total || 0), 0);
+      // Fetch vouchers without voucherType filter — get all, then filter client-side
+      // Backend returns sales types: Sales GST, Sales, etc.
+      const res = await api.fetchVouchers({
+        companyGuid,
+        page: pg,
+        pageSize,
+        searchText,
+      });
+      const allVouchers = res?.data?.vouchers || [];
+      const totalCount = res?.data?.total || 0;
 
-      if (allVouchers.length > 0) {
-        const mapped = allVouchers
-          .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
-          .map(v => ({
-            id: v.id,
-            ref: v.voucher_number || v.guid?.slice(-8) || 'N/A',
-            customer: v.party_name || 'Unknown',
-            date: v.date || '',
-            amount: v.amount || 0,
-            voucherType: v.voucher_type || 'Sales',
-            status: v.is_cancelled ? 'Cancelled' : v.amount > 0 ? 'Paid' : 'Unpaid',
-            rawData: v,
-          }));
+      // Filter to only sales-type vouchers
+      const salesVouchers = allVouchers.filter(v =>
+        SALES_TYPES.some(t => (v.voucher_type || '').toLowerCase().includes(t.toLowerCase()))
+      );
+
+      if (salesVouchers.length > 0) {
+        const mapped = salesVouchers.map(v => ({
+          id: v.id,
+          ref: v.voucher_number || v.guid?.slice(-8) || 'N/A',
+          customer: v.party_name || '—',
+          date: v.date || '—',
+          amount: parseFloat(v.amount) || 0,
+          voucherType: v.voucher_type || 'Sales',
+          status: v.is_cancelled ? 'Cancelled' : parseFloat(v.amount) > 0 ? 'Paid' : 'Unpaid',
+          rawData: v,
+        }));
+        setInvoices(mapped);
+        setTotal(mapped.length);
+      } else if (allVouchers.length > 0) {
+        // No sales filter match — show all vouchers as fallback
+        const mapped = allVouchers.map(v => ({
+          id: v.id,
+          ref: v.voucher_number || v.guid?.slice(-8) || 'N/A',
+          customer: v.party_name || '—',
+          date: v.date || '—',
+          amount: parseFloat(v.amount) || 0,
+          voucherType: v.voucher_type || 'Voucher',
+          status: v.is_cancelled ? 'Cancelled' : parseFloat(v.amount) > 0 ? 'Paid' : 'Unpaid',
+          rawData: v,
+        }));
         setInvoices(mapped);
         setTotal(totalCount);
       } else {
         setInvoices([]);
         setTotal(0);
       }
-    } catch {
+    } catch (e) {
+      console.error('Sales load error:', e.message);
       setInvoices([]);
     } finally {
       setLoading(false);
