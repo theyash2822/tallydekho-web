@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { BookOpen, Search, RefreshCw, TrendingUp, TrendingDown, Filter } from 'lucide-react';
+import { BookOpen, Search, RefreshCw, TrendingUp, TrendingDown, Filter, FileText } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import KPICard from '../components/KPICard';
 import Badge from '../components/Badge';
@@ -8,7 +8,51 @@ import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
 
 const fmt = n => '₹' + Math.abs(n || 0).toLocaleString('en-IN');
-const LEDGER_TABS = ['Details', 'Balance Trend', 'GST Info'];
+const LEDGER_TABS = ['Details', 'Vouchers', 'Balance Trend', 'GST Info'];
+
+// Vouchers linked to a ledger (by party name match)
+function LedgerVouchers({ ledger, companyGuid }) {
+  const [vouchers, setVouchers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!ledger || !companyGuid) return;
+    setLoading(true);
+    const name = ledger.name || ledger.NAME || '';
+    api.fetchVouchers({ companyGuid, searchText: name, page: 1, pageSize: 20 })
+      .then(r => setVouchers(r?.data?.vouchers || []))
+      .catch(() => setVouchers([]))
+      .finally(() => setLoading(false));
+  }, [ledger?.guid, companyGuid]);
+
+  if (loading) return (
+    <div className="space-y-2">
+      {[...Array(4)].map((_, i) => <div key={i} className="h-10 bg-[#F4F5F6] rounded-lg animate-pulse" />)}
+    </div>
+  );
+
+  if (vouchers.length === 0) return (
+    <div className="py-8 text-center">
+      <FileText size={24} className="mx-auto mb-2 text-[#D9DCE0]" />
+      <p className="text-sm text-[#9CA3AF]">No vouchers found for this ledger</p>
+    </div>
+  );
+
+  return (
+    <div className="space-y-0">
+      <p className="text-xs text-[#9CA3AF] mb-3">{vouchers.length} vouchers found</p>
+      {vouchers.map(v => (
+        <div key={v.id} className="flex items-center justify-between py-2.5 border-b border-[#F4F5F6] last:border-0">
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-[#1C2B3A] truncate">{v.voucher_type} · {v.voucher_number}</p>
+            <p className="text-xs text-[#9CA3AF] mt-0.5">{v.date}</p>
+          </div>
+          <span className="text-sm font-semibold text-[#1C2B3A] ml-4">{fmt(v.amount)}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 const movementData = [
   { month: 'Feb', balance: 320000 },
@@ -56,6 +100,8 @@ export default function Ledgers() {
   const [total,   setTotal]           = useState(0);
   const [drawer,  setDrawer]          = useState(null);
   const [ledgerTab, setLedgerTab]     = useState(0);
+  const [ledgerVouchers, setLedgerVouchers] = useState([]);
+  const [voucherLoading, setVoucherLoading] = useState(false);
 
   const companyGuid = selectedCompany?.guid;
 
@@ -211,7 +257,11 @@ export default function Ledgers() {
                       <tr
                         key={l.guid || l.GUID || i}
                         className="border-b border-[#ECEEEF] hover:bg-[#F4F5F6] cursor-pointer transition-colors"
-                        onClick={() => { setDrawer(l); setLedgerTab(0); }}
+                        onClick={async () => {
+                          setDrawer(l);
+                          setLedgerTab(0);
+                          setLedgerVouchers([]);
+                        }}
                       >
                         <td className="px-4 py-3 font-medium text-[#1C2B3A]">{getName(l)}</td>
                         <td className="px-4 py-3 text-[#6B7280] text-xs">{getGroup(l)}</td>
@@ -332,6 +382,11 @@ export default function Ledgers() {
               ))}
             </div>
 
+            {/* Tab: Vouchers */}
+            {ledgerTab === 1 && (
+              <LedgerVouchers ledger={drawer} companyGuid={companyGuid} />
+            )}
+
             {/* Tab: Details */}
             {ledgerTab === 0 && (
               <div className="space-y-0">
@@ -357,7 +412,7 @@ export default function Ledgers() {
             )}
 
             {/* Tab: Balance Trend */}
-            {ledgerTab === 1 && (
+            {ledgerTab === 2 && (
               <div>
                 <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider mb-3">Balance Movement</p>
                 <ResponsiveContainer width="100%" height={140}>
@@ -391,7 +446,7 @@ export default function Ledgers() {
             )}
 
             {/* Tab: GST Info */}
-            {ledgerTab === 2 && (
+            {ledgerTab === 3 && (
               <div className="space-y-0">
                 {getGstin(drawer) ? (
                   [
