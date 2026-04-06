@@ -53,7 +53,7 @@ export default function PurchaseModule() {
     // Fetch all purchase-type vouchers
     const PURCHASE_TYPES = ['Purchase GST', 'Purchase'];
     Promise.all(
-      PURCHASE_TYPES.map(vt => api.fetchVouchers({ companyGuid: selectedCompany.guid, voucherType: vt, page: 1, pageSize: 100 }).catch(() => null))
+      PURCHASE_TYPES.map(vt => api.fetchVouchers({ companyGuid: selectedCompany.guid, voucherType: vt, page: 1, pageSize: 100, fromDate: selectedFY?.startDate, toDate: selectedFY?.endDate }).catch(() => null))
     ).then(results => {
       const all = results.flatMap(r => r?.data?.vouchers || []);
       if (all.length > 0) {
@@ -69,7 +69,7 @@ export default function PurchaseModule() {
       } else { setInvoices([]); setUsingMock(false); }
     }).catch(() => { setInvoices([]); setUsingMock(false); })
     .finally(() => setLoading(false));
-  }, [selectedCompany?.guid]);
+  }, [selectedCompany?.guid, selectedFY?.uniqueId]);
 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');

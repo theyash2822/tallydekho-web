@@ -44,6 +44,8 @@ export default function SalesModule() {
         page: pg,
         pageSize,
         searchText,
+        fromDate: selectedFY?.startDate,
+        toDate: selectedFY?.endDate,
       });
       const allVouchers = res?.data?.vouchers || [];
       const totalCount = res?.data?.total || 0;
@@ -99,7 +101,7 @@ export default function SalesModule() {
     setPage(1);
     setSearch('');
     if (companyGuid) loadData(1, '');
-  }, [companyGuid]); // eslint-disable-line
+  }, [companyGuid, selectedFY?.uniqueId]); // eslint-disable-line
 
   useEffect(() => {
     const unsub = wsService.on('synced', () => { if (companyGuid) loadData(1, search); });

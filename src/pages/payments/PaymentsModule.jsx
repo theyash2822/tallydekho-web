@@ -43,21 +43,21 @@ export default function PaymentsModule() {
   const [realPayments, setRealPayments] = useState([]);
   const [realReceipts, setRealReceipts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { selectedCompany } = useAuth();
+  const { selectedCompany, selectedFY } = useAuth();
 
   useEffect(() => {
     setRealPayments([]); setRealReceipts([]);
     if (!selectedCompany?.guid) { setLoading(false); return; }
     setLoading(true);
     Promise.all([
-      api.fetchVouchers({ companyGuid: selectedCompany.guid, voucherType: 'Payment', page: 1, pageSize: 100 }).catch(() => null),
-      api.fetchVouchers({ companyGuid: selectedCompany.guid, voucherType: 'Receipt', page: 1, pageSize: 100 }).catch(() => null),
+      api.fetchVouchers({ companyGuid: selectedCompany.guid, voucherType: 'Payment', page: 1, pageSize: 100, fromDate: selectedFY?.startDate, toDate: selectedFY?.endDate }).catch(() => null),
+      api.fetchVouchers({ companyGuid: selectedCompany.guid, voucherType: 'Receipt', page: 1, pageSize: 100, fromDate: selectedFY?.startDate, toDate: selectedFY?.endDate }).catch(() => null),
     ]).then(([p, r]) => {
       const mapV = v => ({ id: v.id, voucher: v.voucher_number || v.id, party: v.party_name || '—', date: v.date || '—', amount: parseFloat(v.amount) || 0, mode: 'Bank', status: 'Cleared', ref: v.reference || '' });
       if (p?.data?.vouchers?.length) setRealPayments(p.data.vouchers.map(mapV));
       if (r?.data?.vouchers?.length) setRealReceipts(r.data.vouchers.map(mapV));
     }).finally(() => setLoading(false));
-  }, [selectedCompany?.guid]);
+  }, [selectedCompany?.guid, selectedFY?.uniqueId]);
 
   const displayPayments = realPayments.length > 0 ? realPayments : payments;
   const displayReceipts = realReceipts.length > 0 ? realReceipts : receipts;

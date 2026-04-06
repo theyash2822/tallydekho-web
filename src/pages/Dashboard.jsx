@@ -137,11 +137,11 @@ export default function Dashboard() {
     setDashData(null);
     if (!selectedCompany?.guid) { setDashLoading(false); return; }
     setDashLoading(true);
-    api.fetchDashboard({ companyGuid: selectedCompany.guid })
+    api.fetchDashboard({ companyGuid: selectedCompany.guid, fromDate: selectedFY?.startDate, toDate: selectedFY?.endDate })
       .then(res => { if (res?.data) setDashData(res.data); })
       .catch(() => {})
       .finally(() => setDashLoading(false));
-  }, [selectedCompany?.guid]);
+  }, [selectedCompany?.guid, selectedFY?.uniqueId]);
 
   useEffect(() => {
     const unsub = wsService.on('synced', () => {
