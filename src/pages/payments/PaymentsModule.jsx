@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CreditCard, ArrowUpRight, ArrowDownLeft, Search } from 'lucide-react';
 import KPICard from '../../components/KPICard';
 import Badge from '../../components/Badge';
 import Table from '../../components/Table';
 import Drawer from '../../components/Drawer';
 import { payments, receipts, paymentKPIs } from '../../data/paymentsMock';
+import { useAuth } from '../../contexts/AuthContext';
+import api from '../../services/api';
 
 const fmt = n => '₹' + (n || 0).toLocaleString('en-IN');
 const TABS = ['Payments', 'Receipts'];
@@ -36,9 +38,29 @@ export default function PaymentsModule() {
   const [tab, setTab] = useState(0);
   const [search, setSearch] = useState('');
   const [drawer, setDrawer] = useState(null);
+  const [realPayments, setRealPayments] = useState([]);
+  const [realReceipts, setRealReceipts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { selectedCompany } = useAuth();
 
-  const filteredPayments = payments.filter(p => !search || p.party.toLowerCase().includes(search.toLowerCase()) || p.voucher.toLowerCase().includes(search.toLowerCase()));
-  const filteredReceipts = receipts.filter(r => !search || r.party.toLowerCase().includes(search.toLowerCase()) || r.voucher.toLowerCase().includes(search.toLowerCase()));
+  useEffect(() => {
+    setRealPayments([]); setRealReceipts([]);
+    if (!selectedCompany?.guid) { setLoading(false); return; }
+    setLoading(true);
+    Promise.all([
+      api.fetchVouchers({ companyGuid: selectedCompany.guid, voucherType: 'Payment', page: 1, pageSize: 100 }).catch(() => null),
+      api.fetchVouchers({ companyGuid: selectedCompany.guid, voucherType: 'Receipt', page: 1, pageSize: 100 }).catch(() => null),
+    ]).then(([p, r]) => {
+      const mapV = v => ({ id: v.id, voucher: v.voucher_number || v.id, party: v.party_name || '—', date: v.date || '—', amount: parseFloat(v.amount) || 0, mode: 'Bank', status: 'Cleared', ref: v.reference || '' });
+      if (p?.data?.vouchers?.length) setRealPayments(p.data.vouchers.map(mapV));
+      if (r?.data?.vouchers?.length) setRealReceipts(r.data.vouchers.map(mapV));
+    }).finally(() => setLoading(false));
+  }, [selectedCompany?.guid]);
+
+  const displayPayments = realPayments.length > 0 ? realPayments : payments;
+  const displayReceipts = realReceipts.length > 0 ? realReceipts : receipts;
+  const filteredPayments = displayPayments.filter(p => !search || (p.party||'').toLowerCase().includes(search.toLowerCase()) || (p.voucher||'').toLowerCase().includes(search.toLowerCase()));
+  const filteredReceipts = displayReceipts.filter(r => !search || (r.party||'').toLowerCase().includes(search.toLowerCase()) || (r.voucher||'').toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="space-y-5">
@@ -48,10 +70,10 @@ export default function PaymentsModule() {
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Payments"  value={fmt(paymentKPIs.totalPayments)} icon={ArrowUpRight}  accent="#C0392B" />
-        <KPICard title="Total Receipts"  value={fmt(paymentKPIs.totalReceipts)} icon={ArrowDownLeft} accent="#2D7D46" />
-        <KPICard title="Net Cash Flow"   value={fmt(paymentKPIs.totalReceipts - paymentKPIs.totalPayments)} icon={CreditCard} accent="#3F5263" />
-        <KPICard title="Pending Payments" value={fmt(paymentKPIs.pendingPayments)} icon={CreditCard} accent="#B45309" />
+        <KPICard title="Total Payments"  value={loading ? '—' : fmt(displayPayments.reduce((s,p)=>s+(p.amount||0),0))} icon={ArrowUpRight}  accent="#C0392B" />
+        <KPICard title="Total Receipts"  value={loading ? '—' : fmt(displayReceipts.reduce((s,r)=>s+(r.amount||0),0))} icon={ArrowDownLeft} accent="#2D7D46" />
+        <KPICard title="Net Cash Flow"   value={loading ? '—' : fmt(displayReceipts.reduce((s,r)=>s+(r.amount||0),0) - displayPayments.reduce((s,p)=>s+(p.amount||0),0))} icon={CreditCard} accent="#3F5263" />
+        <KPICard title="Vouchers"        value={loading ? '—' : displayPayments.length + displayReceipts.length} icon={CreditCard} accent="#B45309" />
       </div>
 
       {/* Top parties */}

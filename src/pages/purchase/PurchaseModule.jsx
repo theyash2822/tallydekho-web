@@ -43,35 +43,41 @@ export default function PurchaseModule() {
   const [usingMock, setUsingMock] = useState(false);
 
   useEffect(() => {
-    if (!token || !selectedCompany?.guid) {
-      setInvoices([]);
-      setUsingMock(false);
+    setInvoices([]); setPage(1);
+    if (!selectedCompany?.guid) {
       setLoading(false);
       return;
     }
     setLoading(true);
-    api.fetchVouchers({ companyGuid: selectedCompany.guid, voucherType: 'Purchase', page: 1, pageSize: 50 })
-      .then(res => {
-        const list = res?.data?.vouchers || [];
-        if (list.length > 0) {
-          setInvoices(list.map(v => ({
-            id: v.id, ref: v.voucher_number || v.guid?.slice(-8) || 'N/A',
-            vendor: v.party_name || 'Unknown', gstin: '',
-            date: v.date || '', amount: v.amount || 0,
-            status: 'Paid', mode: 'Bank', received: 'Complete',
-          })));
-          setUsingMock(false);
-        } else { setInvoices([]); setUsingMock(false); }
-      })
-      .catch(() => { setInvoices([]); setUsingMock(false); })
-      .finally(() => setLoading(false));
-  }, [selectedCompany?.guid, token]);
+    // Fetch all purchase-type vouchers
+    const PURCHASE_TYPES = ['Purchase GST', 'Purchase'];
+    Promise.all(
+      PURCHASE_TYPES.map(vt => api.fetchVouchers({ companyGuid: selectedCompany.guid, voucherType: vt, page: 1, pageSize: 100 }).catch(() => null))
+    ).then(results => {
+      const all = results.flatMap(r => r?.data?.vouchers || []);
+      if (all.length > 0) {
+        setInvoices(all.sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(v => ({
+          id: v.id, ref: v.voucher_number || v.guid?.slice(-8) || 'N/A',
+          vendor: v.party_name || '—', gstin: '',
+          date: v.date || '—', amount: parseFloat(v.amount) || 0,
+          voucherType: v.voucher_type || 'Purchase',
+          status: v.is_cancelled ? 'Cancelled' : parseFloat(v.amount) > 0 ? 'Paid' : 'Unpaid',
+          mode: 'Bank', received: 'Complete',
+        })));
+        setUsingMock(false);
+      } else { setInvoices([]); setUsingMock(false); }
+    }).catch(() => { setInvoices([]); setUsingMock(false); })
+    .finally(() => setLoading(false));
+  }, [selectedCompany?.guid]);
+
+  const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [drawer, setDrawer] = useState(null);
 
-  const filtered = purchaseInvoices.filter(r => {
-    const s = !search || r.vendor.toLowerCase().includes(search.toLowerCase()) || r.ref.toLowerCase().includes(search.toLowerCase());
+  const displayInvoices = invoices.length > 0 ? invoices : purchaseInvoices;
+  const filtered = displayInvoices.filter(r => {
+    const s = !search || (r.vendor||'').toLowerCase().includes(search.toLowerCase()) || (r.ref||'').toLowerCase().includes(search.toLowerCase());
     const f = statusFilter === 'All' || r.status === statusFilter;
     return s && f;
   });
@@ -84,10 +90,10 @@ export default function PurchaseModule() {
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Purchase" value={fmt(purchaseKPIs.total)} icon={ShoppingCart} accent="#3F5263" trend={{ up: false, label: '3.1% vs Jun' }} />
-        <KPICard title="Total Tax (ITC)" value={fmt(purchaseKPIs.tax)} icon={FileText} accent="#B45309" />
-        <KPICard title="Avg Invoice" value={fmt(purchaseKPIs.avgInvoice)} icon={Package} accent="#526373" />
-        <KPICard title="Total Bills" value={purchaseKPIs.count} icon={FileText} accent="#798692" />
+        <KPICard title="Total Purchase" value={loading ? '—' : fmt(displayInvoices.reduce((s,i)=>s+(i.amount||0),0))} icon={ShoppingCart} accent="#3F5263" />
+        <KPICard title="Total Bills"    value={loading ? '—' : displayInvoices.length} icon={FileText} accent="#526373" />
+        <KPICard title="Paid"           value={loading ? '—' : displayInvoices.filter(i=>i.status==='Paid').length} icon={Package} accent="#2D7D46" />
+        <KPICard title="Unpaid"         value={loading ? '—' : displayInvoices.filter(i=>i.status==='Unpaid').length} icon={FileText} accent="#C0392B" />
       </div>
 
       <div className="grid grid-cols-3 gap-4">

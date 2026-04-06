@@ -42,33 +42,39 @@ function ExpandRow({ label, amount, children, highlight }) {
 export default function Reports() {
   const [tab, setTab] = useState(0);
   const { selectedCompany, token } = useAuth();
-  const [realPL, setRealPL] = useState(null);
-  const [realBS, setRealBS] = useState(null);
-  const [loadingReal, setLoadingReal] = useState(false);
+  const [plReport, setPlReport] = useState(null);
+  const [bsReport, setBsReport] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!token || !selectedCompany?.guid) return;
-    setLoadingReal(true);
+    setPlReport(null);
+    setBsReport(null);
+    if (!selectedCompany?.guid) { setLoading(false); return; }
+    setLoading(true);
     Promise.all([
-      api.fetchVouchers({ companyGuid: selectedCompany.guid, page: 1, pageSize: 1 }).catch(() => null),
-    ]).finally(() => setLoadingReal(false));
-  }, [selectedCompany?.guid, token]);
-  const totalDI = plData.income.directIncome.reduce((s, i) => s + i.amount, 0);
-  const totalII = plData.income.indirectIncome.reduce((s, i) => s + i.amount, 0);
-  const totalDE = plData.expenses.directExpense.reduce((s, i) => s + i.amount, 0);
-  const totalIE = plData.expenses.indirectExpense.reduce((s, i) => s + i.amount, 0);
-  const grossProfit = (totalDI + plData.closingStock) - (totalDE + plData.openingStock);
-  const netProfit = grossProfit + totalII - totalIE;
-  const totalAssets = [...balanceSheetData.assets.fixedAssets, ...balanceSheetData.assets.currentAssets].reduce((s, a) => s + a.amount, 0);
-  const totalLiab = [...balanceSheetData.liabilities.capital, ...balanceSheetData.liabilities.longTermLiabilities, ...balanceSheetData.liabilities.currentLiabilities].reduce((s, a) => s + a.amount, 0);
+      api.fetchReportsPL({ companyGuid: selectedCompany.guid }).catch(() => null),
+      api.fetchReportsBS({ companyGuid: selectedCompany.guid }).catch(() => null),
+    ]).then(([pl, bs]) => {
+      if (pl?.data) setPlReport(pl.data);
+      if (bs?.data) setBsReport(bs.data);
+    }).finally(() => setLoading(false));
+  }, [selectedCompany?.guid]);
 
-  const expBreakdown = [
-    { name: 'Purchase', value: 2840000 },
-    { name: 'Salary', value: 380000 },
-    { name: 'Freight', value: 85000 },
-    { name: 'Rent', value: 75000 },
-    { name: 'Others', value: 182500 },
-  ];
+  // Derive totals from real data or fall back to mock
+  const incomeRows = plReport?.income || [];
+  const expenseRows = plReport?.expenses || [];
+  const totalIncome   = plReport?.summary?.totalIncome   ?? plData.income.directIncome.reduce((s,i)=>s+i.amount,0) + plData.income.indirectIncome.reduce((s,i)=>s+i.amount,0);
+  const totalExpenses = plReport?.summary?.totalExpenses ?? plData.expenses.directExpense.reduce((s,i)=>s+i.amount,0) + plData.expenses.indirectExpense.reduce((s,i)=>s+i.amount,0);
+  const netProfit     = plReport?.summary?.netProfit     ?? (totalIncome - totalExpenses);
+  const grossProfit   = plReport?.summary?.grossProfit   ?? netProfit;
+
+  const totalAssets = bsReport?.summary?.totalAssets ?? [...balanceSheetData.assets.fixedAssets, ...balanceSheetData.assets.currentAssets].reduce((s, a) => s + a.amount, 0);
+  const totalLiab   = bsReport?.summary?.totalLiabilities ?? [...balanceSheetData.liabilities.capital, ...balanceSheetData.liabilities.longTermLiabilities, ...balanceSheetData.liabilities.currentLiabilities].reduce((s, a) => s + a.amount, 0);
+
+  // Expense breakdown for chart
+  const expBreakdown = expenseRows.length > 0
+    ? expenseRows.slice(0, 5).map(e => ({ name: (e.name||'').split(' ').slice(0,2).join(' '), value: Math.abs(parseFloat(e.closing_balance)||0) }))
+    : [{ name: 'Purchase', value: 2840000 }, { name: 'Salary', value: 380000 }, { name: 'Others', value: 182500 }];
 
   return (
     <div className="space-y-5">
@@ -78,10 +84,10 @@ export default function Reports() {
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Revenue"  value={fmtL(totalDI + totalII)} icon={TrendingUp} accent="#3F5263" trend={{ up: true, label: '14% vs Jun' }} />
-        <KPICard title="Total Expenses" value={fmtL(totalDE + totalIE)} icon={TrendingUp} accent="#C0392B" />
-        <KPICard title="Net Profit"     value={fmtL(netProfit)}          icon={TrendingUp} accent="#2D7D46" trend={{ up: true, label: '2.5% vs Jun' }} />
-        <KPICard title="Closing Stock"  value={fmtL(plData.closingStock)} icon={TrendingUp} accent="#B45309" />
+        <KPICard title="Total Revenue"  value={loading ? '—' : fmtL(totalIncome)}   icon={TrendingUp} accent="#3F5263" />
+        <KPICard title="Total Expenses" value={loading ? '—' : fmtL(totalExpenses)} icon={TrendingUp} accent="#C0392B" />
+        <KPICard title="Net Profit"     value={loading ? '—' : fmtL(netProfit)}     icon={TrendingUp} accent="#2D7D46" />
+        <KPICard title="Total Assets"   value={loading ? '—' : fmtL(totalAssets)}   icon={TrendingUp} accent="#B45309" />
       </div>
 
       {/* Charts */}
