@@ -20,7 +20,7 @@ function UserMenu({ user, onLogout }) {
     document.addEventListener('mousedown', h);
     return () => document.removeEventListener('mousedown', h);
   }, []);
-  const displayName = user?.name || user?.mobileNumber || 'Account';
+  const displayName = user?.name || user?.mobile || 'Account';
   const initials = displayName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || 'U';
 
   return (
@@ -42,7 +42,7 @@ function UserMenu({ user, onLogout }) {
         <div className="absolute top-full right-0 mt-1.5 w-52 bg-white border border-[#E9E8E3] rounded-xl shadow-lg z-50 py-1 overflow-hidden">
           <div className="px-4 py-3 border-b border-[#F0EFE9]">
             <p className="text-sm font-semibold text-[#1A1A1A] truncate">{displayName}</p>
-            <p className="text-xs text-[#AEACA8] mt-0.5 truncate">{user?.mobileNumber || ''}</p>
+            <p className="text-xs text-[#AEACA8] mt-0.5 truncate">{user?.mobile || user?.email || ''}</p>
           </div>
           <button className="w-full text-left px-4 py-2.5 text-sm text-[#787774] hover:bg-[#F5F4EF] hover:text-[#1A1A1A] transition-colors">Profile</button>
           <button className="w-full text-left px-4 py-2.5 text-sm text-[#787774] hover:bg-[#F5F4EF] hover:text-[#1A1A1A] transition-colors">Settings</button>

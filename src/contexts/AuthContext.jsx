@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import api from '../services/api';
+import api, { fetchMe } from '../services/api';
 import wsService from '../services/websocket';
 
 const AuthContext = createContext(null);
@@ -49,6 +49,18 @@ export function AuthProvider({ children }) {
       return [];
     }
   }, [token, selectedCompany]);
+
+  // Refresh user profile from backend on mount
+  useEffect(() => {
+    if (!token) return;
+    fetchMe().then(res => {
+      if (res?.data) {
+        const fresh = { ...user, ...res.data };
+        localStorage.setItem('authUser', JSON.stringify(fresh));
+        setUser(fresh);
+      }
+    }).catch(() => {});
+  }, [token]);
 
   // Load companies on mount
   useEffect(() => { if (token) loadCompanies(); }, [token]);

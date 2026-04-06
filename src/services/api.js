@@ -38,6 +38,8 @@ export const sendOtp  = (mobileNumber, countryCode = '+91') => post('/send-otp',
 export const verifyOtp= (mobileNumber, otp, countryCode = '+91') => post('/verify-otp',{ mobileNumber, otp, countryCode }, { skipAuth: true });
 export const verifyToken = (token)          => post('/verify',    { token }, { skipAuth: true });
 export const submitOnboarding = (body)      => post('/onboarding', body);
+export const fetchMe         = ()           => get('/me');
+export const updateMe        = (body)       => post('/me', body);
 
 // ─── Pairing ──────────────────────────────────────────────────────────────────
 export const pairDevice        = (pairingCode) => post('/pairing',        { pairingCode });
@@ -103,7 +105,7 @@ export const createStockItemInTally= (b) => tallyRequest('/tally/master/stock-it
 // ─── Default export (object style — matches mobile usage pattern) ─────────────
 const api = {
   // Auth
-  sendOtp, verifyOtp, verifyToken, submitOnboarding,
+  sendOtp, verifyOtp, verifyToken, submitOnboarding, fetchMe, updateMe,
   // Pairing
   pairDevice, fetchPairingDetails, updatePairing,
   // Companies

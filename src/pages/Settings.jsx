@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { User, Building2, CreditCard, Globe, Bell, Plug, Info, ChevronRight, Check } from 'lucide-react';
 import { company } from '../data/mockData';
 import { useAuth } from '../contexts/AuthContext';
@@ -37,7 +37,18 @@ export default function Settings() {
   const [pairingState, setPairingState] = useState('idle');
   const [pairingCode, setPairingCode] = useState('');
   const [pairingError, setPairingError] = useState('');
-  const { markPaired, isPaired } = useAuth();
+  const { markPaired, isPaired, user, setUser } = useAuth();
+  const [profileName, setProfileName] = useState('');
+  const [profileEmail, setProfileEmail] = useState('');
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileMsg, setProfileMsg] = useState('');
+
+  useEffect(() => {
+    if (user) {
+      setProfileName(user.name || '');
+      setProfileEmail(user.email || '');
+    }
+  }, [user]);
 
   const handlePair = async () => {
     if (pairingCode.length !== 6) { setPairingError('Enter the 6-digit code from your TallyDekho Desktop'); return; }
@@ -93,16 +104,31 @@ export default function Settings() {
           {activeGroup==='account'&&activeSub==='Profile'&&(
             <div className="space-y-4">
               <p className="text-base font-semibold text-[#1C2B3A]">Profile</p>
-              <Field label="Full Name" defaultValue="Rajesh Kumar"/>
-              <Field label="Email" defaultValue="rajesh@maaruji.in" type="email"/>
-              <Field label="Phone" defaultValue="+91 98200 12345"/>
-              <Field label="Role" defaultValue="Admin"/>
-              <div className="flex gap-3 pt-2">
-                <button className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">Save</button>
-                <button className="px-5 py-2 rounded-lg text-sm font-medium text-[#6B7280] border border-[#D9DCE0] hover:bg-[#F4F5F6] transition-colors">Cancel</button>
+              <div>
+                <label className="text-xs font-medium text-[#6B7280] block mb-1.5">Full Name</label>
+                <input value={profileName} onChange={e=>setProfileName(e.target.value)} className="notion-input w-full text-sm" placeholder="Enter your name"/>
               </div>
-              <div className="pt-4 border-t border-[#D9DCE0]">
-                <button className="px-4 py-2 text-sm text-[#C0392B] bg-[#FEF2F2] border border-[#FECACA] rounded-lg hover:bg-rose-100">Delete Account</button>
+              <div>
+                <label className="text-xs font-medium text-[#6B7280] block mb-1.5">Email</label>
+                <input type="email" value={profileEmail} onChange={e=>setProfileEmail(e.target.value)} className="notion-input w-full text-sm" placeholder="Enter your email"/>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-[#6B7280] block mb-1.5">Mobile</label>
+                <input readOnly value={user?.mobile ? `+91 ${user.mobile}` : ''} className="notion-input w-full text-sm bg-[#F9FAFB]" placeholder="Registered mobile"/>
+              </div>
+              <div className="flex gap-3 items-center pt-2">
+                <button onClick={async()=>{
+                  setProfileSaving(true); setProfileMsg('');
+                  try {
+                    await api.updateMe({ name: profileName, email: profileEmail });
+                    setProfileMsg('Saved!');
+                    setTimeout(()=>setProfileMsg(''),2000);
+                  } catch(e){ setProfileMsg('Save failed'); }
+                  finally{ setProfileSaving(false); }
+                }} className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">
+                  {profileSaving ? 'Saving...' : 'Save'}
+                </button>
+                {profileMsg && <span className="text-xs text-[#059669]">{profileMsg}</span>}
               </div>
             </div>
           )}
