@@ -122,7 +122,7 @@ export default function Settings() {
   const [pairingState, setPairingState] = useState('idle');
   const [pairingCode, setPairingCode] = useState('');
   const [pairingError, setPairingError] = useState('');
-  const { markPaired, isPaired, user, setUser } = useAuth();
+  const { markPaired, isPaired, user, setUser, companies } = useAuth();
   const [profileName, setProfileName] = useState('');
   const [profileEmail, setProfileEmail] = useState('');
   const [profileSaving, setProfileSaving] = useState(false);
@@ -320,12 +320,17 @@ export default function Settings() {
                   <div className="flex items-center gap-2 p-3 bg-[#E8F5ED] border border-[#A8D5BC] rounded-xl text-[#2D7D46] text-sm">
                     <Check size={14}/> Paired · Tally Prime connected
                   </div>
-                  <div><p className="text-sm font-semibold text-[#1C2B3A] mb-2">Synced Companies</p>
-                    {['Maaruji Tech','Demo India'].map(c=>(
-                      <div key={c} className="flex items-center gap-2 py-2 border-b border-[#ECEEEF] text-sm"><Check size={12} className="text-[#2D7D46]"/>{c}</div>
-                    ))}
+                  <div>
+                    <p className="text-sm font-semibold text-[#1C2B3A] mb-2">Synced Companies</p>
+                    {companies.length > 0 ? companies.map(c=>(
+                      <div key={c.guid||c.name} className="flex items-center gap-2 py-2 border-b border-[#ECEEEF] text-sm">
+                        <Check size={12} className="text-[#2D7D46]"/>{c.name}
+                      </div>
+                    )) : (
+                      <p className="text-xs text-[#9CA3AF]">No companies synced yet. Run a sync from the Desktop App.</p>
+                    )}
                   </div>
-                  <button onClick={()=>setPairingState('idle')} className="px-4 py-2 text-sm text-[#C0392B] bg-[#FEF2F2] border border-[#FECACA] rounded-lg hover:bg-rose-100">Unpair</button>
+                  <button onClick={async()=>{ await api.updatePairing({paired:false}).catch(()=>{}); setPairingState('idle'); }} className="px-4 py-2 text-sm text-[#C0392B] bg-[#FEF2F2] border border-[#FECACA] rounded-lg hover:bg-rose-100">Unpair</button>
                 </div>
               )}
             </div>
