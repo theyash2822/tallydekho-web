@@ -70,12 +70,8 @@ export default function SalesInvoiceForm({ onClose }) {
 
       const result = await createSalesInvoice(payload);
       if (result?.status) {
-        // Extract voucher number from Tally response XML if available
-        let assignedNumber = '';
-        if (result?.data && typeof result.data === 'string') {
-          const match = result.data.match(/<VOUCHERNUMBER>(.*?)<\/VOUCHERNUMBER>/i);
-          if (match) assignedNumber = match[1];
-        }
+        // Voucher number comes from backend (parsed from Tally XML by desktop)
+        const assignedNumber = result?.voucherNumber || '';
         setCreatedVoucherNumber(assignedNumber);
         setCreatedPayload(payload);
         setSubmitted(true);

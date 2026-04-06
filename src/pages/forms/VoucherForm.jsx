@@ -64,13 +64,8 @@ export default function VoucherForm({ onClose }) {
       }
 
       if (result?.status) {
-        // Extract voucher number from Tally response if available
-        let num = '';
-        if (result?.data && typeof result.data === 'string') {
-          const m = result.data.match(/<VOUCHERNUMBER>(.*?)<\/VOUCHERNUMBER>/i);
-          if (m) num = m[1];
-        }
-        setCreatedNumber(num);
+        // Voucher number from backend (parsed from Tally XML by desktop)
+        setCreatedNumber(result?.voucherNumber || '');
         setSubmitted(true);
       } else {
         setError(result?.message || 'Failed to create voucher in Tally');
