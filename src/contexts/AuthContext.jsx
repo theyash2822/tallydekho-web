@@ -9,6 +9,7 @@ export function AuthProvider({ children }) {
   const [user,      setUser]      = useState(() => { try { return JSON.parse(localStorage.getItem('authUser')); } catch { return null; } });
   const [companies, setCompanies] = useState(() => { try { return JSON.parse(localStorage.getItem('companies')) || []; } catch { return []; } });
   const [selectedCompany, setSelectedCompany] = useState(() => { try { return JSON.parse(localStorage.getItem('selectedCompany')); } catch { return null; } });
+  const [selectedFY, setSelectedFY] = useState(() => { try { return JSON.parse(localStorage.getItem('selectedFY')); } catch { return null; } });
   const [isPaired,  setIsPaired]  = useState(() => localStorage.getItem('isPaired') === 'true');
   const [syncToast, setSyncToast] = useState(null); // { message, type }
 
@@ -42,6 +43,13 @@ export function AuthProvider({ children }) {
       if (arr.length > 0 && !selectedCompany) {
         localStorage.setItem('selectedCompany', JSON.stringify(arr[0]));
         setSelectedCompany(arr[0]);
+      }
+      // Auto-select latest FY for selected company
+      const comp = selectedCompany || arr[0];
+      if (comp?.years?.length && !selectedFY) {
+        const latestFY = comp.years[comp.years.length - 1];
+        localStorage.setItem('selectedFY', JSON.stringify(latestFY));
+        setSelectedFY(latestFY);
       }
       return arr;
     } catch (err) {
@@ -81,6 +89,17 @@ export function AuthProvider({ children }) {
   const selectCompany = (company) => {
     localStorage.setItem('selectedCompany', JSON.stringify(company));
     setSelectedCompany(company);
+    // Auto-select latest FY when company changes
+    if (company?.years?.length) {
+      const latestFY = company.years[company.years.length - 1];
+      localStorage.setItem('selectedFY', JSON.stringify(latestFY));
+      setSelectedFY(latestFY);
+    }
+  };
+
+  const selectFY = (fy) => {
+    localStorage.setItem('selectedFY', JSON.stringify(fy));
+    setSelectedFY(fy);
   };
 
   const markPaired = () => {
@@ -90,8 +109,8 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{
-      token, user, companies, selectedCompany, isPaired, syncToast,
-      login, logout, selectCompany, loadCompanies, markPaired, showToast,
+      token, user, companies, selectedCompany, selectedFY, isPaired, syncToast,
+      login, logout, selectCompany, selectFY, loadCompanies, markPaired, showToast,
     }}>
       {children}
       {/* Global sync toast */}
