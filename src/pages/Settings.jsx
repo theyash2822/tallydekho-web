@@ -118,11 +118,11 @@ const Toggle = ({label,sub,on}) => {
 };
 
 export default function Settings() {
+  const [searchParams] = useSearchParams();
+  const { markPaired, isPaired, user, setUser, companies } = useAuth();
+  const [pairingState, setPairingState] = useState(isPaired ? 'paired' : 'idle');
   const [activeGroup, setActiveGroup] = useState(() => searchParams.get('tab') || 'account');
   const [activeSub, setActiveSub] = useState(() => searchParams.get('sub')?.replace(/\+/g,' ') || 'Profile');
-  const { markPaired, isPaired, user, setUser, companies } = useAuth();
-  const [searchParams] = useSearchParams();
-  const [pairingState, setPairingState] = useState(isPaired ? 'paired' : 'idle');
   const [pairingCode, setPairingCode] = useState('');
   const [pairingError, setPairingError] = useState('');
   const [profileName, setProfileName] = useState('');
