@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { BookOpen, Search, RefreshCw, TrendingUp, TrendingDown, Filter, FileText } from 'lucide-react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { BookOpen, Search, RefreshCw, TrendingUp, TrendingDown, Filter, FileText, Share2 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import KPICard from '../components/KPICard';
 import Badge from '../components/Badge';
@@ -11,41 +11,48 @@ import VoucherDetail from '../components/VoucherDetail';
 const fmt = n => '₹' + Math.abs(n || 0).toLocaleString('en-IN');
 const LEDGER_TABS = ['Details', 'Vouchers', 'Balance Trend', 'GST Info'];
 
-// Vouchers linked to a ledger — via voucher_items ledger_name
-function LedgerVouchers({ ledger, companyGuid }) {
-  // ALL hooks at the top — never after a conditional return
-  const [vouchers, setVouchers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedVoucher, setSelectedVoucher] = useState(null);
+const PAGE_SIZE_V = 15;
+const typeChip = (type) => {
+  if (!type) return 'bg-[#ECEEEF] text-[#3F5263]';
+  if (type.includes('Sales'))    return 'bg-[#F0FDF4] text-[#2D7D46]';
+  if (type.includes('Purchase')) return 'bg-[#FFFBEB] text-[#B45309]';
+  if (type.includes('Payment'))  return 'bg-[#FEF2F2] text-[#C0392B]';
+  if (type.includes('Receipt'))  return 'bg-[#F0FDF4] text-[#2D7D46]';
+  if (type.includes('Journal'))  return 'bg-[#EFF6FF] text-[#2563EB]';
+  if (type.includes('Contra'))   return 'bg-[#FFFBEB] text-[#B45309]';
+  return 'bg-[#ECEEEF] text-[#3F5263]';
+};
 
-  useEffect(() => {
+// Vouchers linked to a ledger — paginated, deduped, with drill-down
+function LedgerVouchers({ ledger, companyGuid }) {
+  const [vouchers, setVouchers]         = useState([]);
+  const [loading, setLoading]           = useState(true);
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
+  const [page, setPage]                 = useState(1);
+  const [total, setTotal]               = useState(0);
+  const [typeFilter, setTypeFilter]     = useState('All');
+  const [search, setSearch]             = useState('');
+
+  const loadVouchers = useCallback(async (pg = 1) => {
     if (!ledger || !companyGuid) return;
     setLoading(true);
-    setVouchers([]);
-    setSelectedVoucher(null);
     const name = (ledger.name || ledger.NAME || '').trim();
-
-    api.fetchLedgerVouchers({ companyGuid, ledgerName: name, page: 1, pageSize: 25 })
-      .then(r => setVouchers(r?.data?.vouchers || []))
-      .catch(() => setVouchers([]))
-      .finally(() => setLoading(false));
+    try {
+      const r = await api.fetchLedgerVouchers({ companyGuid, ledgerName: name, page: pg, pageSize: PAGE_SIZE_V });
+      const list = r?.data?.vouchers || [];
+      // Client-side dedup by id
+      const seen = new Set();
+      const deduped = list.filter(v => { if (seen.has(v.id)) return false; seen.add(v.id); return true; });
+      setVouchers(deduped);
+      setTotal(r?.data?.total || deduped.length);
+    } catch { setVouchers([]); }
+    finally { setLoading(false); }
   }, [ledger?.guid, companyGuid]);
 
-  if (loading) return (
-    <div className="space-y-2">
-      {[...Array(4)].map((_, i) => <div key={i} className="h-10 bg-[#F4F5F6] rounded-lg animate-pulse" />)}
-    </div>
-  );
-
-  // No hooks below this line
-
-  if (vouchers.length === 0) return (
-    <div className="py-8 text-center">
-      <FileText size={24} className="mx-auto mb-2 text-[#D9DCE0]" />
-      <p className="text-sm text-[#9CA3AF]">No vouchers found for this ledger</p>
-      <p className="text-xs text-[#C5CBD0] mt-1">Vouchers appear when this party has transactions in Tally</p>
-    </div>
-  );
+  useEffect(() => {
+    setVouchers([]); setPage(1); setTotal(0); setSelectedVoucher(null); setTypeFilter('All'); setSearch('');
+    loadVouchers(1);
+  }, [ledger?.guid, companyGuid]);
 
   if (selectedVoucher) {
     return (
@@ -58,42 +65,97 @@ function LedgerVouchers({ ledger, companyGuid }) {
     );
   }
 
+  // Apply client-side filters on top of paginated result
+  const filtered = vouchers.filter(v => {
+    const tMatch = typeFilter === 'All' || v.voucher_type === typeFilter;
+    const sMatch = !search || (v.voucher_number||'').toLowerCase().includes(search.toLowerCase()) ||
+      (v.party_name||'').toLowerCase().includes(search.toLowerCase()) ||
+      (v.narration||'').toLowerCase().includes(search.toLowerCase());
+    return tMatch && sMatch;
+  });
+
+  const types = ['All', ...Array.from(new Set(vouchers.map(v => v.voucher_type).filter(Boolean)))];
+  const totalPages = Math.ceil(total / PAGE_SIZE_V);
+
   return (
-    <div className="space-y-0">
-      <p className="text-xs text-[#9CA3AF] mb-3">{vouchers.length} voucher{vouchers.length !== 1 ? 's' : ''} found · click to view details</p>
-      {vouchers.map(v => (
-        <div key={v.id}
-          className="py-3 border-b border-[#F4F5F6] last:border-0 hover:bg-[#F4F5F6] -mx-1 px-1 rounded-lg cursor-pointer transition-colors"
-          onClick={() => setSelectedVoucher(v)}
-        >
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
-                  v.voucher_type?.includes('Sales') ? 'bg-[#F0FDF4] text-[#2D7D46]' :
-                  v.voucher_type?.includes('Purchase') ? 'bg-[#FFFBEB] text-[#B45309]' :
-                  v.voucher_type?.includes('Payment') ? 'bg-[#FEF2F2] text-[#C0392B]' :
-                  v.voucher_type?.includes('Receipt') ? 'bg-[#F0FDF4] text-[#2D7D46]' :
-                  'bg-[#ECEEEF] text-[#3F5263]'
-                }`}>{v.voucher_type || 'Voucher'}</span>
-                <span className="font-mono text-xs text-[#9CA3AF]">{v.voucher_number}</span>
+    <div className="space-y-3">
+      {/* Filters */}
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
+          <input value={search} onChange={e => setSearch(e.target.value)}
+            placeholder="Search vouchers..."
+            className="w-full pl-6 pr-2 py-1.5 text-xs bg-[#F4F5F6] border border-[#ECEEEF] rounded-lg outline-none focus:border-[#3F5263]"
+          />
+        </div>
+        <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}
+          className="py-1.5 px-2 text-xs bg-white border border-[#D9DCE0] rounded-lg outline-none focus:border-[#3F5263]">
+          {types.map(t => <option key={t}>{t}</option>)}
+        </select>
+      </div>
+
+      {/* Count */}
+      <p className="text-xs text-[#9CA3AF]">
+        {loading ? 'Loading...' : `${total} voucher${total !== 1 ? 's' : ''} · showing ${filtered.length} · click to view`}
+      </p>
+
+      {/* List */}
+      {loading ? (
+        <div className="space-y-2">
+          {[...Array(4)].map((_, i) => <div key={i} className="h-10 bg-[#F4F5F6] rounded-lg animate-pulse" />)}
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="py-8 text-center">
+          <FileText size={24} className="mx-auto mb-2 text-[#D9DCE0]" />
+          <p className="text-sm text-[#9CA3AF]">No vouchers found</p>
+          <p className="text-xs text-[#C5CBD0] mt-1">Vouchers appear when this party has transactions in Tally</p>
+        </div>
+      ) : (
+        <div className="space-y-0">
+          {filtered.map(v => (
+            <div key={v.id}
+              className="py-3 border-b border-[#F4F5F6] last:border-0 hover:bg-[#F4F5F6] -mx-1 px-1 rounded-lg cursor-pointer transition-colors"
+              onClick={() => setSelectedVoucher(v)}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${typeChip(v.voucher_type)}`}>
+                      {v.voucher_type || 'Voucher'}
+                    </span>
+                    <span className="font-mono text-xs text-[#9CA3AF]">{v.voucher_number}</span>
+                  </div>
+                  <div className="flex items-center gap-3 mt-1">
+                    <span className="text-xs text-[#9CA3AF]">{v.date || '—'}</span>
+                    {v.party_name && v.party_name !== ledger?.name && (
+                      <span className="text-xs text-[#6B7280] truncate max-w-32">{v.party_name}</span>
+                    )}
+                  </div>
+                  {v.narration && <p className="text-xs text-[#9CA3AF] mt-0.5 truncate">{v.narration}</p>}
+                </div>
+                <span className={`text-sm font-bold flex-shrink-0 ${
+                  parseFloat(v.amount) > 0 ? 'text-[#2D7D46]' : 'text-[#9CA3AF]'
+                }`}>
+                  {parseFloat(v.amount) > 0 ? fmt(v.amount) : '—'}
+                </span>
               </div>
-              <div className="flex items-center gap-3 mt-1">
-                <span className="text-xs text-[#9CA3AF]">{v.date || '—'}</span>
-                {v.party_name && v.party_name !== ledger?.name && (
-                  <span className="text-xs text-[#6B7280] truncate max-w-32">{v.party_name}</span>
-                )}
-              </div>
-              {v.narration && <p className="text-xs text-[#9CA3AF] mt-0.5 truncate">{v.narration}</p>}
             </div>
-            <span className={`text-sm font-bold flex-shrink-0 ${
-              parseFloat(v.amount) > 0 ? 'text-[#2D7D46]' : 'text-[#9CA3AF]'
-            }`}>
-              {parseFloat(v.amount) > 0 ? fmt(v.amount) : '—'}
-            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between pt-2 border-t border-[#ECEEEF]">
+          <span className="text-xs text-[#9CA3AF]">Page {page} of {totalPages}</span>
+          <div className="flex gap-1">
+            <button onClick={() => { const pg = page - 1; setPage(pg); loadVouchers(pg); }} disabled={page === 1}
+              className="px-2.5 py-1 text-xs border border-[#D9DCE0] rounded-lg disabled:opacity-40 hover:bg-[#F4F5F6]">← Prev</button>
+            <button onClick={() => { const pg = page + 1; setPage(pg); loadVouchers(pg); }} disabled={page >= totalPages}
+              className="px-2.5 py-1 text-xs border border-[#D9DCE0] rounded-lg disabled:opacity-40 hover:bg-[#F4F5F6]">Next →</button>
           </div>
         </div>
-      ))}
+      )}
     </div>
   );
 }

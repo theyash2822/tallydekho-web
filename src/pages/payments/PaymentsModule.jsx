@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import VoucherDetail from '../../components/VoucherDetail';
 import { CreditCard, ArrowUpRight, ArrowDownLeft, Search } from 'lucide-react';
 import KPICard from '../../components/KPICard';
 import Badge from '../../components/Badge';
@@ -38,6 +39,7 @@ export default function PaymentsModule() {
   const [tab, setTab] = useState(0);
   const [search, setSearch] = useState('');
   const [drawer, setDrawer] = useState(null);
+  const [page, setPage] = useState(1);
   const [realPayments, setRealPayments] = useState([]);
   const [realReceipts, setRealReceipts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -118,35 +120,46 @@ export default function PaymentsModule() {
                 className="notion-input pl-8 w-full text-sm" />
             </div>
           </div>
-          {tab === 0 && <Table columns={paymentCols} data={filteredPayments} onRowClick={setDrawer} />}
-          {tab === 1 && <Table columns={receiptCols} data={filteredReceipts} onRowClick={setDrawer} />}
+          {tab === 0 && (
+            <>
+              <Table columns={paymentCols} data={filteredPayments.slice((page-1)*25,page*25)} onRowClick={setDrawer} />
+              {filteredPayments.length > 25 && (
+                <div className="flex items-center justify-between pt-3 border-t border-[#ECEEEF] mt-2">
+                  <span className="text-xs text-[#9CA3AF]">{filteredPayments.length} total</span>
+                  <div className="flex gap-1">
+                    <button onClick={()=>setPage(p=>p-1)} disabled={page===1} className="px-3 py-1.5 text-xs border border-[#D9DCE0] rounded-lg disabled:opacity-40 hover:bg-[#F4F5F6]">← Prev</button>
+                    <button onClick={()=>setPage(p=>p+1)} disabled={page*25>=filteredPayments.length} className="px-3 py-1.5 text-xs border border-[#D9DCE0] rounded-lg disabled:opacity-40 hover:bg-[#F4F5F6]">Next →</button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+          {tab === 1 && (
+            <>
+              <Table columns={receiptCols} data={filteredReceipts.slice((page-1)*25,page*25)} onRowClick={setDrawer} />
+              {filteredReceipts.length > 25 && (
+                <div className="flex items-center justify-between pt-3 border-t border-[#ECEEEF] mt-2">
+                  <span className="text-xs text-[#9CA3AF]">{filteredReceipts.length} total</span>
+                  <div className="flex gap-1">
+                    <button onClick={()=>setPage(p=>p-1)} disabled={page===1} className="px-3 py-1.5 text-xs border border-[#D9DCE0] rounded-lg disabled:opacity-40 hover:bg-[#F4F5F6]">← Prev</button>
+                    <button onClick={()=>setPage(p=>p+1)} disabled={page*25>=filteredReceipts.length} className="px-3 py-1.5 text-xs border border-[#D9DCE0] rounded-lg disabled:opacity-40 hover:bg-[#F4F5F6]">Next →</button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
 
       <Drawer open={!!drawer} onClose={() => setDrawer(null)} title={drawer?.voucher || 'Details'}>
-        {drawer && (
-          <div className="space-y-4">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="font-semibold text-[#1C2B3A]">{drawer.party}</p>
-                <p className="font-mono text-xs text-[#6B7280] mt-0.5">{drawer.voucher}</p>
-              </div>
-              <Badge label={drawer.status} variant={statusVariant[drawer.status]} />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              {[['Date',drawer.date],['Ledger',drawer.ledger],['Amount',fmt(drawer.amount)],['Mode',drawer.mode],['Reference',drawer.ref||'—'],['Status',drawer.status]].map(([l,v])=>(
-                <div key={l} className="p-3 bg-[#F9F9F9] rounded-xl border border-[#D9DCE0]">
-                  <p className="text-xs text-[#6B7280] mb-1">{l}</p>
-                  <p className="font-medium text-[#1C2B3A] text-sm break-all">{v}</p>
-                </div>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <button className="flex-1 py-2.5 rounded-lg text-sm font-medium text-white" style={{ background: '#3F5263' }}>View PDF</button>
-              <button className="px-4 py-2.5 rounded-lg text-sm text-[#6B7280] border border-[#D9DCE0] hover:bg-[#F4F5F6]">Share</button>
-            </div>
-          </div>
-        )}
+        {drawer?.id && selectedCompany?.guid ? (
+          <VoucherDetail
+            voucherId={drawer.id}
+            companyGuid={selectedCompany.guid}
+            companyName={selectedCompany?.name}
+            onBack={() => setDrawer(null)}
+          />
+        ) : null}
       </Drawer>
     </div>
   );

@@ -7,6 +7,7 @@ import KPICard from '../../components/KPICard';
 import Badge from '../../components/Badge';
 import Table from '../../components/Table';
 import Drawer from '../../components/Drawer';
+import VoucherDetail from '../../components/VoucherDetail';
 import { purchaseInvoices, purchaseOrders, purchaseKPIs } from '../../data/purchaseMock';
 import { monthlySalesPurchase } from '../../data/mockData';
 
@@ -165,35 +166,36 @@ export default function PurchaseModule() {
               </button>
             </div>
           )}
-          {tab === 0 && <Table columns={invoiceCols} data={filtered} onRowClick={setDrawer} />}
+          {tab === 0 && (
+            <>
+              <Table columns={invoiceCols} data={filtered.slice((page-1)*25, page*25)} onRowClick={setDrawer} />
+              {/* Pagination */}
+              {filtered.length > 25 && (
+                <div className="flex items-center justify-between pt-3 border-t border-[#ECEEEF] mt-2">
+                  <span className="text-xs text-[#9CA3AF]">{filtered.length} total · showing {(page-1)*25+1}–{Math.min(page*25, filtered.length)}</span>
+                  <div className="flex gap-1">
+                    <button onClick={() => setPage(p=>p-1)} disabled={page===1} className="px-3 py-1.5 text-xs border border-[#D9DCE0] rounded-lg disabled:opacity-40 hover:bg-[#F4F5F6]">← Prev</button>
+                    <button onClick={() => setPage(p=>p+1)} disabled={page*25>=filtered.length} className="px-3 py-1.5 text-xs border border-[#D9DCE0] rounded-lg disabled:opacity-40 hover:bg-[#F4F5F6]">Next →</button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
           {tab === 1 && <Table columns={orderCols} data={purchaseOrders} onRowClick={setDrawer} />}
         </div>
       </div>
 
       <Drawer open={!!drawer} onClose={() => setDrawer(null)} title={drawer?.ref || 'Details'}>
-        {drawer && (
-          <div className="space-y-4">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="font-semibold text-[#1C2B3A]">{drawer.vendor}</p>
-                <p className="font-mono text-xs text-[#6B7280] mt-0.5">{drawer.ref}</p>
-              </div>
-              <Badge label={drawer.status} variant={statusVariant[drawer.status]} />
-            </div>
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              {Object.entries(drawer).filter(([k]) => k !== 'id').map(([k, v]) => (
-                <div key={k} className="p-3 bg-[#F4F5F6] rounded-xl border border-[#D9DCE0]">
-                  <p className="text-xs text-[#6B7280] capitalize mb-1">{k.replace(/([A-Z])/g, ' $1')}</p>
-                  <p className="font-medium text-[#1C2B3A] text-sm">{typeof v === 'number' ? fmt(v) : String(v)}</p>
-                </div>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <button className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">View PDF</button>
-              <button className="px-4 py-2.5 rounded-lg text-sm text-[#6B7280] border border-[#D9DCE0] hover:bg-[#F4F5F6] transition-colors">Share</button>
-            </div>
-          </div>
-        )}
+        {drawer?.id && selectedCompany?.guid ? (
+          <VoucherDetail
+            voucherId={drawer.id}
+            companyGuid={selectedCompany.guid}
+            companyName={selectedCompany?.name}
+            onBack={() => setDrawer(null)}
+          />
+        ) : drawer ? (
+          <div className="p-4 text-sm text-[#9CA3AF] text-center">Loading voucher details...</div>
+        ) : null}
       </Drawer>
     </div>
   );

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Printer, X } from 'lucide-react';
+import { ArrowLeft, Printer, Share2, Check } from 'lucide-react';
 import api from '../services/api';
 
 const fmt = n => '₹' + Math.abs(parseFloat(n) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -19,6 +19,7 @@ export default function VoucherDetail({ voucherId, companyGuid, companyName, onB
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [copied, setCopied] = useState(false);
   const printRef = useRef(null);
 
   useEffect(() => {
@@ -120,10 +121,26 @@ export default function VoucherDetail({ voucherId, companyGuid, companyName, onB
         <button onClick={onBack} className="flex items-center gap-1.5 text-xs text-[#3F5263] hover:text-[#526373] font-medium transition-colors">
           <ArrowLeft size={13} /> Back to vouchers
         </button>
-        <button onClick={handlePrint}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#3F5263] hover:bg-[#526373] rounded-lg transition-colors">
-          <Printer size={12} /> Print / PDF
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              const text = `${voucher?.voucher_type || 'Voucher'} ${voucher?.voucher_number || ''} | ${voucher?.party_name || ''} | ₹${Math.abs(parseFloat(voucher?.amount) || 0).toLocaleString('en-IN')} | ${voucher?.date || ''} | ${companyName || ''}`;
+              if (navigator.share) {
+                navigator.share({ title: `Voucher ${voucher?.voucher_number}`, text });
+              } else {
+                navigator.clipboard.writeText(text);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-[#D9DCE0] rounded-lg hover:bg-[#F4F5F6] transition-colors text-[#6B7280]">
+            {copied ? <><Check size={12} className="text-[#2D7D46]" /> Copied</> : <><Share2 size={12} /> Share</>}
+          </button>
+          <button onClick={handlePrint}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#3F5263] hover:bg-[#526373] rounded-lg transition-colors">
+            <Printer size={12} /> Print / PDF
+          </button>
+        </div>
       </div>
 
       {/* Voucher card */}
