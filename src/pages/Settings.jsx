@@ -1,8 +1,93 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { User, Building2, CreditCard, Globe, Bell, Plug, Info, ChevronRight, Check } from 'lucide-react';
 import { company } from '../data/mockData';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
+
+const AI_SUGGESTIONS = [
+  'How do I pair my mobile with the Desktop App?',
+  'Entry is not going to Tally, what should I do?',
+  'How to enable Tally HTTP port 9000?',
+  'What are optional entries?',
+  'How does backup and restore work?',
+];
+
+function AIChatPanel() {
+  const [msgs, setMsgs] = useState([{ from: 'bot', text: 'Hi! I am the TallyDekho AI Assistant.\n\nI know everything about TallyDekho across Mobile, Web Portal, and Desktop App.\nAsk me anything!' }]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const scrollRef = useRef(null);
+  const inputRef = useRef(null);
+  const { token } = useAuth();
+
+  useEffect(() => { scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' }); }, [msgs]);
+
+  const sendMessage = useCallback(async (text) => {
+    const t = (text || input).trim();
+    if (!t || loading) return;
+    setInput('');
+    const userMsg = { from: 'me', text: t };
+    const loadingId = Date.now();
+    setMsgs(m => [...m, userMsg, { from: 'bot', text: '', loading: true, id: loadingId }]);
+    setLoading(true);
+    try {
+      const history = [...msgs, userMsg].filter(m => !m.loading).slice(-10)
+        .map(m => ({ role: m.from === 'me' ? 'user' : 'assistant', content: m.text }));
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/app'}/ai/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ messages: history }),
+      });
+      const data = await res.json();
+      const reply = data?.data?.reply || 'Sorry, could not get a response.';
+      setMsgs(m => m.map(msg => msg.id === loadingId ? { from: 'bot', text: reply } : msg));
+    } catch {
+      setMsgs(m => m.map(msg => msg.id === loadingId ? { from: 'bot', text: 'Could not connect. Make sure the backend is running.' } : msg));
+    } finally { setLoading(false); inputRef.current?.focus(); }
+  }, [input, loading, msgs, token]);
+
+  return (
+    <div className="flex flex-col" style={{ height: '520px' }}>
+      <p className="text-base font-semibold text-[#1C2B3A] mb-3">TallyDekho AI Assistant</p>
+      <div ref={scrollRef} className="flex-1 overflow-y-auto space-y-3 mb-3 pr-1" style={{ minHeight: 0 }}>
+        {msgs.map((m, i) => (
+          <div key={m.id || i} className={`flex gap-2 ${m.from === 'me' ? 'flex-row-reverse' : ''}`}>
+            <div className={`w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[9px] font-bold ${
+              m.from === 'bot' ? 'bg-[#3F5263] text-white' : 'bg-[#D9DCE0] text-[#1C2B3A]'}`}>{
+              m.from === 'bot' ? 'TD' : 'Me'}</div>
+            <div className={`max-w-[78%] px-3 py-2 rounded-xl text-sm leading-relaxed whitespace-pre-wrap ${
+              m.from === 'me' ? 'bg-[#3F5263] text-white' : 'bg-[#F4F5F6] border border-[#D9DCE0] text-[#1C2B3A]'}`}>
+              {m.loading ? <span className="text-[#9CA3AF] italic">Thinking...</span> : m.text}
+            </div>
+          </div>
+        ))}
+      </div>
+      {msgs.length <= 2 && (
+        <div className="flex flex-wrap gap-1.5 mb-2">
+          {AI_SUGGESTIONS.map((s,i) => (
+            <button key={i} onClick={() => sendMessage(s)} disabled={loading}
+              className="text-xs px-2.5 py-1 rounded-full border text-[#3F5263] border-[#3F5263] hover:bg-[#ECEEEF] transition-colors">
+              {s}
+            </button>
+          ))}
+        </div>
+      )}
+      <div className="flex gap-2">
+        <input ref={inputRef} value={input} onChange={e => setInput(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && sendMessage()}
+          placeholder="Ask anything about TallyDekho..."
+          disabled={loading}
+          className="flex-1 notion-input text-sm"
+        />
+        <button onClick={() => sendMessage()} disabled={loading || !input.trim()}
+          className="px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors"
+          style={{ background: loading || !input.trim() ? '#9CA3AF' : '#3F5263' }}>
+          {loading ? '...' : 'Ask'}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 const GROUPS = [
   {key:'account',label:'Account & Org',icon:User,subs:['Profile','Company Info','License']},
@@ -274,18 +359,7 @@ export default function Settings() {
             </div>
           )}
           {activeGroup==='contact'&&activeSub==='Help Center'&&(
-            <div className="space-y-4">
-              <p className="text-base font-semibold text-[#1C2B3A]">Help Center</p>
-              <div className="p-4 rounded-xl text-center bg-[#ECEEEF]">
-                <p className="text-sm font-medium text-[#3F5263]">Ask me anything about TallyDekho in your own language.</p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {['How to pair with Tally?','Purchase credits?','How to change GSTIN?','Export my data'].map(q=>(
-                  <button key={q} className="px-3 py-1.5 bg-[#F0EFE9] text-[#6B7280] text-xs rounded-lg hover:bg-[#D9DCE0] transition-colors">{q}</button>
-                ))}
-              </div>
-              <div className="border border-[#D9DCE0] rounded-xl p-4 h-44 bg-[#F9F9F9] flex items-center justify-center text-[#9CA3AF] text-sm">Chat interface — type your question</div>
-            </div>
+            <AIChatPanel />
           )}
           {/* Fallback */}
           {!['Profile','Company Info','License','Language & Region','Channels & Quiet Hours','Tally ERP Sync','Bank Feeds','About & Versions','Help Center'].includes(activeSub)&&(
