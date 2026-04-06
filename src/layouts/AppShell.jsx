@@ -60,10 +60,60 @@ function UserMenu({ user, onLogout }) {
   );
 }
 
+// ─── FY Selector (global top bar) ──────────────────────────────────────────────
+function FYSelector() {
+  const [open, setOpen] = useState(false);
+  const { selectedCompany, selectedFY, selectFY } = useAuth();
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const h = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
+  }, []);
+
+  const years = selectedCompany?.years || [];
+  const currentFY = selectedFY || years[years.length - 1];
+
+  if (!currentFY && years.length === 0) return null;
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        onClick={() => setOpen(p => !p)}
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#E9E8E3] hover:bg-[#F0EFE9] transition-colors text-xs font-medium text-[#3F5263]"
+      >
+        <span className="text-[10px] text-[#AEACA8] font-normal">FY</span>
+        <span className="font-semibold">{currentFY?.name || '2025-26'}</span>
+        <ChevronDown size={11} className={`text-[#AEACA8] transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open && (
+        <div className="absolute top-full right-0 mt-1.5 w-44 bg-white border border-[#E9E8E3] rounded-xl shadow-lg z-50 py-1 overflow-hidden">
+          <p className="px-3 pt-2 pb-1 text-[10px] font-semibold text-[#AEACA8] uppercase tracking-widest">Financial Year</p>
+          {years.length === 0 && (
+            <p className="px-3 py-2 text-xs text-[#9CA3AF]">Sync desktop to load years</p>
+          )}
+          {[...years].reverse().map(y => (
+            <button
+              key={y.uniqueId}
+              onClick={() => { selectFY(y); setOpen(false); }}
+              className="w-full flex items-center justify-between px-3 py-2 hover:bg-[#F5F4EF] transition-colors text-left"
+            >
+              <span className="text-sm text-[#1A1A1A]">FY {y.name}</span>
+              {currentFY?.uniqueId === y.uniqueId && <Check size={12} className="text-[#3F5263]" />}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Company + FY Switcher ────────────────────────────────────────────────────
 function CompanySwitcher() {
   const [open, setOpen] = useState(false);
-  const { companies, selectedCompany, selectCompany, selectedFY, selectFY } = useAuth();
+  const { companies, selectedCompany, selectCompany } = useAuth();
   const ref = useRef(null);
   useEffect(() => {
     const h = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
@@ -74,8 +124,6 @@ function CompanySwitcher() {
   const list = companies.length > 0 ? companies : [{ name: 'Demo Company', guid: 'demo' }];
   const current = selectedCompany || list[0];
   const displayName = current?.name || 'Select Company';
-  const years = current?.years || [];
-  const currentFY = selectedFY || years[years.length - 1];
 
   return (
     <div className="relative" ref={ref}>
@@ -86,14 +134,9 @@ function CompanySwitcher() {
         <div className="w-5 h-5 rounded-md bg-[#1A1A1A] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
           {displayName[0]}
         </div>
-        <div className="flex flex-col items-start">
-          <span className="text-xs font-medium text-[#1A1A1A] max-w-[110px] truncate leading-tight">
-            {displayName.split(' ').slice(0, 2).join(' ')}
-          </span>
-          {currentFY && (
-            <span className="text-[10px] text-[#AEACA8] leading-tight">FY {currentFY.name}</span>
-          )}
-        </div>
+        <span className="text-xs font-medium text-[#1A1A1A] max-w-[120px] truncate">
+          {displayName.split(' ').slice(0, 2).join(' ')}
+        </span>
         <ChevronDown size={11} className={`text-[#AEACA8] transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
@@ -114,24 +157,7 @@ function CompanySwitcher() {
               {current?.guid === c.guid && <Check size={13} className="text-[#1A1A1A] flex-shrink-0" />}
             </button>
           ))}
-          {/* FY selector */}
-          {years.length > 0 && (
-            <>
-              <div className="border-t border-[#E9E8E3] mt-1 pt-1">
-                <p className="px-3 pt-1 pb-1.5 text-[10px] font-semibold text-[#AEACA8] uppercase tracking-widest">Financial Year</p>
-                {[...years].reverse().map(y => (
-                  <button
-                    key={y.uniqueId}
-                    onClick={() => { selectFY(y); setOpen(false); }}
-                    className="w-full flex items-center justify-between px-3 py-1.5 hover:bg-[#F5F4EF] transition-colors text-left"
-                  >
-                    <span className="text-sm text-[#1A1A1A]">FY {y.name}</span>
-                    {currentFY?.uniqueId === y.uniqueId && <Check size={12} className="text-[#3F5263]" />}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
+
         </div>
       )}
     </div>
@@ -299,6 +325,9 @@ export default function AppShell() {
           <div className="flex-1" />
 
           <GlobalSearch />
+
+          {/* FY Selector — global, always visible */}
+          <FYSelector />
 
           {/* Create+ */}
           <div className="relative" ref={createRef}>
