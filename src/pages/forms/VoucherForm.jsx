@@ -12,6 +12,7 @@ export default function VoucherForm({ onClose }) {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [createdNumber, setCreatedNumber] = useState('');
   const [type, setType] = useState('Payment');
   const [isOptional, setIsOptional] = useState(false);
 
@@ -63,6 +64,13 @@ export default function VoucherForm({ onClose }) {
       }
 
       if (result?.status) {
+        // Extract voucher number from Tally response if available
+        let num = '';
+        if (result?.data && typeof result.data === 'string') {
+          const m = result.data.match(/<VOUCHERNUMBER>(.*?)<\/VOUCHERNUMBER>/i);
+          if (m) num = m[1];
+        }
+        setCreatedNumber(num);
         setSubmitted(true);
       } else {
         setError(result?.message || 'Failed to create voucher in Tally');
@@ -81,6 +89,11 @@ export default function VoucherForm({ onClose }) {
           <CheckCircle size={32} className="text-[#2D7D46]" />
         </div>
         <p className="text-base font-semibold text-[#1C2B3A]">{type} Voucher Created in Tally!</p>
+        {createdNumber && (
+          <p className="text-sm font-mono font-bold text-[#3F5263] bg-[#ECEEEF] px-3 py-1 rounded-lg">
+            {createdNumber}
+          </p>
+        )}
         <p className="text-sm text-[#6B7280]">{selectedCompany?.name} · ₹{numAmount.toLocaleString('en-IN')}</p>
         <p className="text-xs text-[#9CA3AF]">{isOptional ? 'Saved as optional entry' : 'Posted to Tally books'}</p>
         <div className="flex gap-3 mt-2">

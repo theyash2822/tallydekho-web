@@ -3,9 +3,10 @@ import { FormField, Input, Select, SectionTitle, Toggle } from '../../components
 import ItemsTable from '../../components/ItemsTable';
 import LogisticsSection from '../../components/LogisticsSection';
 import SummaryFooter from '../../components/SummaryFooter';
-import { CheckCircle, AlertCircle, Loader } from 'lucide-react';
+import { CheckCircle, AlertCircle, Printer } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { createSalesInvoice } from '../../services/api';
+import InvoicePDF from '../../components/InvoicePDF';
 
 const PAYMENT_TERMS = ['Paid / Due on Receipt', '15 Days', '30 Days', 'Custom'];
 
@@ -14,6 +15,9 @@ export default function SalesInvoiceForm({ onClose }) {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [createdVoucherNumber, setCreatedVoucherNumber] = useState('');
+  const [createdPayload, setCreatedPayload] = useState(null);
+  const [showPDF, setShowPDF] = useState(false);
   const [isOptional, setIsOptional] = useState(false);
 
   // Form fields
@@ -66,6 +70,14 @@ export default function SalesInvoiceForm({ onClose }) {
 
       const result = await createSalesInvoice(payload);
       if (result?.status) {
+        // Extract voucher number from Tally response XML if available
+        let assignedNumber = '';
+        if (result?.data && typeof result.data === 'string') {
+          const match = result.data.match(/<VOUCHERNUMBER>(.*?)<\/VOUCHERNUMBER>/i);
+          if (match) assignedNumber = match[1];
+        }
+        setCreatedVoucherNumber(assignedNumber);
+        setCreatedPayload(payload);
         setSubmitted(true);
       } else {
         setError(result?.message || 'Failed to create invoice in Tally');
@@ -83,6 +95,38 @@ export default function SalesInvoiceForm({ onClose }) {
   };
 
   if (submitted) {
+    // Build invoice data for PDF
+    const invoiceForPDF = createdPayload ? {
+      ref: createdVoucherNumber || 'Auto-assigned by Tally',
+      date: invoiceDate,
+      customer: partyLedger,
+      gstin: '',
+      address: '',
+      phone: '',
+      items: (createdPayload.items || []).map((item, i) => ({
+        name: item.itemName,
+        hsn: '',
+        qty: item.billedQty,
+        unit: 'Nos',
+        rate: item.rate,
+        tax: 18,
+        amount: item.amount,
+      })),
+      subtotal,
+      discount: 0,
+      cgst: Math.round(taxAmt / 2),
+      sgst: Math.round(taxAmt / 2),
+      igst: 0,
+      total,
+      mode: 'Credit',
+      terms: 'Payment due within 30 days.',
+      narration,
+    } : null;
+
+    if (showPDF && invoiceForPDF) {
+      return <InvoicePDF open={true} onClose={() => setShowPDF(false)} invoice={invoiceForPDF} />;
+    }
+
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
         <div className="w-16 h-16 rounded-full bg-[#E8F5ED] flex items-center justify-center border border-[#A8D5BC]">
@@ -91,15 +135,28 @@ export default function SalesInvoiceForm({ onClose }) {
         <p className="text-base font-semibold text-[#1C2B3A]">
           {isOptional ? 'Optional Entry Saved in Tally!' : 'Sales Invoice Created in Tally!'}
         </p>
+        {createdVoucherNumber && (
+          <p className="text-sm font-mono font-bold text-[#3F5263] bg-[#ECEEEF] px-3 py-1 rounded-lg">
+            {createdVoucherNumber}
+          </p>
+        )}
         <p className="text-sm text-[#6B7280]">{selectedCompany?.name} · ₹{total.toLocaleString('en-IN')}</p>
-        <p className="text-xs text-[#9CA3AF]">{isOptional ? 'Saved as optional entry — will not affect books until approved' : 'Entry posted to Tally books'}</p>
-        <div className="flex gap-3 mt-2">
-          <button onClick={() => { setSubmitted(false); setPartyLedger(''); setItems([]); setNarration(''); }}
+        <p className="text-xs text-[#9CA3AF]">
+          {isOptional ? 'Saved as optional entry — will not affect books until approved' : 'Entry posted to Tally books'}
+        </p>
+        <div className="flex gap-3 mt-2 flex-wrap justify-center">
+          {invoiceForPDF && (
+            <button onClick={() => setShowPDF(true)}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">
+              <Printer size={14} /> View / Print PDF
+            </button>
+          )}
+          <button onClick={() => { setSubmitted(false); setPartyLedger(''); setItems([]); setNarration(''); setReference(''); setCreatedVoucherNumber(''); }}
             className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]">
             Create Another
           </button>
           <button onClick={onClose}
-            className="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">
+            className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]">
             Close
           </button>
         </div>
