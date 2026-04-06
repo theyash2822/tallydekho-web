@@ -69,6 +69,37 @@ export const fetchDashboard = (body) => post('/dashboard', body);
 export const fetchReportsPL = (body) => post('/reports/pl', body);
 export const fetchReportsBS = (body) => post('/reports/balance-sheet', body);
 
+// ─── Tally Write API (creates vouchers/masters in Tally via desktop proxy) ────
+// Note: /tally/* routes are on root, not /app — use separate base URL
+const TALLY_BASE = import.meta.env.VITE_API_URL
+  ? import.meta.env.VITE_API_URL.replace('/app', '')
+  : 'http://localhost:3001';
+
+async function tallyRequest(endpoint, body) {
+  const headers = { 'Content-Type': 'application/json' };
+  const token = getToken();
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const res = await fetch(`${TALLY_BASE}${endpoint}`, { method: 'POST', headers, body: JSON.stringify(body) });
+  if (!res.ok) { const e = await res.json().catch(()=>({})); throw Object.assign(new Error(e.message||`HTTP ${res.status}`), { status: res.status }); }
+  return res.json();
+}
+
+export const createSalesInvoice    = (b) => tallyRequest('/tally/voucher/sales',         b);
+export const createSalesOrder      = (b) => tallyRequest('/tally/voucher/sales-order',    b);
+export const createPurchaseInvoice = (b) => tallyRequest('/tally/voucher/purchase',       b);
+export const createPurchaseOrder   = (b) => tallyRequest('/tally/voucher/purchase-order', b);
+export const createPaymentVoucher  = (b) => tallyRequest('/tally/voucher/payment',        b);
+export const createReceiptVoucher  = (b) => tallyRequest('/tally/voucher/receipt',        b);
+export const createJournalVoucher  = (b) => tallyRequest('/tally/voucher/journal',        b);
+export const createContraVoucher   = (b) => tallyRequest('/tally/voucher/contra',         b);
+export const createCreditNote      = (b) => tallyRequest('/tally/voucher/credit-note',    b);
+export const createDebitNote       = (b) => tallyRequest('/tally/voucher/debit-note',     b);
+export const createDeliveryNote    = (b) => tallyRequest('/tally/voucher/delivery-note',  b);
+export const cancelVoucher         = (b) => tallyRequest('/tally/voucher/cancel',         b);
+export const createPartyInTally    = (b) => tallyRequest('/tally/master/party',           b);
+export const createWarehouseInTally= (b) => tallyRequest('/tally/master/warehouse',       b);
+export const createStockItemInTally= (b) => tallyRequest('/tally/master/stock-item',      b);
+
 // ─── Default export (object style — matches mobile usage pattern) ─────────────
 const api = {
   // Auth
@@ -83,6 +114,11 @@ const api = {
   fetchStockSummary, fetchStockFilters, fetchStocks, fetchStockDetails,
   // Vouchers & Reports
   fetchVouchers, fetchDashboard, fetchReportsPL, fetchReportsBS,
+  // Tally Write
+  createSalesInvoice, createSalesOrder, createPurchaseInvoice, createPurchaseOrder,
+  createPaymentVoucher, createReceiptVoucher, createJournalVoucher, createContraVoucher,
+  createCreditNote, createDebitNote, createDeliveryNote, cancelVoucher,
+  createPartyInTally, createWarehouseInTally, createStockItemInTally,
 };
 
 export { WS_URL };

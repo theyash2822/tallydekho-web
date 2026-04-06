@@ -1,33 +1,97 @@
 import { useState } from 'react';
 import { FormField, Input, Select, SectionTitle, Textarea } from '../../components/FormField';
 import SummaryFooter from '../../components/SummaryFooter';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, AlertCircle } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { createPaymentVoucher, createReceiptVoucher, createJournalVoucher, createContraVoucher } from '../../services/api';
 
 const VOUCHER_TYPES = ['Payment', 'Receipt', 'Journal', 'Contra'];
 
-const PAYMENT_MODES = ['Cash', 'Bank Transfer', 'UPI', 'Cheque', 'NEFT', 'RTGS'];
-const LEDGERS_BANK = ['HDFC Bank CA – 0259', 'ICICI Bank CA – 1147', 'Cash in Hand'];
-const LEDGERS_ALL = ['ABC Traders', 'Reliance Retail Ltd.', 'Shree Polymers', 'Salary Account', 'Rent Account', 'HDFC Bank CA', 'ICICI Bank CA', 'Cash in Hand'];
-
 export default function VoucherForm({ onClose }) {
+  const { selectedCompany } = useAuth();
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
   const [type, setType] = useState('Payment');
+  const [isOptional, setIsOptional] = useState(false);
+
+  // Common fields
+  const [partyLedger, setPartyLedger] = useState('');
+  const [bankLedger, setBankLedger] = useState('');
+  const [drLedger, setDrLedger] = useState('');
+  const [crLedger, setCrLedger] = useState('');
+  const [fromLedger, setFromLedger] = useState('');
+  const [toLedger, setToLedger] = useState('');
   const [amount, setAmount] = useState('');
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [narration, setNarration] = useState('');
+  const [reference, setReference] = useState('');
 
   const numAmount = parseFloat(amount) || 0;
+
+  const handleSubmit = async () => {
+    if (!selectedCompany) { setError('No company selected'); return; }
+    if (!numAmount) { setError('Please enter an amount'); return; }
+
+    setError('');
+    setSubmitting(true);
+
+    try {
+      const base = {
+        companyGuid: selectedCompany.guid,
+        companyName: selectedCompany.name,
+        date: date.replace(/-/g, ''),
+        narration,
+        reference,
+        amount: numAmount,
+        isOptional,
+      };
+
+      let result;
+      if (type === 'Payment') {
+        if (!partyLedger || !bankLedger) { setError('Party and bank/cash ledger required'); setSubmitting(false); return; }
+        result = await createPaymentVoucher({ ...base, partyLedger, bankLedger });
+      } else if (type === 'Receipt') {
+        if (!partyLedger || !bankLedger) { setError('Party and bank/cash ledger required'); setSubmitting(false); return; }
+        result = await createReceiptVoucher({ ...base, partyLedger, bankLedger });
+      } else if (type === 'Journal') {
+        if (!drLedger || !crLedger) { setError('Dr and Cr ledger required'); setSubmitting(false); return; }
+        result = await createJournalVoucher({ ...base, drLedger, crLedger });
+      } else if (type === 'Contra') {
+        if (!fromLedger || !toLedger) { setError('From and To ledger required'); setSubmitting(false); return; }
+        result = await createContraVoucher({ ...base, fromLedger, toLedger });
+      }
+
+      if (result?.status) {
+        setSubmitted(true);
+      } else {
+        setError(result?.message || 'Failed to create voucher in Tally');
+      }
+    } catch (e) {
+      setError(e.message || 'Failed to connect to Tally');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   if (submitted) {
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
-        <div className="w-16 h-16 rounded-full bg-[#F0FDF4] flex items-center justify-center border border-[#BBF7D0]">
-          <CheckCircle size={32} className="text-emerald-500" />
+        <div className="w-16 h-16 rounded-full bg-[#E8F5ED] flex items-center justify-center border border-[#A8D5BC]">
+          <CheckCircle size={32} className="text-[#2D7D46]" />
         </div>
-        <p className="text-base font-semibold text-[#1C2B3A]">{type} Voucher Created!</p>
-        <p className="text-sm text-[#6B7280]">VCH-2025-{String(Math.floor(Math.random() * 9000) + 1000)}</p>
+        <p className="text-base font-semibold text-[#1C2B3A]">{type} Voucher Created in Tally!</p>
+        <p className="text-sm text-[#6B7280]">{selectedCompany?.name} · ₹{numAmount.toLocaleString('en-IN')}</p>
+        <p className="text-xs text-[#9CA3AF]">{isOptional ? 'Saved as optional entry' : 'Posted to Tally books'}</p>
         <div className="flex gap-3 mt-2">
-          <button className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{ background: '#3F5263' }}>Share PDF</button>
-          <button onClick={() => setSubmitted(false)} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280]">New Voucher</button>
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280]">Close</button>
+          <button onClick={() => { setSubmitted(false); setAmount(''); setPartyLedger(''); setBankLedger(''); }}
+            className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]">
+            New Voucher
+          </button>
+          <button onClick={onClose}
+            className="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">
+            Close
+          </button>
         </div>
       </div>
     );
@@ -35,13 +99,28 @@ export default function VoucherForm({ onClose }) {
 
   return (
     <div className="space-y-5">
-      {/* Voucher type selector */}
+      {/* Company + Optional */}
+      <div className="flex items-center justify-between p-3 bg-[#F4F5F6] rounded-xl border border-[#D9DCE0]">
+        <div>
+          <p className="text-xs text-[#9CA3AF]">Company</p>
+          <p className="text-sm font-semibold text-[#1C2B3A]">{selectedCompany?.name || 'No company selected'}</p>
+        </div>
+        <button onClick={() => setIsOptional(p => !p)}
+          className={`px-3 py-1.5 text-xs rounded-lg border font-semibold transition-colors ${
+            isOptional ? 'bg-[#FFFBEB] text-[#B45309] border-[#FDE68A]' : 'bg-[#F0FDF4] text-[#2D7D46] border-[#BBF7D0]'
+          }`}>
+          {isOptional ? 'Optional Entry' : 'Regular Entry'}
+        </button>
+      </div>
+
+      {/* Voucher type */}
       <FormField label="Voucher Type" required>
         <div className="flex gap-2">
           {VOUCHER_TYPES.map(t => (
             <button key={t} onClick={() => setType(t)}
-              className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-colors ${type === t ? 'text-white border-transparent' : 'border-[#D9DCE0] text-[#6B7280] hover:border-[#3F5263] hover:text-[#3F5263]'}`}
-              style={type === t ? { background: 'linear-gradient(135deg,#3F5263,#526373)' } : {}}>
+              className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-colors ${
+                type === t ? 'bg-[#3F5263] text-white border-transparent' : 'border-[#D9DCE0] text-[#6B7280] hover:border-[#3F5263]'
+              }`}>
               {t}
             </button>
           ))}
@@ -49,86 +128,72 @@ export default function VoucherForm({ onClose }) {
       </FormField>
 
       <div className="grid grid-cols-2 gap-4">
-        <FormField label="Voucher Number"><Input defaultValue={`VCH-2025-${Math.floor(Math.random() * 9000) + 1000}`} readOnly /></FormField>
-        <FormField label="Date" required><Input type="date" defaultValue={new Date().toISOString().split('T')[0]} /></FormField>
+        <FormField label="Date" required>
+          <Input type="date" value={date} onChange={e => setDate(e.target.value)} />
+        </FormField>
+        <FormField label="Amount (₹)" required>
+          <Input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" prefix="₹" />
+        </FormField>
       </div>
 
-      {/* Dynamic fields based on voucher type */}
+      {/* Payment / Receipt */}
       {(type === 'Payment' || type === 'Receipt') && (
-        <>
-          <SectionTitle title={type === 'Payment' ? 'Payment Details' : 'Receipt Details'} />
-          <div className="grid grid-cols-2 gap-4">
-            <FormField label={type === 'Payment' ? 'Pay To (Party / Ledger)' : 'Received From (Party)'} required>
-              <Select options={LEDGERS_ALL} placeholder="Search ledger or party" />
-            </FormField>
-            <FormField label={type === 'Payment' ? 'Pay From (Bank / Cash)' : 'Deposit To (Bank / Cash)'} required>
-              <Select options={LEDGERS_BANK} />
-            </FormField>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <FormField label="Payment Mode" required><Select options={PAYMENT_MODES} /></FormField>
-            <FormField label="Amount" required>
-              <Input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" prefix="₹" />
-            </FormField>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <FormField label="Reference No" hint="UTR / Cheque No / Transaction ID"><Input placeholder="Optional" /></FormField>
-            <FormField label="Bank / Cash Balance (After)"><Input readOnly defaultValue="₹18,45,000" /></FormField>
-          </div>
-        </>
-      )}
-
-      {type === 'Journal' && (
-        <>
-          <SectionTitle title="Journal Entries" subtitle="Debit and Credit legs" />
-          <div className="overflow-x-auto rounded-xl border border-[#D9DCE0]">
-            <table className="w-full text-sm">
-              <thead className="bg-[#F9F9F9] border-b border-[#D9DCE0]">
-                <tr>{['Ledger', 'Dr/Cr', 'Amount (₹)', 'Narration'].map(h => <th key={h} className="px-4 py-2.5 text-left text-xs font-semibold text-[#6B7280]">{h}</th>)}</tr>
-              </thead>
-              <tbody>
-                {[0, 1].map(i => (
-                  <tr key={i} className="border-b border-[#F0EFE9]">
-                    <td className="px-3 py-2"><Select options={LEDGERS_ALL} placeholder="Select ledger" /></td>
-                    <td className="px-3 py-2">
-                      <div className="flex gap-1">
-                        {['Dr', 'Cr'].map(d => (
-                          <button key={d} className="px-2.5 py-1 rounded text-xs font-medium border border-[#D9DCE0] hover:border-[#3F5263] hover:text-[#3F5263]">{d}</button>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="px-3 py-2"><Input type="number" placeholder="0.00" /></td>
-                    <td className="px-3 py-2"><Input placeholder="Brief narration" /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </>
-      )}
-
-      {type === 'Contra' && (
-        <>
-          <SectionTitle title="Contra Entry" subtitle="Transfer between cash and bank accounts" />
-          <div className="grid grid-cols-2 gap-4">
-            <FormField label="From Account" required><Select options={LEDGERS_BANK} /></FormField>
-            <FormField label="To Account" required><Select options={LEDGERS_BANK} /></FormField>
-          </div>
-          <FormField label="Transfer Amount" required>
-            <Input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" prefix="₹" />
+        <div className="grid grid-cols-1 gap-4">
+          <FormField label={type === 'Payment' ? 'Pay To (Party)' : 'Receive From (Party)'} required>
+            <Input value={partyLedger} onChange={e => setPartyLedger(e.target.value)}
+              placeholder="Party name exactly as in Tally" />
           </FormField>
-          <FormField label="Reference / Cheque No"><Input placeholder="Optional" /></FormField>
-        </>
+          <FormField label={type === 'Payment' ? 'Pay From (Bank/Cash)' : 'Deposit To (Bank/Cash)'} required>
+            <Input value={bankLedger} onChange={e => setBankLedger(e.target.value)}
+              placeholder="e.g. HDFC Bank A/C or Cash" />
+          </FormField>
+        </div>
       )}
 
-      <SectionTitle title="Narration" />
-      <Textarea placeholder="Enter narration for this voucher" rows={2} />
+      {/* Journal */}
+      {type === 'Journal' && (
+        <div className="grid grid-cols-1 gap-4">
+          <FormField label="Debit Ledger (Dr)" required>
+            <Input value={drLedger} onChange={e => setDrLedger(e.target.value)} placeholder="Ledger to debit" />
+          </FormField>
+          <FormField label="Credit Ledger (Cr)" required>
+            <Input value={crLedger} onChange={e => setCrLedger(e.target.value)} placeholder="Ledger to credit" />
+          </FormField>
+        </div>
+      )}
+
+      {/* Contra */}
+      {type === 'Contra' && (
+        <div className="grid grid-cols-1 gap-4">
+          <FormField label="Transfer From" required>
+            <Input value={fromLedger} onChange={e => setFromLedger(e.target.value)} placeholder="e.g. Cash in Hand" />
+          </FormField>
+          <FormField label="Transfer To" required>
+            <Input value={toLedger} onChange={e => setToLedger(e.target.value)} placeholder="e.g. HDFC Bank A/C" />
+          </FormField>
+        </div>
+      )}
+
+      <FormField label="Narration">
+        <Input value={narration} onChange={e => setNarration(e.target.value)} placeholder="Optional narration" />
+      </FormField>
+      <FormField label="Reference">
+        <Input value={reference} onChange={e => setReference(e.target.value)} placeholder="Cheque no / UTR / Reference" />
+      </FormField>
+
+      {error && (
+        <div className="flex items-center gap-2 p-3 bg-[#FEF2F2] border border-[#FECACA] rounded-xl text-sm text-[#C0392B]">
+          <AlertCircle size={14} className="flex-shrink-0" />
+          {error}
+        </div>
+      )}
 
       <SummaryFooter
         subtotal={numAmount}
-        onSubmit={() => setSubmitted(true)}
-        submitLabel={`Submit ${type} Voucher`}
-        showDraft={false}
+        onSubmit={handleSubmit}
+        onDraft={() => { setIsOptional(true); handleSubmit(); }}
+        submitLabel={submitting ? 'Submitting...' : `Submit ${type} to Tally`}
+        showDraft={true}
       />
     </div>
   );
