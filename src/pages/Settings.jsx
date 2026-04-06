@@ -333,7 +333,12 @@ export default function Settings() {
                     )}
                   </div>
                   <button onClick={async()=>{
-                    try { await api.updatePairing({paired:false}); } catch {}
+                    try {
+                      await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/app'}/pairing`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` },
+                      });
+                    } catch {}
                     localStorage.removeItem('isPaired');
                     setPairingState('idle');
                     window.location.reload();
