@@ -124,7 +124,8 @@ function ChartCard({ title, sub, action, children }) {
 // ─── Dashboard ────────────────────────────────────────────────────────────────
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { isPaired, selectedCompany, loadCompanies } = useAuth();
+  const { isPaired, selectedCompany, selectedFY, loadCompanies } = useAuth();
+  const fyLabel = selectedFY?.name ? `FY ${selectedFY.name}` : '{fyLabel}';
   const [dashData, setDashData]   = useState(null);
   const [dashLoading, setDashLoading] = useState(true);
   const [tallyPaired, setTallyPaired] = useState(isPaired);
@@ -153,7 +154,7 @@ export default function Dashboard() {
   const L = dashLoading;
   const D = dashData;
   const kpis = [
-    { label: 'Total Revenue',  value: L ? '—' : fmtL(D?.totalSales || 0),     sub: selectedCompany?.name || 'FY 2025–26', color: '#2D7D46' },
+    { label: 'Total Revenue',  value: L ? '—' : fmtL(D?.totalSales || 0),     sub: selectedCompany?.name || '{fyLabel}', color: '#2D7D46' },
     { label: 'Net Profit',     value: L ? '—' : fmtL(D?.netProfit || 0),       sub: 'This FY',        color: '#3F5263' },
     { label: 'Receivables',    value: L ? '—' : fmtL(D?.receivables || 0),     sub: 'Outstanding',    color: '#B45309' },
     { label: 'Payables',       value: L ? '—' : fmtL(D?.payables || 0),        sub: 'Outstanding',    color: '#C0392B' },
@@ -169,7 +170,7 @@ export default function Dashboard() {
       {/* Header */}
       <div>
         <h1 className="page-title">Dashboard</h1>
-        <p className="page-subtitle">{selectedCompany?.name || 'Select a company'} · FY 2025–26</p>
+        <p className="page-subtitle">{selectedCompany?.name || 'Select a company'} · {fyLabel}</p>
       </div>
 
       {/* Tally connect banner */}
@@ -224,7 +225,7 @@ export default function Dashboard() {
       {/* Revenue + GST */}
       <div className="grid grid-cols-3 gap-4">
         <div className="col-span-2">
-          <ChartCard title="Revenue Overview" sub="Sales · Purchase · Expenses — FY 2025–26 (₹K)" action="Full report">
+          <ChartCard title="Revenue Overview" sub="Sales · Purchase · Expenses — {fyLabel} (₹K)" action="Full report">
             <ResponsiveContainer width="100%" height={220}>
               <AreaChart data={revenueData} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
                 <defs>

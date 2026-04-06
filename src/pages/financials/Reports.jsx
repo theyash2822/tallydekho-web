@@ -41,7 +41,7 @@ function ExpandRow({ label, amount, children, highlight }) {
 
 export default function Reports() {
   const [tab, setTab] = useState(0);
-  const { selectedCompany, token } = useAuth();
+  const { selectedCompany, token, selectedFY } = useAuth();
   const [plReport, setPlReport] = useState(null);
   const [bsReport, setBsReport] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -80,7 +80,7 @@ export default function Reports() {
     <div className="space-y-5">
       <div>
         <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Financial Reports</h1>
-        <p className="text-sm text-[#6B7280] mt-0.5">FY 2025-26 · July 2025</p>
+        <p className="text-sm text-[#6B7280] mt-0.5">{selectedFY?.name ? `FY ${selectedFY.name}` : "FY 2025-26"} · July 2025</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3">

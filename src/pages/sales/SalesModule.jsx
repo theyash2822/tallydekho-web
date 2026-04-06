@@ -30,7 +30,7 @@ export default function SalesModule() {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const pageSize = 50;
-  const { selectedCompany, token } = useAuth();
+  const { selectedCompany, token, selectedFY } = useAuth();
   const companyGuid = selectedCompany?.guid;
 
   const loadData = useCallback(async (pg = 1, searchText = '') => {
@@ -156,7 +156,7 @@ export default function SalesModule() {
       <div className="grid grid-cols-3 gap-4">
         <div className="col-span-2 bg-white border border-[#D9DCE0] rounded-xl p-5">
           <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Sales Trend</p>
-          <p className="text-xs text-[#9CA3AF] mb-4">Monthly · FY 2025-26</p>
+          <p className="text-xs text-[#9CA3AF] mb-4">Monthly · {selectedFY?.name ? `FY ${selectedFY.name}` : "FY 2025-26"}</p>
           <ResponsiveContainer width="100%" height={180}>
             <AreaChart data={monthlySalesPurchase} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
               <defs>

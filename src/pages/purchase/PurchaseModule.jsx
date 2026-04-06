@@ -38,7 +38,7 @@ const orderCols = [
 
 export default function PurchaseModule() {
   const [tab, setTab] = useState(0);
-  const { selectedCompany, token } = useAuth();
+  const { selectedCompany, token, selectedFY } = useAuth();
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [usingMock, setUsingMock] = useState(false);
@@ -87,7 +87,7 @@ export default function PurchaseModule() {
     <div className="space-y-5">
       <div>
         <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Purchase</h1>
-        <p className="text-sm text-[#6B7280] mt-0.5">July 2025 · FY 2025-26</p>
+        <p className="text-sm text-[#6B7280] mt-0.5">July 2025 · {selectedFY?.name ? `FY ${selectedFY.name}` : "FY 2025-26"}</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
@@ -100,7 +100,7 @@ export default function PurchaseModule() {
       <div className="grid grid-cols-3 gap-4">
         <div className="col-span-2 bg-white border border-[#D9DCE0] rounded-2xl p-5">
           <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Purchase Trend</p>
-          <p className="text-xs text-[#6B7280] mb-4">Monthly · FY 2025-26</p>
+          <p className="text-xs text-[#6B7280] mb-4">Monthly · {selectedFY?.name ? `FY ${selectedFY.name}` : "FY 2025-26"}</p>
           <ResponsiveContainer width="100%" height={180}>
             <AreaChart data={monthlySalesPurchase} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
               <defs>
