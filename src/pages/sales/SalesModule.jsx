@@ -143,7 +143,7 @@ export default function SalesModule() {
       {isDemo && (
         <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs">
           <span className="text-base">🎭</span>
-          <span><strong>Demo Mode</strong> — Showing sample data. Pair Desktop App for real Tally data. <a href="/settings" className="underline font-medium">Settings →</a></span>
+          <span><strong>Demo Mode</strong> — Showing sample data. Pair Desktop App for real Tally data. <a href="/settings?tab=integrations&sub=Tally+ERP+Sync" className="underline font-medium">Settings →</a></span>
         </div>
       )}
       <div className="flex items-center justify-between">

@@ -179,7 +179,7 @@ export default function Dashboard() {
       {isDemo && (
         <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs">
           <span className="text-base">🎭</span>
-          <span><strong>Demo Mode</strong> — Pair your Desktop App to see real Tally data. <a href="/settings" className="underline font-medium">Go to Settings →</a></span>
+          <span><strong>Demo Mode</strong> — Pair your Desktop App to see real Tally data. <a href="/settings?tab=integrations&sub=Tally+ERP+Sync" className="underline font-medium">Pair Now →</a></span>
         </div>
       )}
 
@@ -194,7 +194,7 @@ export default function Dashboard() {
             <p className="text-xs text-white/60 mt-0.5">Settings → Tally ERP Sync → enter the pairing code from your desktop app</p>
           </div>
           <button
-            onClick={() => navigate('/settings')}
+            onClick={() => navigate('/settings?tab=integrations&sub=Tally+ERP+Sync')}
             className="px-4 py-2 rounded-lg text-sm font-semibold bg-white text-[#3F5263] hover:bg-white/90 transition-colors flex-shrink-0"
           >
             Connect →

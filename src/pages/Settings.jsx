@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { User, Building2, CreditCard, Globe, Bell, Plug, Info, ChevronRight, Check } from 'lucide-react';
 import { company } from '../data/mockData';
 import { useAuth } from '../contexts/AuthContext';
@@ -117,9 +118,10 @@ const Toggle = ({label,sub,on}) => {
 };
 
 export default function Settings() {
-  const [activeGroup, setActiveGroup] = useState('account');
-  const [activeSub, setActiveSub] = useState('Profile');
+  const [activeGroup, setActiveGroup] = useState(() => searchParams.get('tab') || 'account');
+  const [activeSub, setActiveSub] = useState(() => searchParams.get('sub')?.replace(/\+/g,' ') || 'Profile');
   const { markPaired, isPaired, user, setUser, companies } = useAuth();
+  const [searchParams] = useSearchParams();
   const [pairingState, setPairingState] = useState(isPaired ? 'paired' : 'idle');
   const [pairingCode, setPairingCode] = useState('');
   const [pairingError, setPairingError] = useState('');
