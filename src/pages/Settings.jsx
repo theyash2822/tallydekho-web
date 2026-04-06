@@ -119,10 +119,10 @@ const Toggle = ({label,sub,on}) => {
 export default function Settings() {
   const [activeGroup, setActiveGroup] = useState('account');
   const [activeSub, setActiveSub] = useState('Profile');
-  const [pairingState, setPairingState] = useState('idle');
+  const { markPaired, isPaired, user, setUser, companies } = useAuth();
+  const [pairingState, setPairingState] = useState(isPaired ? 'paired' : 'idle');
   const [pairingCode, setPairingCode] = useState('');
   const [pairingError, setPairingError] = useState('');
-  const { markPaired, isPaired, user, setUser, companies } = useAuth();
   const [profileName, setProfileName] = useState('');
   const [profileEmail, setProfileEmail] = useState('');
   const [profileSaving, setProfileSaving] = useState(false);
@@ -330,7 +330,12 @@ export default function Settings() {
                       <p className="text-xs text-[#9CA3AF]">No companies synced yet. Run a sync from the Desktop App.</p>
                     )}
                   </div>
-                  <button onClick={async()=>{ await api.updatePairing({paired:false}).catch(()=>{}); setPairingState('idle'); }} className="px-4 py-2 text-sm text-[#C0392B] bg-[#FEF2F2] border border-[#FECACA] rounded-lg hover:bg-rose-100">Unpair</button>
+                  <button onClick={async()=>{
+                    try { await api.updatePairing({paired:false}); } catch {}
+                    localStorage.removeItem('isPaired');
+                    setPairingState('idle');
+                    window.location.reload();
+                  }} className="px-4 py-2 text-sm text-[#C0392B] bg-[#FEF2F2] border border-[#FECACA] rounded-lg hover:bg-rose-100">Unpair</button>
                 </div>
               )}
             </div>
