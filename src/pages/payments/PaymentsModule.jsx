@@ -43,7 +43,8 @@ export default function PaymentsModule() {
   const [realPayments, setRealPayments] = useState([]);
   const [realReceipts, setRealReceipts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { selectedCompany, selectedFY } = useAuth();
+  const { selectedCompany, selectedFY, isPaired } = useAuth();
+  const isDemo = !isPaired;
 
   useEffect(() => {
     setRealPayments([]); setRealReceipts([]);
@@ -59,13 +60,19 @@ export default function PaymentsModule() {
     }).finally(() => setLoading(false));
   }, [selectedCompany?.guid, selectedFY?.uniqueId]);
 
-  const displayPayments = realPayments.length > 0 ? realPayments : payments;
-  const displayReceipts = realReceipts.length > 0 ? realReceipts : receipts;
+  const displayPayments = realPayments.length > 0 ? realPayments : (isDemo ? payments : []);
+  const displayReceipts = realReceipts.length > 0 ? realReceipts : (isDemo ? receipts : []);
   const filteredPayments = displayPayments.filter(p => !search || (p.party||'').toLowerCase().includes(search.toLowerCase()) || (p.voucher||'').toLowerCase().includes(search.toLowerCase()));
   const filteredReceipts = displayReceipts.filter(r => !search || (r.party||'').toLowerCase().includes(search.toLowerCase()) || (r.voucher||'').toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="space-y-5">
+      {isDemo && (
+        <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs">
+          <span className="text-base">🎭</span>
+          <span><strong>Demo Mode</strong> — Showing sample data. <a href="/settings" className="underline font-medium">Pair Desktop App →</a></span>
+        </div>
+      )}
       <div>
         <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Payments & Receipts</h1>
         <p className="text-sm text-[#6B7280] mt-0.5">July 2025</p>

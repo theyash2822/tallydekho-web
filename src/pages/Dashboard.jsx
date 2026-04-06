@@ -151,8 +151,10 @@ export default function Dashboard() {
     return unsub;
   }, []);
 
-  const L = dashLoading;
-  const D = dashData;
+  // Use demo data when not paired or no real data loaded
+  const isDemo = !isPaired || (!dashLoading && !dashData);
+  const D = dashData || (isDemo ? dashboardKPIs : null);
+  const L = dashLoading && !isDemo;
   const kpis = [
     { label: 'Total Revenue',  value: L ? '—' : fmtL(D?.totalSales || 0),     sub: selectedCompany?.name || '{fyLabel}', color: '#2D7D46' },
     { label: 'Net Profit',     value: L ? '—' : fmtL(D?.netProfit || 0),       sub: 'This FY',        color: '#3F5263' },
@@ -172,6 +174,14 @@ export default function Dashboard() {
         <h1 className="page-title">Dashboard</h1>
         <p className="page-subtitle">{selectedCompany?.name || 'Select a company'} · {fyLabel}</p>
       </div>
+
+      {/* Demo mode banner */}
+      {isDemo && (
+        <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs">
+          <span className="text-base">🎭</span>
+          <span><strong>Demo Mode</strong> — Pair your Desktop App to see real Tally data. <a href="/settings" className="underline font-medium">Go to Settings →</a></span>
+        </div>
+      )}
 
       {/* Tally connect banner */}
       {!tallyPaired ? (

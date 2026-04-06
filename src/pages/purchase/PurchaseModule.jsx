@@ -38,7 +38,8 @@ const orderCols = [
 
 export default function PurchaseModule() {
   const [tab, setTab] = useState(0);
-  const { selectedCompany, token, selectedFY } = useAuth();
+  const { selectedCompany, token, selectedFY, isPaired } = useAuth();
+  const isDemo = !isPaired;
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [usingMock, setUsingMock] = useState(false);
@@ -76,7 +77,7 @@ export default function PurchaseModule() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [drawer, setDrawer] = useState(null);
 
-  const displayInvoices = invoices.length > 0 ? invoices : purchaseInvoices;
+  const displayInvoices = invoices.length > 0 ? invoices : (isDemo ? purchaseInvoices : []);
   const filtered = displayInvoices.filter(r => {
     const s = !search || (r.vendor||'').toLowerCase().includes(search.toLowerCase()) || (r.ref||'').toLowerCase().includes(search.toLowerCase());
     const f = statusFilter === 'All' || r.status === statusFilter;
@@ -85,6 +86,12 @@ export default function PurchaseModule() {
 
   return (
     <div className="space-y-5">
+      {isDemo && (
+        <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs">
+          <span className="text-base">🎭</span>
+          <span><strong>Demo Mode</strong> — Showing sample data. <a href="/settings" className="underline font-medium">Pair Desktop App →</a></span>
+        </div>
+      )}
       <div>
         <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Purchase</h1>
         <p className="text-sm text-[#6B7280] mt-0.5">July 2025 · {selectedFY?.name ? `FY ${selectedFY.name}` : "FY 2025-26"}</p>

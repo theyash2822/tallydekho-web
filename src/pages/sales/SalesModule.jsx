@@ -8,6 +8,7 @@ import Drawer from '../../components/Drawer';
 import InvoicePDF from '../../components/InvoicePDF';
 import VoucherDetail from '../../components/VoucherDetail';
 import { monthlySalesPurchase } from '../../data/mockData';
+import { salesInvoices as mockSalesInvoices } from '../../data/salesMock';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 import wsService from '../../services/websocket';
@@ -30,7 +31,8 @@ export default function SalesModule() {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const pageSize = 50;
-  const { selectedCompany, token, selectedFY } = useAuth();
+  const { selectedCompany, token, selectedFY, isPaired } = useAuth();
+  const isDemo = !isPaired;
   const companyGuid = selectedCompany?.guid;
 
   const loadData = useCallback(async (pg = 1, searchText = '') => {
@@ -115,8 +117,11 @@ export default function SalesModule() {
     return () => clearTimeout(t);
   }, [search, companyGuid]); // eslint-disable-line
 
-  const filtered = invoices.filter(r =>
-    statusFilter === 'All' || r.status === statusFilter
+  // Use demo data when not paired or no real invoices loaded
+  const displayInvoices = (isDemo && invoices.length === 0) ? mockSalesInvoices : invoices;
+  const filtered = displayInvoices.filter(r =>
+    (!search || (r.customer||r.ref||'').toLowerCase().includes(search.toLowerCase())) &&
+    (statusFilter === 'All' || r.status === statusFilter)
   );
 
   const invoiceCols = [
@@ -135,6 +140,12 @@ export default function SalesModule() {
 
   return (
     <div className="space-y-5">
+      {isDemo && (
+        <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs">
+          <span className="text-base">🎭</span>
+          <span><strong>Demo Mode</strong> — Showing sample data. Pair Desktop App for real Tally data. <a href="/settings" className="underline font-medium">Settings →</a></span>
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Sales</h1>
