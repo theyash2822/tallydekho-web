@@ -1,271 +1,392 @@
-// Invoice PDF Preview — renders a professional invoice and allows print/download
+// Invoice PDF — 3 professional templates: TallyClassic (default), Modern, Minimal
 import { useRef } from 'react';
-import { X, Printer, Download, Share2 } from 'lucide-react';
+import { X, Printer, Download } from 'lucide-react';
 
-const fmt = n => '₹' + (n || 0).toLocaleString('en-IN');
+const fmt  = n => '₹' + (Math.abs(n) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmtQ = (qty, unit) => `${qty || 0}${unit ? ' ' + unit : ''}`;
 
-const SAMPLE_ITEMS = [
-  { name: 'Polymer Sheet 2mm (A101)', hsn: '3920', qty: 200, unit: 'Kg', rate: 180, tax: 18, amount: 36000 },
-  { name: 'Chemical Mix Type3 (B202)', hsn: '2900', qty: 50, unit: 'Ltr', rate: 420, tax: 18, amount: 21000 },
-  { name: 'Packing Box 12x10 (C303)', hsn: '4819', qty: 500, unit: 'Pcs', rate: 25, tax: 12, amount: 12500 },
-];
+export function getPDFTemplate(companyGuid) {
+  try {
+    return localStorage.getItem(`pdf_template_${companyGuid}`) || 'tally_classic';
+  } catch { return 'tally_classic'; }
+}
+export function setPDFTemplate(companyGuid, tpl) {
+  try { localStorage.setItem(`pdf_template_${companyGuid}`, tpl); } catch {}
+}
 
-export default function InvoicePDF({ open, onClose, invoice }) {
-  const printRef = useRef(null);
+// ─── Template: TallyClassic ───────────────────────────────────────────────────
+function buildTallyClassicHTML(inv) {
+  const items = inv.items || [];
+  const rows = items.map((item, i) => `
+    <tr>
+      <td style="text-align:center">${i + 1}</td>
+      <td><strong>${item.name || '—'}</strong></td>
+      <td style="text-align:center">${item.hsn || '—'}</td>
+      <td style="text-align:center">${fmtQ(item.qty, item.unit)}</td>
+      <td style="text-align:right">${fmt(item.rate)}</td>
+      <td style="text-align:center">${item.tax || '0'}%</td>
+      <td style="text-align:right"><strong>${fmt(item.amount)}</strong></td>
+    </tr>`).join('');
+
+  return `<!DOCTYPE html><html><head><meta charset="utf-8">
+  <title>${inv.ref || 'Invoice'}</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Arial,sans-serif;font-size:11px;color:#1A1A1A;background:#fff}
+    .wrap{max-width:800px;margin:0 auto;padding:28px 32px}
+    .top-bar{background:#1C2B3A;color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;margin:-28px -32px 24px}
+    .top-bar .co{font-size:16px;font-weight:700;letter-spacing:.5px}
+    .top-bar .title{font-size:13px;font-weight:600;opacity:.8;letter-spacing:2px}
+    .inv-meta{display:flex;justify-content:space-between;margin-bottom:20px}
+    .inv-meta .box{border:1px solid #D0D5DD;padding:12px 16px;border-radius:4px;min-width:200px}
+    .inv-meta .box .lbl{font-size:9px;text-transform:uppercase;color:#6B7280;letter-spacing:.8px;margin-bottom:3px}
+    .inv-meta .box .val{font-size:13px;font-weight:700;color:#1C2B3A}
+    .parties{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;padding:14px 16px;border:1px solid #D0D5DD;border-radius:4px;background:#F9FAFB}
+    .party-lbl{font-size:9px;text-transform:uppercase;color:#6B7280;letter-spacing:.8px;margin-bottom:5px}
+    .party-name{font-size:13px;font-weight:700;color:#1C2B3A;margin-bottom:3px}
+    .party-sub{font-size:10px;color:#6B7280;line-height:1.5}
+    table{width:100%;border-collapse:collapse;margin-bottom:16px}
+    thead tr{background:#1C2B3A;color:#fff}
+    th{padding:8px 10px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+    td{padding:8px 10px;border-bottom:1px solid #F0F0F0;font-size:11px;vertical-align:middle}
+    tbody tr:nth-child(even){background:#F9FAFB}
+    .totals-wrap{display:flex;justify-content:flex-end;margin-bottom:20px}
+    .totals{width:260px}
+    .t-row{display:flex;justify-content:space-between;padding:5px 0;font-size:11px;border-bottom:1px solid #F0F0F0}
+    .t-row.grand{font-size:14px;font-weight:700;color:#1C2B3A;border-top:2px solid #1C2B3A;border-bottom:none;padding-top:8px;margin-top:4px}
+    .footer-bar{background:#F9FAFB;border:1px solid #D0D5DD;border-radius:4px;padding:12px 16px;display:flex;justify-content:space-between;font-size:10px;color:#6B7280}
+    .sign-box{text-align:right}
+    .sign-line{border-top:1px solid #1C2B3A;width:160px;margin:28px 0 4px auto}
+    .stamp{text-align:center;margin-top:16px;font-size:9px;color:#9CA3AF;padding-top:10px;border-top:1px solid #E8E7E3}
+    @media print{@page{size:A4;margin:10mm}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+  </style></head><body>
+  <div class="wrap">
+    <div class="top-bar">
+      <div class="co">${inv.companyName || 'Your Company'}</div>
+      <div class="title">TAX INVOICE</div>
+    </div>
+    <div class="inv-meta">
+      <div class="box"><div class="lbl">Invoice No.</div><div class="val">${inv.ref || '—'}</div></div>
+      <div class="box"><div class="lbl">Date</div><div class="val">${inv.date || '—'}</div></div>
+      <div class="box"><div class="lbl">Payment Terms</div><div class="val">${inv.mode || 'Credit'}</div></div>
+      ${inv.companyGstin ? `<div class="box"><div class="lbl">Supplier GSTIN</div><div class="val">${inv.companyGstin}</div></div>` : ''}
+    </div>
+    <div class="parties">
+      <div>
+        <div class="party-lbl">Billed From</div>
+        <div class="party-name">${inv.companyName || '—'}</div>
+        <div class="party-sub">${inv.companyAddress || ''}<br>${inv.companyGstin ? 'GSTIN: ' + inv.companyGstin : ''}</div>
+      </div>
+      <div>
+        <div class="party-lbl">Billed To</div>
+        <div class="party-name">${inv.customer || '—'}</div>
+        <div class="party-sub">${inv.address || ''}${inv.gstin ? '<br>GSTIN: ' + inv.gstin : ''}${inv.phone ? '<br>Ph: ' + inv.phone : ''}</div>
+      </div>
+    </div>
+    <table>
+      <thead><tr>
+        <th style="width:32px">#</th>
+        <th>Item / Service</th>
+        <th style="width:64px;text-align:center">HSN</th>
+        <th style="width:72px;text-align:center">Qty</th>
+        <th style="width:80px;text-align:right">Rate</th>
+        <th style="width:52px;text-align:center">GST</th>
+        <th style="width:90px;text-align:right">Amount</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="totals-wrap"><div class="totals">
+      <div class="t-row"><span>Subtotal</span><span>${fmt(inv.subtotal)}</span></div>
+      ${inv.discount > 0 ? `<div class="t-row"><span>Discount</span><span style="color:#DC2626">– ${fmt(inv.discount)}</span></div>` : ''}
+      ${inv.cgst > 0 ? `<div class="t-row"><span>CGST</span><span>${fmt(inv.cgst)}</span></div>` : ''}
+      ${inv.sgst > 0 ? `<div class="t-row"><span>SGST</span><span>${fmt(inv.sgst)}</span></div>` : ''}
+      ${inv.igst > 0 ? `<div class="t-row"><span>IGST</span><span>${fmt(inv.igst)}</span></div>` : ''}
+      <div class="t-row grand"><span>Grand Total</span><span>${fmt(inv.total)}</span></div>
+    </div></div>
+    ${inv.narration ? `<div style="margin-bottom:16px;padding:10px 14px;background:#FFF9EC;border:1px solid #FDE68A;border-radius:4px;font-size:10px;color:#92400E"><strong>Narration:</strong> ${inv.narration}</div>` : ''}
+    <div class="footer-bar">
+      <div><strong>Terms &amp; Conditions:</strong><br>${inv.terms || 'Payment due within 30 days of invoice date.'}</div>
+      <div class="sign-box">
+        <div class="sign-line"></div>
+        <div><strong>${inv.companyName || 'Authorised Signatory'}</strong></div>
+        <div style="font-size:9px;color:#9CA3AF">Authorised Signatory</div>
+      </div>
+    </div>
+    <div class="stamp">Computer generated invoice · TallyDekho · ${inv.companyName || ''}</div>
+  </div></body></html>`;
+}
+
+// ─── Template: Modern ─────────────────────────────────────────────────────────
+function buildModernHTML(inv) {
+  const items = inv.items || [];
+  const rows = items.map((item, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td><div style="font-weight:600;color:#111">${item.name || '—'}</div>${item.hsn ? `<div style="font-size:9px;color:#6B7280">HSN: ${item.hsn}</div>` : ''}</td>
+      <td style="text-align:center">${fmtQ(item.qty, item.unit)}</td>
+      <td style="text-align:right">${fmt(item.rate)}</td>
+      <td style="text-align:center">${item.tax || '0'}%</td>
+      <td style="text-align:right;font-weight:700">${fmt(item.amount)}</td>
+    </tr>`).join('');
+
+  return `<!DOCTYPE html><html><head><meta charset="utf-8">
+  <title>${inv.ref || 'Invoice'}</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:11px;color:#1A1A1A;background:#fff}
+    .wrap{max-width:800px;margin:0 auto;padding:40px}
+    .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px}
+    .brand{width:48px;height:48px;background:#0D9488;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:800;margin-bottom:8px;text-align:center;line-height:48px}
+    .co-name{font-size:14px;font-weight:700;color:#1A1A1A}
+    .co-sub{font-size:10px;color:#6B7280;margin-top:2px;line-height:1.5}
+    .inv-title{text-align:right}
+    .inv-title h1{font-size:32px;font-weight:800;color:#0D9488;letter-spacing:-1px}
+    .inv-title .inv-num{font-size:13px;font-weight:600;color:#1A1A1A;margin-top:4px}
+    .inv-title .inv-date{font-size:11px;color:#6B7280;margin-top:2px}
+    .divider{height:3px;background:linear-gradient(90deg,#0D9488,#3B82F6);border-radius:2px;margin-bottom:28px}
+    .parties{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px}
+    .party-card{padding:16px;border-radius:8px;background:#F9FAFB;border:1px solid #E5E7EB}
+    .party-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#0D9488;font-weight:700;margin-bottom:6px}
+    .party-name{font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:4px}
+    .party-sub{font-size:10px;color:#6B7280;line-height:1.5}
+    table{width:100%;border-collapse:collapse;margin-bottom:24px}
+    thead tr{border-bottom:2px solid #0D9488}
+    th{padding:10px 8px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#6B7280;font-weight:600}
+    td{padding:10px 8px;border-bottom:1px solid #F0F0F0;font-size:11px}
+    .totals-wrap{display:flex;justify-content:flex-end;margin-bottom:24px}
+    .totals{width:240px}
+    .t-row{display:flex;justify-content:space-between;padding:5px 0;font-size:11px;color:#6B7280}
+    .t-grand{display:flex;justify-content:space-between;padding:10px 12px;background:#0D9488;color:#fff;border-radius:6px;font-size:14px;font-weight:700;margin-top:8px}
+    .footer{display:grid;grid-template-columns:1fr auto;gap:24px;padding-top:20px;border-top:1px solid #E5E7EB;margin-top:8px}
+    .sign-area{text-align:right}
+    .sign-line{height:1px;background:#1A1A1A;width:140px;margin:24px 0 4px auto}
+    .stamp{text-align:center;font-size:9px;color:#9CA3AF;margin-top:16px}
+    @media print{@page{size:A4;margin:8mm}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+  </style></head><body>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <div class="brand">${(inv.companyName || 'T').charAt(0)}</div>
+        <div class="co-name">${inv.companyName || 'Your Company'}</div>
+        <div class="co-sub">${inv.companyAddress || ''}${inv.companyGstin ? '<br>GSTIN: ' + inv.companyGstin : ''}</div>
+      </div>
+      <div class="inv-title">
+        <h1>INVOICE</h1>
+        <div class="inv-num">${inv.ref || '—'}</div>
+        <div class="inv-date">${inv.date || '—'}</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="parties">
+      <div class="party-card">
+        <div class="party-lbl">From</div>
+        <div class="party-name">${inv.companyName || '—'}</div>
+        <div class="party-sub">${inv.companyAddress || ''}${inv.companyGstin ? '<br>GSTIN: ' + inv.companyGstin : ''}</div>
+      </div>
+      <div class="party-card">
+        <div class="party-lbl">To</div>
+        <div class="party-name">${inv.customer || '—'}</div>
+        <div class="party-sub">${inv.address || ''}${inv.gstin ? '<br>GSTIN: ' + inv.gstin : ''}${inv.phone ? '<br>Ph: ' + inv.phone : ''}</div>
+      </div>
+    </div>
+    <table>
+      <thead><tr>
+        <th style="width:28px">#</th>
+        <th>Item / Service</th>
+        <th style="width:80px;text-align:center">Qty</th>
+        <th style="width:80px;text-align:right">Rate</th>
+        <th style="width:52px;text-align:center">GST</th>
+        <th style="width:90px;text-align:right">Amount</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="totals-wrap"><div class="totals">
+      <div class="t-row"><span>Subtotal</span><span>${fmt(inv.subtotal)}</span></div>
+      ${inv.discount > 0 ? `<div class="t-row"><span>Discount</span><span style="color:#DC2626">– ${fmt(inv.discount)}</span></div>` : ''}
+      ${inv.cgst > 0 ? `<div class="t-row"><span>CGST</span><span>${fmt(inv.cgst)}</span></div>` : ''}
+      ${inv.sgst > 0 ? `<div class="t-row"><span>SGST</span><span>${fmt(inv.sgst)}</span></div>` : ''}
+      ${inv.igst > 0 ? `<div class="t-row"><span>IGST</span><span>${fmt(inv.igst)}</span></div>` : ''}
+      <div class="t-grand"><span>Grand Total</span><span>${fmt(inv.total)}</span></div>
+    </div></div>
+    ${inv.narration ? `<div style="margin-bottom:20px;padding:10px 14px;background:#F0FDF4;border-left:3px solid #0D9488;font-size:10px;color:#065F46"><strong>Note:</strong> ${inv.narration}</div>` : ''}
+    <div class="footer">
+      <div style="font-size:10px;color:#6B7280"><strong style="color:#1A1A1A">Terms:</strong><br>${inv.terms || 'Payment due within 30 days.'}</div>
+      <div class="sign-area">
+        <div class="sign-line"></div>
+        <div style="font-size:10px;font-weight:600">${inv.companyName || ''}</div>
+        <div style="font-size:9px;color:#6B7280">Authorised Signatory</div>
+      </div>
+    </div>
+    <div class="stamp">Generated by TallyDekho · ${inv.companyName || ''}</div>
+  </div></body></html>`;
+}
+
+// ─── Template: Minimal ────────────────────────────────────────────────────────
+function buildMinimalHTML(inv) {
+  const items = inv.items || [];
+  const rows = items.map((item, i) => `
+    <tr>
+      <td style="color:#6B7280">${i + 1}</td>
+      <td>${item.name || '—'}${item.hsn ? `<span style="font-size:9px;color:#9CA3AF;margin-left:8px">HSN ${item.hsn}</span>` : ''}</td>
+      <td style="text-align:center;color:#6B7280">${fmtQ(item.qty, item.unit)}</td>
+      <td style="text-align:right;color:#6B7280">${fmt(item.rate)}</td>
+      <td style="text-align:center;color:#6B7280">${item.tax || '0'}%</td>
+      <td style="text-align:right;font-weight:600">${fmt(item.amount)}</td>
+    </tr>`).join('');
+
+  return `<!DOCTYPE html><html><head><meta charset="utf-8">
+  <title>${inv.ref || 'Invoice'}</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Georgia,'Times New Roman',serif;font-size:11px;color:#1A1A1A;background:#fff}
+    .wrap{max-width:740px;margin:0 auto;padding:48px}
+    .header{margin-bottom:40px}
+    .header-top{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:20px;border-bottom:2px solid #1A1A1A;margin-bottom:24px}
+    .co-name{font-size:18px;font-weight:700;letter-spacing:-.3px}
+    .co-sub{font-size:9px;color:#6B7280;margin-top:4px;line-height:1.6}
+    .inv-head h1{font-size:24px;font-weight:400;letter-spacing:2px;text-transform:uppercase;text-align:right;color:#1A1A1A}
+    .inv-head .num{font-size:11px;color:#6B7280;text-align:right;margin-top:6px}
+    .meta-row{display:flex;gap:32px;font-size:10px;color:#6B7280;margin-bottom:32px}
+    .meta-row strong{color:#1A1A1A;display:block;font-size:10px;margin-bottom:2px}
+    table{width:100%;border-collapse:collapse;margin-bottom:24px}
+    thead tr{border-bottom:1px solid #1A1A1A}
+    th{padding:8px 6px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:1px;font-family:Arial,sans-serif;color:#6B7280;font-weight:600}
+    td{padding:9px 6px;border-bottom:1px solid #F0F0F0;font-size:11px}
+    .totals-wrap{display:flex;justify-content:flex-end;margin-bottom:32px}
+    .totals{width:220px}
+    .t-row{display:flex;justify-content:space-between;padding:4px 0;font-size:10px;color:#6B7280;font-family:Arial,sans-serif}
+    .t-grand{display:flex;justify-content:space-between;padding:10px 0;font-size:14px;font-weight:700;border-top:1px solid #1A1A1A;margin-top:6px}
+    .footer{display:flex;justify-content:space-between;padding-top:24px;border-top:1px solid #E0E0E0;font-size:10px;color:#6B7280}
+    .sign-area{text-align:right}
+    .sign-line{height:1px;background:#1A1A1A;width:120px;margin:28px 0 4px auto}
+    .stamp{text-align:center;font-size:8px;color:#BDBDBD;margin-top:20px;font-family:Arial,sans-serif;letter-spacing:.5px}
+    @media print{@page{size:A4;margin:12mm}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+  </style></head><body>
+  <div class="wrap">
+    <div class="header">
+      <div class="header-top">
+        <div>
+          <div class="co-name">${inv.companyName || 'Your Company'}</div>
+          <div class="co-sub">${inv.companyAddress || ''}${inv.companyGstin ? ' · GSTIN: ' + inv.companyGstin : ''}</div>
+        </div>
+        <div class="inv-head">
+          <h1>Tax Invoice</h1>
+          <div class="num">${inv.ref || '—'} &nbsp;·&nbsp; ${inv.date || '—'}</div>
+        </div>
+      </div>
+      <div class="meta-row">
+        <div><strong>Billed To</strong>${inv.customer || '—'}${inv.address ? '<br>' + inv.address : ''}${inv.gstin ? '<br>GSTIN: ' + inv.gstin : ''}</div>
+        <div><strong>Payment</strong>${inv.mode || 'Credit'}</div>
+        <div><strong>Due Date</strong>—</div>
+      </div>
+    </div>
+    <table>
+      <thead><tr>
+        <th style="width:24px">#</th>
+        <th>Description</th>
+        <th style="width:72px;text-align:center">Qty</th>
+        <th style="width:80px;text-align:right">Rate</th>
+        <th style="width:48px;text-align:center">GST</th>
+        <th style="width:88px;text-align:right">Amount</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="totals-wrap"><div class="totals">
+      <div class="t-row"><span>Subtotal</span><span>${fmt(inv.subtotal)}</span></div>
+      ${inv.discount > 0 ? `<div class="t-row"><span>Discount</span><span>– ${fmt(inv.discount)}</span></div>` : ''}
+      ${inv.cgst > 0 ? `<div class="t-row"><span>CGST</span><span>${fmt(inv.cgst)}</span></div>` : ''}
+      ${inv.sgst > 0 ? `<div class="t-row"><span>SGST</span><span>${fmt(inv.sgst)}</span></div>` : ''}
+      ${inv.igst > 0 ? `<div class="t-row"><span>IGST</span><span>${fmt(inv.igst)}</span></div>` : ''}
+      <div class="t-grand"><span>Grand Total</span><span>${fmt(inv.total)}</span></div>
+    </div></div>
+    ${inv.narration ? `<div style="margin-bottom:24px;font-size:10px;color:#6B7280;font-style:italic">"${inv.narration}"</div>` : ''}
+    <div class="footer">
+      <div>${inv.terms || 'Payment due within 30 days of invoice date.'}</div>
+      <div class="sign-area">
+        <div class="sign-line"></div>
+        <div style="font-weight:600">${inv.companyName || ''}</div>
+        <div>Authorised Signatory</div>
+      </div>
+    </div>
+    <div class="stamp">COMPUTER GENERATED INVOICE · TALLYDEKHO</div>
+  </div></body></html>`;
+}
+
+export function buildInvoiceHTML(inv, template) {
+  switch (template) {
+    case 'modern':   return buildModernHTML(inv);
+    case 'minimal':  return buildMinimalHTML(inv);
+    default:         return buildTallyClassicHTML(inv);
+  }
+}
+
+// ─── Preview component ────────────────────────────────────────────────────────
+export default function InvoicePDF({ open, onClose, invoice, companyGuid }) {
   if (!open) return null;
 
+  const template = getPDFTemplate(companyGuid);
   const inv = invoice || {
-    ref: 'SI-2025-0782',
-    date: '10 Jul 2025',
-    customer: 'Reliance Retail Ltd.',
-    gstin: '27AABCR0001A1Z3',
-    address: 'Maker Chambers IV, Nariman Point, Mumbai – 400021',
-    phone: '+91 98200 11111',
-    items: SAMPLE_ITEMS,
-    subtotal: 69500,
-    discount: 0,
-    cgst: 6255,
-    sgst: 6255,
-    igst: 0,
-    total: 82010,
-    mode: 'Credit',
-    terms: 'Payment due within 30 days.',
-    narration: 'Goods dispatched via Blue Dart. EWB: 271234567890',
+    ref: 'SI-2025-0782', date: '07 Apr 2026',
+    companyName: 'Your Company', companyGstin: '27AABCM1234F1Z5',
+    companyAddress: '301, Business Park, Mumbai – 400021',
+    customer: 'Sample Customer Ltd.', gstin: '27AABCS1234A1Z3',
+    address: '12, MG Road, Bengaluru – 560001', phone: '+91 98200 00001',
+    items: [
+      { name: 'Polymer Sheet 2mm', hsn: '3920', qty: 200, unit: 'Kg', rate: 180, tax: 18, amount: 36000 },
+      { name: 'Chemical Mix Type-3', hsn: '2900', qty: 50, unit: 'Ltr', rate: 420, tax: 18, amount: 21000 },
+    ],
+    subtotal: 57000, cgst: 5130, sgst: 5130, igst: 0, discount: 0, total: 67260,
+    mode: 'Credit', terms: 'Payment due within 30 days.',
+    narration: 'Goods dispatched via Blue Dart.',
   };
 
   const handlePrint = () => {
-    const content = printRef.current;
+    const html = buildInvoiceHTML(inv, template);
     const win = window.open('', '_blank');
-    win.document.write(`
-      <html><head>
-        <title>${inv.ref}</title>
-        <style>
-          * { box-sizing: border-box; margin: 0; padding: 0; }
-          body { font-family: 'Inter', Arial, sans-serif; font-size: 12px; color: #1A1A1A; }
-          .invoice { max-width: 800px; margin: 20px auto; padding: 32px; }
-          .header { display: flex; justify-content: space-between; margin-bottom: 32px; }
-          .logo { font-size: 22px; font-weight: 800; color: #3F5263; }
-          .title { font-size: 28px; font-weight: 700; color: #1A1A1A; text-align: right; }
-          .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
-          .label { font-size: 10px; color: #787774; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.05em; }
-          .value { font-size: 12px; color: #1A1A1A; font-weight: 500; }
-          table { width: 100%; border-collapse: collapse; margin: 24px 0; }
-          th { background: #F7F6F3; padding: 10px 12px; text-align: left; font-size: 10px; text-transform: uppercase; color: #787774; border-bottom: 1px solid #E8E7E3; }
-          td { padding: 10px 12px; border-bottom: 1px solid #F1F0EC; font-size: 12px; }
-          .totals { margin-left: auto; width: 280px; }
-          .total-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 12px; }
-          .grand-total { font-size: 16px; font-weight: 700; color: #3F5263; padding-top: 8px; border-top: 2px solid #3F5263; }
-          .footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #E8E7E3; font-size: 10px; color: #787774; }
-          @media print { @page { size: A4; margin: 0; } body { -webkit-print-color-adjust: exact; } }
-        </style>
-      </head><body>
-        <div class="invoice">
-          <div class="header">
-            <div>
-              <div class="logo">TallyDekho</div>
-              <div style="margin-top:8px;color:#787774;font-size:11px">Maaruji Industries Pvt. Ltd.<br/>301, Mittal Court, Nariman Point<br/>Mumbai – 400021<br/>GSTIN: 27AABCM1234F1Z5</div>
-            </div>
-            <div style="text-align:right">
-              <div class="title">TAX INVOICE</div>
-              <div style="margin-top:8px;color:#3F5263;font-size:16px;font-weight:700">${inv.ref}</div>
-              <div style="color:#787774;font-size:11px;margin-top:4px">Date: ${inv.date}</div>
-            </div>
-          </div>
-          <div class="grid2">
-            <div>
-              <div class="label">Bill To</div>
-              <div style="font-size:14px;font-weight:600;color:#1A1A1A">${inv.customer}</div>
-              <div style="color:#787774;font-size:11px;margin-top:4px">${inv.address || ''}<br/>GSTIN: ${inv.gstin || 'N/A'}<br/>Phone: ${inv.phone || 'N/A'}</div>
-            </div>
-            <div style="text-align:right">
-              <div class="label">Payment Terms</div>
-              <div class="value">${inv.mode}</div>
-              <div style="margin-top:12px"><div class="label">Place of Supply</div><div class="value">Maharashtra (27)</div></div>
-            </div>
-          </div>
-          <table>
-            <thead><tr>
-              <th>#</th><th>Item / Service</th><th>HSN</th><th>Qty</th><th>Rate</th><th>Tax</th><th>Amount</th>
-            </tr></thead>
-            <tbody>
-              ${(inv.items || SAMPLE_ITEMS).map((item, i) => `
-                <tr>
-                  <td>${i + 1}</td>
-                  <td><strong>${item.name}</strong></td>
-                  <td>${item.hsn}</td>
-                  <td>${item.qty} ${item.unit}</td>
-                  <td>${fmt(item.rate)}</td>
-                  <td>${item.tax}%</td>
-                  <td><strong>${fmt(item.amount)}</strong></td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-          <div style="display:flex;justify-content:flex-end">
-            <div class="totals">
-              <div class="total-row"><span style="color:#787774">Subtotal</span><span>${fmt(inv.subtotal)}</span></div>
-              ${inv.discount > 0 ? `<div class="total-row"><span style="color:#787774">Discount</span><span style="color:#F43F5E">-${fmt(inv.discount)}</span></div>` : ''}
-              ${inv.cgst > 0 ? `<div class="total-row"><span style="color:#787774">CGST</span><span>${fmt(inv.cgst)}</span></div>` : ''}
-              ${inv.sgst > 0 ? `<div class="total-row"><span style="color:#787774">SGST</span><span>${fmt(inv.sgst)}</span></div>` : ''}
-              ${inv.igst > 0 ? `<div class="total-row"><span style="color:#787774">IGST</span><span>${fmt(inv.igst)}</span></div>` : ''}
-              <div class="total-row grand-total"><span>Grand Total</span><span>${fmt(inv.total)}</span></div>
-            </div>
-          </div>
-          ${inv.narration ? `<div style="margin-top:20px;padding:12px;background:#F7F6F3;border-radius:6px;font-size:11px;color:#787774"><strong>Narration:</strong> ${inv.narration}</div>` : ''}
-          <div class="footer">
-            <div style="display:flex;justify-content:space-between">
-              <div><strong>Terms:</strong> ${inv.terms || 'Payment due within 30 days.'}</div>
-              <div><strong>Authorised Signatory</strong><br/><br/>________________________</div>
-            </div>
-            <div style="margin-top:12px;text-align:center;color:#AEACA8">This is a computer generated invoice · TallyDekho v3.7.2</div>
-          </div>
-        </div>
-      </body></html>
-    `);
+    win.document.write(html);
     win.document.close();
     win.focus();
-    setTimeout(() => { win.print(); win.close(); }, 500);
+    setTimeout(() => { win.print(); }, 600);
   };
 
+  const previewHtml = buildInvoiceHTML(inv, template);
+
   return (
-    <>
-      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-2xl w-full flex flex-col" style={{ maxWidth: 860, maxHeight: '92vh' }}>
-          {/* Toolbar */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E7E3] flex-shrink-0">
-            <div>
-              <p className="text-sm font-semibold text-[#1A1A1A]">Invoice Preview</p>
-              <p className="text-xs text-[#787774] mt-0.5">{inv.ref && inv.ref !== 'Pending' ? inv.ref + ' · ' : ''}{inv.date}</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <button onClick={handlePrint}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">
-                <Printer size={14} /> Print
-              </button>
-              <button onClick={handlePrint}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium border border-[#E8E7E3] text-[#787774] hover:bg-[#F7F6F3]">
-                <Download size={14} /> Download PDF
-              </button>
-              <button onClick={handlePrint}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium border border-[#E8E7E3] text-[#787774] hover:bg-[#F7F6F3]">
-                <Share2 size={14} /> Share
-              </button>
-              <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg text-[#787774] hover:bg-[#F1F0EC]">
-                <X size={16} />
-              </button>
-            </div>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full flex flex-col" style={{ maxWidth: 900, maxHeight: '94vh' }}>
+        {/* Toolbar */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E7E3] flex-shrink-0">
+          <div>
+            <p className="text-sm font-semibold text-[#1A1A1A]">Invoice Preview</p>
+            <p className="text-xs text-[#787774] mt-0.5">
+              {inv.ref && inv.ref !== 'Pending' ? inv.ref + ' · ' : ''}{inv.date}
+              <span className="ml-2 px-1.5 py-0.5 rounded bg-[#F4F5F6] text-[#787774] text-[10px]">
+                {template === 'modern' ? 'Modern' : template === 'minimal' ? 'Minimal' : 'Tally Classic'}
+              </span>
+            </p>
           </div>
-
-          {/* Invoice preview */}
-          <div className="flex-1 overflow-y-auto p-6 bg-[#F7F6F3]">
-            <div ref={printRef} className="bg-white rounded-xl shadow-notion-md mx-auto p-10" style={{ maxWidth: 760 }}>
-              {/* Header */}
-              <div className="flex justify-between items-start mb-8">
-                <div>
-                  <div className="text-2xl font-bold text-[#3F5263]">TallyDekho</div>
-                  <div className="text-xs text-[#787774] mt-2 space-y-0.5">
-                    <p className="font-semibold text-[#1A1A1A]">Maaruji Industries Pvt. Ltd.</p>
-                    <p>301, Mittal Court, Nariman Point, Mumbai – 400021</p>
-                    <p>GSTIN: 27AABCM1234F1Z5 · Ph: +91 98200 12345</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-3xl font-bold text-[#1A1A1A]">TAX INVOICE</div>
-                  <div className="text-lg font-bold mt-1 text-[#3F5263]">{inv.ref}</div>
-                  <div className="text-xs text-[#787774] mt-1">Date: {inv.date}</div>
-                </div>
-              </div>
-
-              {/* Divider */}
-              <div className="h-px bg-[#E8E7E3] mb-6" />
-
-              {/* Bill To / Details */}
-              <div className="grid grid-cols-2 gap-6 mb-6">
-                <div>
-                  <p className="text-[10px] font-bold text-[#AEACA8] uppercase tracking-widest mb-2">Bill To</p>
-                  <p className="font-bold text-[#1A1A1A] text-base">{inv.customer}</p>
-                  <p className="text-xs text-[#787774] mt-1 leading-relaxed">{inv.address}</p>
-                  <p className="text-xs text-[#787774] mt-1">GSTIN: {inv.gstin}</p>
-                  <p className="text-xs text-[#787774]">Ph: {inv.phone}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] font-bold text-[#AEACA8] uppercase tracking-widest mb-2">Invoice Details</p>
-                  <div className="space-y-1.5 text-xs">
-                    {[['Payment Terms', inv.mode], ['Place of Supply', 'Maharashtra (27)'], ['IRN', 'Generated ✓']].map(([l, v]) => (
-                      <div key={l} className="flex justify-between gap-8">
-                        <span className="text-[#787774]">{l}</span>
-                        <span className="font-medium text-[#1A1A1A]">{v}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Items table */}
-              <table className="w-full text-sm mb-6">
-                <thead>
-                  <tr className="bg-[#F7F6F3] border-y border-[#E8E7E3]">
-                    {['#', 'Item / Service', 'HSN', 'Qty', 'Rate', 'Tax', 'Amount'].map(h => (
-                      <th key={h} className="px-3 py-2.5 text-left text-[10px] font-bold text-[#787774] uppercase">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {(inv.items || SAMPLE_ITEMS).map((item, i) => (
-                    <tr key={i} className="border-b border-[#F1F0EC]">
-                      <td className="px-3 py-3 text-[#787774]">{i + 1}</td>
-                      <td className="px-3 py-3 font-medium text-[#1A1A1A]">{item.name}</td>
-                      <td className="px-3 py-3 font-mono text-xs text-[#787774]">{item.hsn}</td>
-                      <td className="px-3 py-3">{item.qty} {item.unit}</td>
-                      <td className="px-3 py-3">{fmt(item.rate)}</td>
-                      <td className="px-3 py-3">{item.tax}%</td>
-                      <td className="px-3 py-3 font-semibold text-[#1A1A1A]">{fmt(item.amount)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              {/* Totals */}
-              <div className="flex justify-end mb-6">
-                <div className="w-64 space-y-1.5 text-sm">
-                  {[['Subtotal', inv.subtotal], inv.discount > 0 && ['Discount', -inv.discount], inv.cgst > 0 && ['CGST', inv.cgst], inv.sgst > 0 && ['SGST', inv.sgst], inv.igst > 0 && ['IGST', inv.igst]].filter(Boolean).map(([l, v]) => (
-                    <div key={l} className="flex justify-between py-1 border-b border-[#F1F0EC]">
-                      <span className="text-[#787774]">{l}</span>
-                      <span className={`font-medium ${v < 0 ? 'text-rose-500' : 'text-[#1A1A1A]'}`}>{v < 0 ? '-' + fmt(Math.abs(v)) : fmt(v)}</span>
-                    </div>
-                  ))}
-                  <div className="flex justify-between py-2 border-t-2 mt-1 border-[#3F5263]">
-                    <span className="font-bold text-[#1C2B3A] text-base">Grand Total</span>
-                    <span className="font-bold text-base text-[#3F5263]">{fmt(inv.total)}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Narration */}
-              {inv.narration && (
-                <div className="p-3 bg-[#F7F6F3] rounded-lg text-xs text-[#787774] mb-6">
-                  <strong className="text-[#1A1A1A]">Narration: </strong>{inv.narration}
-                </div>
-              )}
-
-              {/* Footer */}
-              <div className="h-px bg-[#E8E7E3] mb-4" />
-              <div className="flex justify-between items-end text-xs">
-                <div className="text-[#787774]">
-                  <p><strong className="text-[#1A1A1A]">Terms:</strong> {inv.terms || 'Payment due within 30 days.'}</p>
-                  <p className="mt-1 text-[#AEACA8]">This is a computer generated invoice · TallyDekho v3.7.2</p>
-                </div>
-                <div className="text-right text-[#787774]">
-                  <p className="font-medium text-[#1A1A1A]">Authorised Signatory</p>
-                  <div className="mt-6 border-t border-[#E8E7E3] pt-1 w-32 ml-auto">
-                    <p>Maaruji Industries</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="flex items-center gap-2">
+            <button onClick={handlePrint}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium text-white bg-[#1C2B3A] hover:bg-[#2C3B4A] transition-colors">
+              <Printer size={14} /> Print / Download PDF
+            </button>
+            <button onClick={onClose}
+              className="w-8 h-8 flex items-center justify-center rounded-lg text-[#787774] hover:bg-[#F1F0EC]">
+              <X size={16} />
+            </button>
           </div>
         </div>
+
+        {/* iframe preview */}
+        <div className="flex-1 overflow-hidden bg-[#F7F6F3] p-4">
+          <iframe
+            srcDoc={previewHtml}
+            className="w-full h-full rounded-xl border border-[#E8E7E3] bg-white shadow-sm"
+            title="Invoice Preview"
+            sandbox="allow-same-origin"
+          />
+        </div>
       </div>
-    </>
+    </div>
   );
 }

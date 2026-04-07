@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { User, Building2, CreditCard, Globe, Bell, Plug, Info, ChevronRight, Check } from 'lucide-react';
+import { User, Building2, CreditCard, Globe, Bell, Plug, Info, ChevronRight, Check, FileText } from 'lucide-react';
 import { company } from '../data/mockData';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
+import { getPDFTemplate, setPDFTemplate, buildInvoiceHTML } from '../components/InvoicePDF';
 
 const AI_SUGGESTIONS = [
   'How do I pair my mobile with the Desktop App?',
@@ -92,11 +93,136 @@ function AIChatPanel() {
 
 const GROUPS = [
   {key:'account',label:'Account & Org',icon:User,subs:['Profile','Company Info','License']},
-  {key:'preferences',label:'Preferences',icon:Globe,subs:['Language & Region','Currency & Format','Voucher Config']},
+  {key:'preferences',label:'Preferences',icon:Globe,subs:['Language & Region','Currency & Format','Voucher Config','Invoice Templates']},
   {key:'notifications',label:'Notifications',icon:Bell,subs:['Channels & Quiet Hours','Low Stock & Expiry','Compliance Reminders','Payment Reminders']},
   {key:'integrations',label:'Integrations',icon:Plug,subs:['Tally ERP Sync','Bank Feeds','E-Way Bill','E-Invoice']},
   {key:'contact',label:'Contact & Info',icon:Info,subs:['About & Versions','Data Security','Help Center']},
 ];
+
+const TEMPLATES = [
+  {
+    id: 'tally_classic',
+    name: 'Tally Classic',
+    desc: 'Dark header, standard GST table — matches Tally Prime default style',
+    preview: 'Dark navy header bar · White body · Standard table columns',
+    badge: 'Default',
+  },
+  {
+    id: 'modern',
+    name: 'Modern',
+    desc: 'Clean teal accent, gradient divider, coloured totals row',
+    preview: 'Teal accent · Card-style party info · Coloured grand total',
+    badge: null,
+  },
+  {
+    id: 'minimal',
+    name: 'Minimal',
+    desc: 'Serif typography, no colour, clean borders — formal / legal style',
+    preview: 'Serif font · No background colour · Elegant borders',
+    badge: null,
+  },
+];
+
+const SAMPLE_INV = {
+  ref: 'SI-2025-0001', date: '07 Apr 2026',
+  companyName: 'Your Company', companyGstin: '27AABCM1234F1Z5',
+  companyAddress: 'Mumbai – 400021',
+  customer: 'Sample Customer Ltd.', gstin: '27AABCS1234A1Z3',
+  address: 'Bengaluru – 560001',
+  items: [
+    { name: 'Product A', hsn: '8471', qty: 10, unit: 'Pcs', rate: 5000, tax: 18, amount: 50000 },
+    { name: 'Service Fee', hsn: '9983', qty: 1, unit: 'Nos', rate: 2000, tax: 18, amount: 2000 },
+  ],
+  subtotal: 52000, cgst: 4680, sgst: 4680, igst: 0, discount: 0, total: 61360,
+  mode: 'Credit', terms: 'Payment due within 30 days.',
+};
+
+function InvoiceTemplateSettings({ companyGuid }) {
+  const [selected, setSelected] = useState(() => getPDFTemplate(companyGuid));
+  const [preview, setPreview] = useState(null);
+  const [saved, setSaved] = useState(false);
+
+  const save = () => {
+    setPDFTemplate(companyGuid, selected);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  const openPreview = (id) => {
+    const html = buildInvoiceHTML(SAMPLE_INV, id);
+    setPreview(html);
+  };
+
+  return (
+    <div className="space-y-5">
+      <div>
+        <p className="text-base font-semibold text-[#1C2B3A]">Invoice PDF Templates</p>
+        <p className="text-xs text-[#787774] mt-1">Choose a default template for all Sales Invoice PDFs. Applied per company.</p>
+      </div>
+
+      <div className="space-y-3">
+        {TEMPLATES.map(tpl => (
+          <div
+            key={tpl.id}
+            onClick={() => setSelected(tpl.id)}
+            className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all ${
+              selected === tpl.id
+                ? 'border-[#3F5263] bg-[#F4F5F6]'
+                : 'border-[#D9DCE0] bg-white hover:border-[#B0B8C1]'
+            }`}
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <FileText size={15} className="text-[#3F5263] flex-shrink-0" />
+                  <span className="text-sm font-semibold text-[#1C2B3A]">{tpl.name}</span>
+                  {tpl.badge && (
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#3F5263] text-white tracking-wide">{tpl.badge}</span>
+                  )}
+                </div>
+                <p className="text-xs text-[#787774] mt-1.5 ml-5">{tpl.desc}</p>
+                <p className="text-[10px] text-[#9CA3AF] mt-1 ml-5 font-mono">{tpl.preview}</p>
+              </div>
+              <div className="flex items-center gap-2 ml-4">
+                <button
+                  onClick={e => { e.stopPropagation(); openPreview(tpl.id); }}
+                  className="px-2.5 py-1 rounded-lg text-[11px] font-medium border border-[#D9DCE0] text-[#6B7280] hover:border-[#3F5263] hover:text-[#3F5263] transition-colors"
+                >Preview</button>
+                {selected === tpl.id && (
+                  <div className="w-5 h-5 rounded-full bg-[#3F5263] flex items-center justify-center flex-shrink-0">
+                    <Check size={12} className="text-white" />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <button
+        onClick={save}
+        className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors"
+      >
+        {saved ? '✓ Saved!' : 'Save Template'}
+      </button>
+
+      {/* Preview modal */}
+      {preview && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-6" onClick={() => setPreview(null)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full flex flex-col" style={{ maxWidth: 860, maxHeight: '90vh' }} onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E8E7E3]">
+              <p className="text-sm font-semibold text-[#1A1A1A]">Template Preview</p>
+              <button onClick={() => setPreview(null)} className="w-7 h-7 flex items-center justify-center rounded-lg text-[#787774] hover:bg-[#F1F0EC] text-lg">×</button>
+            </div>
+            <div className="flex-1 overflow-hidden p-3 bg-[#F7F6F3]">
+              <iframe srcDoc={preview} className="w-full h-full rounded-lg border border-[#E8E7E3]" title="Template Preview" sandbox="allow-same-origin" />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 const Field = ({label,defaultValue,type='text'}) => (
   <div>
@@ -267,6 +393,9 @@ export default function Settings() {
               ))}
               <button className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">Save</button>
             </div>
+          )}
+          {activeGroup==='preferences'&&activeSub==='Invoice Templates'&&(
+            <InvoiceTemplateSettings companyGuid={selectedCompany?.guid} />
           )}
           {activeGroup==='notifications'&&activeSub==='Channels & Quiet Hours'&&(
             <div className="space-y-4">

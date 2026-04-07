@@ -77,9 +77,12 @@ export default function SalesInvoiceForm({ onClose }) {
         isOptional,
         items: items.filter(i => i.name).map(i => ({
           itemName: i.name,
+          hsn: i.hsn || '',
           actualQty: i.qty,
           billedQty: i.qty,
+          unit: i.unit || 'Nos',
           rate: i.rate,
+          tax: i.tax || '18%',
           amount: i.amount,
           salesLedger,
           godown: warehouse || 'Main Location',
@@ -121,13 +124,16 @@ export default function SalesInvoiceForm({ onClose }) {
       phone: '',
       items: (createdPayload.items || []).map((item, i) => ({
         name: item.itemName,
-        hsn: '',
+        hsn: item.hsn || '',
         qty: item.billedQty,
-        unit: 'Nos',
+        unit: item.unit || 'Nos',
         rate: item.rate,
-        tax: 18,
+        tax: parseInt(item.tax) || 18,
         amount: item.amount,
       })),
+      companyName: selectedCompany?.name,
+      companyGstin: selectedCompany?.gstin || '',
+      companyAddress: selectedCompany?.address || '',
       subtotal,
       discount: 0,
       cgst: Math.round(taxAmt / 2),
@@ -140,7 +146,7 @@ export default function SalesInvoiceForm({ onClose }) {
     } : null;
 
     if (showPDF && invoiceForPDF) {
-      return <InvoicePDF open={true} onClose={() => setShowPDF(false)} invoice={invoiceForPDF} />;
+      return <InvoicePDF open={true} onClose={() => setShowPDF(false)} invoice={invoiceForPDF} companyGuid={selectedCompany?.guid} />;
     }
 
     return (
