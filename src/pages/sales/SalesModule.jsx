@@ -7,7 +7,7 @@ import Table from '../../components/Table';
 import Drawer from '../../components/Drawer';
 import InvoicePDF from '../../components/InvoicePDF';
 import VoucherDetail from '../../components/VoucherDetail';
-import { salesInvoices as mockSalesInvoices } from '../../data/salesMock';
+// No mock data — show empty state when not paired
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 import wsService from '../../services/websocket';
@@ -34,7 +34,7 @@ export default function SalesModule() {
   const isDemo = !isPaired;
   // Compute monthly chart from real invoice data
   const monthlyChart = useMemo(() => {
-    const src = invoices.length > 0 ? invoices : (isDemo ? mockSalesInvoices : []);
+    const src = invoices.length > 0 ? invoices : [];
     const map = {};
     src.forEach(v => {
       const d = v.date || '';
@@ -130,7 +130,7 @@ export default function SalesModule() {
   }, [search, companyGuid]); // eslint-disable-line
 
   // Use demo data when not paired or no real invoices loaded
-  const displayInvoices = (isDemo && invoices.length === 0) ? mockSalesInvoices : invoices;
+  const displayInvoices = invoices;
   const filtered = displayInvoices.filter(r =>
     (!search || (r.customer||r.ref||'').toLowerCase().includes(search.toLowerCase())) &&
     (statusFilter === 'All' || r.status === statusFilter)

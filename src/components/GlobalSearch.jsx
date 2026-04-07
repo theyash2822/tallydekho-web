@@ -1,55 +1,81 @@
-import { useState, useEffect, useRef } from 'react';
-import { Search, FileText, BookOpen, Package, TrendingUp, ShoppingCart, X, ArrowRight } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Search, BookOpen, Package, TrendingUp, ShoppingCart, X, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { ledgerList } from '../data/mockData';
-import { salesInvoices } from '../data/salesMock';
-import { purchaseInvoices } from '../data/purchaseMock';
-import { stockItems } from '../data/inventoryMock';
+import { useAuth } from '../contexts/AuthContext';
+import api from '../services/api';
 
-// Build search index from all modules
-const buildIndex = () => [
-  ...salesInvoices.map(i => ({ type: 'Sales Invoice', label: i.ref, sub: i.customer + ' · ' + i.date, path: '/sales', icon: TrendingUp, color: '#3F5263', amount: i.amount })),
-  ...purchaseInvoices.map(i => ({ type: 'Purchase', label: i.ref, sub: i.vendor + ' · ' + i.date, path: '/purchase', icon: ShoppingCart, color: '#526373', amount: i.amount })),
-  ...ledgerList.map(l => ({ type: 'Ledger', label: l.name, sub: l.group, path: '/ledgers', icon: BookOpen, color: '#798692' })),
-  ...stockItems.map(s => ({ type: 'Stock Item', label: s.name, sub: s.category + ' · ' + s.qty + ' ' + s.unit, path: '/inventory', icon: Package, color: '#9FA9B1' })),
-];
-
-const INDEX = buildIndex();
 const fmt = n => n ? '₹' + n.toLocaleString('en-IN') : '';
 
+const QUICK_NAV = [
+  { label: 'Sales',      path: '/sales',     icon: TrendingUp,  color: '#3F5263' },
+  { label: 'Purchase',   path: '/purchase',  icon: ShoppingCart,color: '#526373' },
+  { label: 'Inventory',  path: '/inventory', icon: Package,     color: '#798692' },
+  { label: 'Ledgers',    path: '/ledgers',   icon: BookOpen,    color: '#9FA9B1' },
+];
+
 export default function GlobalSearch() {
-  const [query, setQuery] = useState('');
-  const [open, setOpen] = useState(false);
+  const [query, setQuery]     = useState('');
+  const [open, setOpen]       = useState(false);
   const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState(0);
   const navigate = useNavigate();
+  const { selectedCompany, selectedFY } = useAuth();
   const inputRef = useRef(null);
-  const ref = useRef(null);
+  const ref      = useRef(null);
+  const timer    = useRef(null);
 
   useEffect(() => {
     const h = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    const k = e => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault(); inputRef.current?.focus(); setOpen(true);
+      }
+    };
     document.addEventListener('mousedown', h);
-    // Ctrl+K / Cmd+K shortcut
-    const k = e => { if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); inputRef.current?.focus(); setOpen(true); } };
     document.addEventListener('keydown', k);
     return () => { document.removeEventListener('mousedown', h); document.removeEventListener('keydown', k); };
   }, []);
 
+  // Live search — debounced 350ms
   useEffect(() => {
-    if (!query.trim()) { setResults([]); return; }
-    const q = query.toLowerCase();
-    setResults(INDEX.filter(item => item.label.toLowerCase().includes(q) || item.sub.toLowerCase().includes(q) || item.type.toLowerCase().includes(q)).slice(0, 8));
-    setSelected(0);
-  }, [query]);
+    clearTimeout(timer.current);
+    if (!query.trim() || !selectedCompany?.guid) { setResults([]); return; }
+    setLoading(true);
+    timer.current = setTimeout(() => {
+      api.fetchVouchers({
+        companyGuid: selectedCompany.guid,
+        searchText:  query.trim(),
+        page: 1, pageSize: 8,
+        fromDate: selectedFY?.startDate,
+        toDate:   selectedFY?.endDate,
+      })
+        .then(res => {
+          const vouchers = res?.data?.vouchers || [];
+          setResults(vouchers.map(v => ({
+            type:   v.voucher_type || 'Voucher',
+            label:  v.voucher_number || v.guid?.slice(-8) || 'N/A',
+            sub:    v.party_name || '—',
+            path:   (v.voucher_type || '').toLowerCase().includes('purchase') ? '/purchase' : '/sales',
+            icon:   (v.voucher_type || '').toLowerCase().includes('purchase') ? ShoppingCart : TrendingUp,
+            color:  (v.voucher_type || '').toLowerCase().includes('purchase') ? '#526373' : '#3F5263',
+            amount: parseFloat(v.amount) || 0,
+          })));
+        })
+        .catch(() => setResults([]))
+        .finally(() => setLoading(false));
+    }, 350);
+    return () => clearTimeout(timer.current);
+  }, [query, selectedCompany?.guid, selectedFY?.uniqueId]);
 
-  const handleKey = (e) => {
+  const handleKey = e => {
     if (e.key === 'ArrowDown') { e.preventDefault(); setSelected(p => Math.min(p + 1, results.length - 1)); }
     if (e.key === 'ArrowUp')   { e.preventDefault(); setSelected(p => Math.max(p - 1, 0)); }
     if (e.key === 'Enter' && results[selected]) { navigate(results[selected].path); setOpen(false); setQuery(''); }
     if (e.key === 'Escape') { setOpen(false); setQuery(''); }
   };
 
-  const go = (item) => { navigate(item.path); setOpen(false); setQuery(''); };
+  const go = item => { navigate(item.path); setOpen(false); setQuery(''); };
 
   return (
     <div className="relative flex-1 max-w-sm" ref={ref}>
@@ -61,9 +87,8 @@ export default function GlobalSearch() {
           onChange={e => { setQuery(e.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}
           onKeyDown={handleKey}
-          placeholder="Search invoices, ledgers, items... (⌘K)"
-          className="w-full pl-8 pr-8 py-1.5 text-xs bg-[#F5F4EF] border border-[#E9E8E3] rounded-lg outline-none focus:border-[#1A1A1A] focus:ring-2 focus:ring-black/8 focus:bg-white transition-all placeholder:text-[#AEACA8]"
-          style={{ '--tw-ring-color': '#05966920' }}
+          placeholder="Search invoices, ledgers... (⌘K)"
+          className="w-full pl-8 pr-8 py-1.5 text-xs bg-[#F5F4EF] border border-[#E9E8E3] rounded-lg outline-none focus:border-[#1A1A1A] focus:ring-2 focus:bg-white transition-all placeholder:text-[#AEACA8]"
         />
         {query && (
           <button onClick={() => { setQuery(''); setResults([]); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#AEACA8] hover:text-[#787774]">
@@ -72,25 +97,36 @@ export default function GlobalSearch() {
         )}
       </div>
 
-      {/* Dropdown */}
-      {open && (query.trim() || results.length > 0) && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-[#E8E7E3] rounded-xl shadow-notion-lg z-[100] overflow-hidden">
-          {results.length === 0 && query.trim() ? (
+      {open && (
+        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-[#E8E7E3] rounded-xl shadow-lg z-[100] overflow-hidden">
+          {/* Loading */}
+          {loading && (
+            <div className="px-4 py-4 text-center text-xs text-[#AEACA8]">Searching…</div>
+          )}
+
+          {/* No results */}
+          {!loading && query.trim() && results.length === 0 && (
             <div className="px-4 py-6 text-center text-xs text-[#AEACA8]">No results for "{query}"</div>
-          ) : results.length === 0 ? (
+          )}
+
+          {/* Quick nav (no query) */}
+          {!loading && !query.trim() && (
             <div className="px-4 py-3">
               <p className="text-[10px] font-semibold text-[#AEACA8] uppercase tracking-widest mb-2">Quick navigate</p>
-              {[['Sales', '/sales', TrendingUp, '#3F5263'], ['Purchase', '/purchase', ShoppingCart, '#526373'], ['Inventory', '/inventory', Package, '#798692'], ['Ledgers', '/ledgers', BookOpen, '#9FA9B1']].map(([l, p, Icon, c]) => (
-                <button key={l} onClick={() => { navigate(p); setOpen(false); }}
+              {QUICK_NAV.map(({ label, path, icon: Icon, color }) => (
+                <button key={label} onClick={() => { navigate(path); setOpen(false); }}
                   className="flex items-center gap-2.5 w-full px-2 py-2 rounded-lg hover:bg-[#F7F6F3] text-left transition-colors">
-                  <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: c + '20' }}>
-                    <Icon size={12} style={{ color: c }} />
+                  <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: color + '20' }}>
+                    <Icon size={12} style={{ color }} />
                   </div>
-                  <span className="text-sm text-[#1A1A1A]">{l}</span>
+                  <span className="text-sm text-[#1A1A1A]">{label}</span>
                 </button>
               ))}
             </div>
-          ) : (
+          )}
+
+          {/* Results */}
+          {!loading && results.length > 0 && (
             <div className="py-1">
               <p className="px-4 pt-2 pb-1 text-[10px] font-semibold text-[#AEACA8] uppercase tracking-widest">{results.length} results</p>
               {results.map((item, i) => {
@@ -105,7 +141,7 @@ export default function GlobalSearch() {
                       <p className="text-sm font-medium text-[#1A1A1A] truncate">{item.label}</p>
                       <p className="text-xs text-[#787774] truncate">{item.type} · {item.sub}</p>
                     </div>
-                    {item.amount && <span className="text-xs font-semibold text-[#1A1A1A] flex-shrink-0">{fmt(item.amount)}</span>}
+                    {item.amount > 0 && <span className="text-xs font-semibold text-[#1A1A1A] flex-shrink-0">{fmt(item.amount)}</span>}
                     <ArrowRight size={12} className="text-[#AEACA8] flex-shrink-0" />
                   </button>
                 );

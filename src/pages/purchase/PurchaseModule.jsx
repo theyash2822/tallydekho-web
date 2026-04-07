@@ -8,7 +8,7 @@ import Badge from '../../components/Badge';
 import Table from '../../components/Table';
 import Drawer from '../../components/Drawer';
 import VoucherDetail from '../../components/VoucherDetail';
-import { purchaseInvoices, purchaseOrders, purchaseKPIs } from '../../data/purchaseMock';
+// No mock data — show empty state when not paired
 
 
 const fmt = n => '₹' + (n || 0).toLocaleString('en-IN');
@@ -78,7 +78,7 @@ export default function PurchaseModule() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [drawer, setDrawer] = useState(null);
 
-  const displayInvoices = invoices.length > 0 ? invoices : (isDemo ? purchaseInvoices : []);
+  const displayInvoices = invoices.length > 0 ? invoices : [];
   const monthlyChart = useMemo(() => {
     const src = displayInvoices || [];
     const map = {};
@@ -140,7 +140,7 @@ export default function PurchaseModule() {
         <div className="bg-white border border-[#D9DCE0] rounded-2xl p-5">
           <p className="text-sm font-semibold text-[#1C2B3A] mb-4">Payment Status</p>
           <div className="space-y-3">
-            {[['Paid', purchaseKPIs.paid, '#2D7D46'], ['Unpaid', purchaseKPIs.unpaid, '#C0392B']].map(([l, v, c]) => (
+            {[['Paid', displayInvoices.filter(i=>i.status==='Paid').length, '#2D7D46'], ['Unpaid', displayInvoices.filter(i=>i.status==='Unpaid').length, '#C0392B']].map(([l, v, c]) => (
               <div key={l} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full" style={{ background: c }} />
@@ -148,7 +148,7 @@ export default function PurchaseModule() {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-24 bg-[#F0EFE9] rounded-full h-1.5">
-                    <div className="h-1.5 rounded-full" style={{ width: `${(v / purchaseKPIs.count) * 100}%`, background: c }} />
+                    <div className="h-1.5 rounded-full" style={{ width: `${displayInvoices.length > 0 ? (v / displayInvoices.length) * 100 : 0}%`, background: c }} />
                   </div>
                   <span className="text-sm font-semibold w-4">{v}</span>
                 </div>
@@ -201,7 +201,7 @@ export default function PurchaseModule() {
               )}
             </>
           )}
-          {tab === 1 && <Table columns={orderCols} data={purchaseOrders} onRowClick={setDrawer} />}
+          {tab === 1 && <Table columns={orderCols} data={[]} emptyMessage="Purchase orders not available" onRowClick={setDrawer} />}
         </div>
       </div>
 
