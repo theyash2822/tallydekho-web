@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { TrendingUp, FileText, ShoppingBag, FileCheck, Search, Download, RefreshCw } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import KPICard from '../../components/KPICard';
@@ -7,7 +7,6 @@ import Table from '../../components/Table';
 import Drawer from '../../components/Drawer';
 import InvoicePDF from '../../components/InvoicePDF';
 import VoucherDetail from '../../components/VoucherDetail';
-import 'react';  // React needed for useMemo
 import { salesInvoices as mockSalesInvoices } from '../../data/salesMock';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
@@ -34,7 +33,7 @@ export default function SalesModule() {
   const { selectedCompany, token, selectedFY, isPaired } = useAuth();
   const isDemo = !isPaired;
   // Compute monthly chart from real invoice data
-  const monthlyChart = React.useMemo(() => {
+  const monthlyChart = useMemo(() => {
     const src = invoices.length > 0 ? invoices : (isDemo ? mockSalesInvoices : []);
     const map = {};
     src.forEach(v => {

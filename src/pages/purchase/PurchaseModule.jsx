@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 import { ShoppingCart, FileText, Package, Search, Download } from 'lucide-react';
@@ -40,7 +40,7 @@ export default function PurchaseModule() {
   const [tab, setTab] = useState(0);
   const { selectedCompany, token, selectedFY, isPaired } = useAuth();
   const isDemo = !isPaired;
-  const monthlyChart = React.useMemo(() => {
+  const monthlyChart = useMemo(() => {
     const src = displayInvoices || [];
     const map = {};
     src.forEach(v => {

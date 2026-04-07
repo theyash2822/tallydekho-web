@@ -323,7 +323,7 @@ export default function GetStarted() {
             <button
               onClick={next}
               disabled={submitting}
-              className="flex-1 h-11 rounded-xl text-sm font-semibold bg-[#1C2B3A] text-white hover:bg-[#333] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 transition-all"
+              className="flex-1 h-11 rounded-xl text-sm font-semibold bg-[#3F5263] text-white hover:bg-[#526373] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 transition-all"
             >
               {submitting
                 ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
