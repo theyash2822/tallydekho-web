@@ -58,7 +58,10 @@ export default function GetStarted() {
     try {
       await api.submitOnboarding({ name: fullName.trim(), email: email.trim(), language });
     } catch { /* continue even if fails */ } finally {
-      localStorage.setItem('onboardingDone', 'true');
+      // Tie onboarding completion to this specific user's mobile number
+      const mobile = user?.mobile || user?.mobileNumber || '';
+      if (mobile) localStorage.setItem(`onboardingDone_${mobile}`, 'true');
+      localStorage.setItem('onboardingDone', 'true'); // Legacy fallback
       localStorage.setItem('authUser', JSON.stringify({ ...user, name: fullName.trim(), email: email.trim(), language }));
       navigate('/');
       setSubmitting(false);
@@ -68,10 +71,10 @@ export default function GetStarted() {
   const progress = (step / TOTAL_STEPS) * 100;
 
   return (
-    <div className="min-h-screen flex bg-[#F5F4EF]">
+    <div className="min-h-screen flex" style={{ background: "#F5F4EF" }}>
 
       {/* Left panel */}
-      <div className="hidden lg:flex lg:w-[42%] flex-col justify-between p-12 primary-gradient sticky top-0 h-screen">
+      <div className="hidden lg:flex lg:w-[42%] flex-col justify-between p-12 brand-gradient sticky top-0 h-screen">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center font-bold text-white text-sm">T</div>
           <span className="text-white font-semibold tracking-tight">TallyDekho</span>
@@ -89,7 +92,7 @@ export default function GetStarted() {
             ].map(({ n, label, icon: Icon }) => (
               <div key={n} className={`flex items-center gap-3 transition-all duration-300 ${step >= n ? 'opacity-100' : 'opacity-30'}`}>
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
-                  step > n ? 'bg-white' : step === n ? 'bg-white/25 ring-2 ring-white' : 'bg-white/10'
+                  step > n ? 'bg-white' : step === n ? 'bg-white/20 ring-2 ring-white/50' : 'bg-white/10'
                 }`}>
                   {step > n
                     ? <Check size={14} className="text-[#3F5263]" />
@@ -135,7 +138,7 @@ export default function GetStarted() {
             <div className="space-y-6 animate-fade-in">
               <div>
                 <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">Step 1 of {TOTAL_STEPS}</p>
-                <h2 className="text-2xl font-bold text-[#1C2B3A] tracking-tight">What's your name?</h2>
+                <h2 className="text-[22px] font-bold text-[#1C2B3A] tracking-tight mb-1">What's your name?</h2>
                 <p className="text-sm text-[#6B7280] mt-1">We'll personalise TallyDekho for you</p>
               </div>
               <div>
@@ -161,7 +164,7 @@ export default function GetStarted() {
             <div className="space-y-6 animate-fade-in">
               <div>
                 <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">Step 2 of {TOTAL_STEPS}</p>
-                <h2 className="text-2xl font-bold text-[#1C2B3A] tracking-tight">Your email address</h2>
+                <h2 className="text-[22px] font-bold text-[#1C2B3A] tracking-tight mb-1">Your email address</h2>
                 <p className="text-sm text-[#6B7280] mt-1">For account recovery and important updates. Optional but recommended.</p>
               </div>
               <div>
@@ -189,7 +192,7 @@ export default function GetStarted() {
             <div className="space-y-6">
               <div>
                 <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">Step 3 of {TOTAL_STEPS}</p>
-                <h2 className="text-2xl font-bold text-[#1C2B3A] tracking-tight">Preferred language?</h2>
+                <h2 className="text-[22px] font-bold text-[#1C2B3A] tracking-tight mb-1">Preferred language?</h2>
                 <p className="text-sm text-[#6B7280] mt-1">Choose the language you're most comfortable with</p>
               </div>
               <div className="grid grid-cols-2 gap-2.5">
@@ -216,7 +219,7 @@ export default function GetStarted() {
             <div className="space-y-6">
               <div>
                 <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">Step 3 of {TOTAL_STEPS}</p>
-                <h2 className="text-2xl font-bold text-[#1C2B3A] tracking-tight">What's your role?</h2>
+                <h2 className="text-[22px] font-bold text-[#1C2B3A] tracking-tight mb-1">What's your role?</h2>
                 <p className="text-sm text-[#6B7280] mt-1">Help us customise your experience</p>
               </div>
               <div className="space-y-3">
@@ -252,7 +255,7 @@ export default function GetStarted() {
             <div className="space-y-6">
               <div>
                 <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">Step 5 of {TOTAL_STEPS}</p>
-                <h2 className="text-2xl font-bold text-[#1C2B3A] tracking-tight">Almost there!</h2>
+                <h2 className="text-[22px] font-bold text-[#1C2B3A] tracking-tight mb-1">Almost there!</h2>
                 <p className="text-sm text-[#6B7280] mt-1">Review and accept to start using TallyDekho</p>
               </div>
 
@@ -312,7 +315,7 @@ export default function GetStarted() {
             {step > 1 && (
               <button
                 onClick={back}
-                className="flex items-center gap-2 px-5 h-11 rounded-xl text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F5F4EF] transition-colors"
+                className="flex items-center gap-2 px-5 h-11 rounded-xl text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F5F4EF] tracking-tight transition-colors"
               >
                 <ArrowLeft size={14} /> Back
               </button>
@@ -320,7 +323,7 @@ export default function GetStarted() {
             <button
               onClick={next}
               disabled={submitting}
-              className="flex-1 h-11 rounded-xl text-sm font-semibold bg-[#3F5263] text-white hover:bg-[#526373] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 transition-all"
+              className="flex-1 h-11 rounded-xl text-sm font-semibold bg-[#1C2B3A] text-white hover:bg-[#333] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 transition-all"
             >
               {submitting
                 ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

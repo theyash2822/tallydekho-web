@@ -57,9 +57,10 @@ export default function OTPScreen() {
         await login(res.data.token, { mobileNumber: phone, countryCode, name: res.data.user?.name });
         // Preserve paired state from server response - never reset on login
         if (res.data.isPaired) markPaired();
-        // Auto-detect new user: if name is null, they never completed onboarding
+        // Onboarding check tied to THIS user's mobile number - not browser-level
         const userHasName = !!res.data.user?.name;
-        const onboardingDone = localStorage.getItem('onboardingDone') === 'true';
+        const onboardingKey = `onboardingDone_${phone}`;
+        const onboardingDone = localStorage.getItem(onboardingKey) === 'true';
         const shouldOnboard = isNewUser || !userHasName || !onboardingDone;
         navigate(shouldOnboard ? '/auth/get-started' : '/');
       } else {
