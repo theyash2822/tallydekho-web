@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
-import { ClipboardList, Plus, Edit, Trash2, Search, RefreshCw } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { ClipboardList, Plus, Edit, Trash2, Search, RefreshCw, WifiOff, CheckCircle2, XCircle, Clock, RotateCcw } from 'lucide-react';
+import { fetchAuditTrail, retryAuditEntry } from '../../services/api';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import KPICard from '../../components/KPICard';
 import Badge from '../../components/Badge';
@@ -40,6 +41,12 @@ export default function AuditTrail() {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const { selectedCompany, token } = useAuth();
+  const [myEntries, setMyEntries] = useState([]);
+  const [myStats, setMyStats] = useState(null);
+  const [myLoading, setMyLoading] = useState(false);
+  const [myError, setMyError] = useState(null);
+  const [myFilter, setMyFilter] = useState('all');
+  const [retrying, setRetrying] = useState({});
 
   const loadData = async () => {
     if (!token || !selectedCompany?.guid) { setLoading(false); return; }
@@ -81,8 +88,33 @@ export default function AuditTrail() {
     return s && t && d1 && d2;
   });
 
-  // My Entries = filter by current user's vouchers (placeholder — show all for now)
-  const myEntries = filtered;
+  const loadMyEntries = useCallback(() => {
+    if (!selectedCompany?.guid) return;
+    setMyLoading(true);
+    setMyError(null);
+    fetchAuditTrail({ companyGuid: selectedCompany.guid, status: myFilter === 'all' ? undefined : myFilter, limit: 100 })
+      .then(res => { if (res?.data) { setMyEntries(res.data.entries || []); setMyStats(res.data.stats); } })
+      .catch(e => setMyError(e?.message || 'Failed to load'))
+      .finally(() => setMyLoading(false));
+  }, [selectedCompany?.guid, myFilter]);
+
+  useEffect(() => { if (tab === 1) loadMyEntries(); }, [tab, loadMyEntries]);
+
+  const retryEntry = async (id) => {
+    setRetrying(r => ({ ...r, [id]: true }));
+    retryAuditEntry(id)
+      .then(() => loadMyEntries())
+      .catch(e => setMyError(e?.message))
+      .finally(() => setRetrying(r => ({ ...r, [id]: false })));
+  };
+
+  const STATUS_CFG = {
+    success:         { label: 'In Tally',    cls: 'text-emerald-700 bg-emerald-50 border-emerald-200' },
+    desktop_offline: { label: 'Offline',     cls: 'text-amber-700 bg-amber-50 border-amber-200' },
+    pending:         { label: 'Pending',     cls: 'text-blue-700 bg-blue-50 border-blue-200' },
+    failed:          { label: 'Failed',      cls: 'text-red-700 bg-red-50 border-red-200' },
+  };
+  const TYPE_LBL = { sales:'Sales Invoice', purchase:'Purchase Invoice', payment:'Payment', receipt:'Receipt', journal:'Journal', contra:'Contra', credit_note:'Credit Note', debit_note:'Debit Note', sales_order:'Sales Order', purchase_order:'Purchase Order', delivery_note:'Delivery Note', party:'Party/Ledger', item:'Stock Item' };
 
   // Activity per day chart
   const activityByDay = (() => {
@@ -227,16 +259,73 @@ export default function AuditTrail() {
             )}
           </div>
 
-          {loading ? (
-            <div className="space-y-2">{[...Array(6)].map((_, i) => <div key={i} className="h-10 bg-[#F4F5F6] rounded-lg animate-pulse" />)}</div>
-          ) : (tab === 0 ? filtered : myEntries).length === 0 ? (
-            <div className="py-12 text-center text-[#9CA3AF]">
-              <ClipboardList size={36} className="mx-auto mb-3 opacity-20" />
-              <p className="text-sm font-medium">No vouchers found</p>
-              <p className="text-xs mt-1">Sync from TallyDekho Desktop to see Day Book data</p>
-            </div>
+          {tab === 0 ? (
+            loading ? (
+              <div className="space-y-2">{[...Array(6)].map((_, i) => <div key={i} className="h-10 bg-[#F4F5F6] rounded-lg animate-pulse" />)}</div>
+            ) : filtered.length === 0 ? (
+              <div className="py-12 text-center text-[#9CA3AF]">
+                <ClipboardList size={36} className="mx-auto mb-3 opacity-20" />
+                <p className="text-sm font-medium">No vouchers found</p>
+                <p className="text-xs mt-1">Sync from TallyDekho Desktop to see Day Book data</p>
+              </div>
+            ) : (
+              <Table columns={cols} data={filtered} onRowClick={setDrawer} />
+            )
           ) : (
-            <Table columns={cols} data={tab === 0 ? filtered : myEntries} onRowClick={setDrawer} />
+            /* My Entries — write_queue */
+            <div>
+              {myError && <div className="mb-3 px-3 py-2 text-xs text-red-600 bg-red-50 rounded-lg border border-red-100">{myError}</div>}
+              <div className="flex gap-2 mb-4 flex-wrap items-center justify-between">
+                <div className="flex gap-1.5">
+                  {['all','success','desktop_offline','failed'].map(k => (
+                    <button key={k} onClick={() => setMyFilter(k)} className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
+                      myFilter === k ? 'bg-[#3F5263] text-white border-[#3F5263]' : 'bg-white text-[#6B7280] border-[#D9DCE0] hover:border-[#3F5263]'
+                    }`}>{k === 'all' ? 'All' : k === 'success' ? '✓ In Tally' : k === 'desktop_offline' ? '⏳ Offline' : '✗ Failed'}</button>
+                  ))}
+                </div>
+                <button onClick={loadMyEntries} disabled={myLoading} className="flex items-center gap-1 text-xs text-[#6B7280] hover:text-[#1C2B3A] disabled:opacity-40">
+                  <RefreshCw size={12} className={myLoading ? 'animate-spin' : ''} /> Refresh
+                </button>
+              </div>
+              {myLoading ? (
+                <div className="space-y-2">{[...Array(4)].map((_, i) => <div key={i} className="h-14 bg-[#F4F5F6] rounded-xl animate-pulse" />)}</div>
+              ) : myEntries.length === 0 ? (
+                <div className="py-10 text-center text-[#9CA3AF]">
+                  <CheckCircle2 size={28} className="mx-auto mb-2 opacity-20" />
+                  <p className="text-sm">No entries yet — create an invoice to see it here</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {myEntries.map(e => {
+                    const cfg = STATUS_CFG[e.status] || STATUS_CFG.pending;
+                    return (
+                      <div key={e.id} className="flex items-center gap-3 px-3 py-2.5 bg-white border border-[#E8E7E3] rounded-xl hover:border-[#B0B8C1] transition-colors">
+                        <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${e.status === 'success' ? 'bg-emerald-500' : e.status === 'desktop_offline' ? 'bg-amber-400 animate-pulse' : e.status === 'failed' ? 'bg-red-500' : 'bg-blue-400 animate-pulse'}`} />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-xs font-semibold text-[#1C2B3A]">{TYPE_LBL[e.entry_type] || e.entry_type}</span>
+                            <span className="text-xs text-[#6B7280] truncate max-w-[180px]">{e.entry_label}</span>
+                            {e.amount && parseFloat(e.amount) > 0 && <span className="text-xs font-bold text-[#3F5263]">₹{parseFloat(e.amount).toLocaleString('en-IN',{maximumFractionDigits:0})}</span>}
+                            {e.tally_voucher_number && <span className="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-semibold">#{e.tally_voucher_number}</span>}
+                          </div>
+                          <p className="text-[10px] text-[#9CA3AF] mt-0.5">{new Date(e.created_at*1000).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:true})} · {e.source === 'mobile' ? '📱' : '🌐'}
+                            {e.error_message && <span className="text-red-500 ml-2">{e.error_message.slice(0,60)}</span>}
+                          </p>
+                        </div>
+                        <span className={`flex-shrink-0 px-2 py-0.5 rounded-md text-[10px] font-semibold border ${cfg.cls}`}>{cfg.label}</span>
+                        {e.status !== 'success' && (
+                          <button onClick={() => retryEntry(e.id)} disabled={retrying[e.id]}
+                            className="flex-shrink-0 flex items-center gap-1 px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-[#3F5263] text-white hover:bg-[#526373] disabled:opacity-50 transition-colors">
+                            <RotateCcw size={10} className={retrying[e.id] ? 'animate-spin' : ''} />
+                            {retrying[e.id] ? '…' : 'Push'}
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>

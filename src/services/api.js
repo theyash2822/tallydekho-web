@@ -90,6 +90,15 @@ async function tallyRequest(endpoint, body) {
   return res.json();
 }
 
+async function tallyGet(endpoint) {
+  const headers = {};
+  const token = getToken();
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const res = await fetch(`${TALLY_BASE}${endpoint}`, { headers });
+  if (!res.ok) { const e = await res.json().catch(()=>({})); throw Object.assign(new Error(e.message||`HTTP ${res.status}`), { status: res.status }); }
+  return res.json();
+}
+
 export const createSalesInvoice    = (b) => tallyRequest('/tally/voucher/sales',         b);
 export const createSalesOrder      = (b) => tallyRequest('/tally/voucher/sales-order',    b);
 export const createPurchaseInvoice = (b) => tallyRequest('/tally/voucher/purchase',       b);
@@ -101,6 +110,9 @@ export const createContraVoucher   = (b) => tallyRequest('/tally/voucher/contra'
 export const createCreditNote      = (b) => tallyRequest('/tally/voucher/credit-note',    b);
 export const createDebitNote       = (b) => tallyRequest('/tally/voucher/debit-note',     b);
 export const createDeliveryNote    = (b) => tallyRequest('/tally/voucher/delivery-note',  b);
+export const fetchAuditTrail = ({ companyGuid, status, limit = 50, offset = 0 } = {}) =>
+  tallyGet(`/tally/audit-trail?companyGuid=${companyGuid}${status ? '&status=' + status : ''}&limit=${limit}&offset=${offset}`);
+export const retryAuditEntry = (id) => tallyRequest(`/tally/audit-trail/${id}/retry`, {});
 export const cancelVoucher         = (b) => tallyRequest('/tally/voucher/cancel',         b);
 export const createPartyInTally    = (b) => tallyRequest('/tally/master/party',           b);
 export const createWarehouseInTally= (b) => tallyRequest('/tally/master/warehouse',       b);
