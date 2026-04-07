@@ -4,7 +4,7 @@ import api from '../../services/api';
 import { TrendingUp, ChevronDown, ChevronRight } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import KPICard from '../../components/KPICard';
-import { plData, balanceSheetData, trialBalance, profitTrend, monthlySalesPurchase } from '../../data/mockData';
+import { balanceSheetData, trialBalance } from '../../data/mockData'; // only used for balance sheet structure
 
 const fmt = n => '₹' + n.toLocaleString('en-IN');
 const fmtL = n => '₹' + (n / 100000).toFixed(1) + 'L';
@@ -80,7 +80,7 @@ export default function Reports() {
     <div className="space-y-5">
       <div>
         <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Financial Reports</h1>
-        <p className="text-sm text-[#6B7280] mt-0.5">{selectedFY?.name ? `FY ${selectedFY.name}` : "FY 2025-26"} · July 2025</p>
+        <p className="text-sm text-[#6B7280] mt-0.5">{selectedFY?.name ? `FY ${selectedFY.name}` : "FY 2025-26"}</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
@@ -129,7 +129,7 @@ export default function Reports() {
           <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Sales vs Purchase</p>
           <p className="text-xs text-[#6B7280] mb-4">Last 6 months</p>
           <ResponsiveContainer width="100%" height={150}>
-            <BarChart data={monthlySalesPurchase} barSize={10}>
+            <BarChart data={(plReport?.monthlySales || [])} barSize={10}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F0EFE9" vertical={false} />
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#6B7280' }} axisLine={false} tickLine={false} />
               <YAxis hide />

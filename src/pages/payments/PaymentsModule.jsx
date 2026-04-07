@@ -75,7 +75,7 @@ export default function PaymentsModule() {
       )}
       <div>
         <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Payments & Receipts</h1>
-        <p className="text-sm text-[#6B7280] mt-0.5">July 2025</p>
+        <p className="text-sm text-[#6B7280] mt-0.5">{selectedFY?.name ? "FY " + selectedFY.name : "Current FY"}</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
@@ -90,7 +90,7 @@ export default function PaymentsModule() {
         <div className="bg-white border border-[#D9DCE0] rounded-2xl p-5">
           <p className="text-sm font-semibold text-[#1C2B3A] mb-3">Top Payment Parties</p>
           <div className="space-y-2.5">
-            {payments.slice(0,4).map((p,i) => (
+            {displayPayments.slice(0,4).map((p,i) => (
               <div key={i} className="flex justify-between items-center">
                 <span className="text-sm text-[#1C2B3A]">{p.party}</span>
                 <span className="text-sm font-semibold text-[#C0392B]">{fmt(p.amount)}</span>
@@ -101,7 +101,7 @@ export default function PaymentsModule() {
         <div className="bg-white border border-[#D9DCE0] rounded-2xl p-5">
           <p className="text-sm font-semibold text-[#1C2B3A] mb-3">Top Receipt Parties</p>
           <div className="space-y-2.5">
-            {receipts.slice(0,4).map((r,i) => (
+            {displayReceipts.slice(0,4).map((r,i) => (
               <div key={i} className="flex justify-between items-center">
                 <span className="text-sm text-[#1C2B3A]">{r.party}</span>
                 <span className="text-sm font-semibold text-[#2D7D46]">{fmt(r.amount)}</span>

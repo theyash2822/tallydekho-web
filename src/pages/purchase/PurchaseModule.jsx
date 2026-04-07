@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 import { ShoppingCart, FileText, Package, Search, Download } from 'lucide-react';
@@ -9,7 +9,7 @@ import Table from '../../components/Table';
 import Drawer from '../../components/Drawer';
 import VoucherDetail from '../../components/VoucherDetail';
 import { purchaseInvoices, purchaseOrders, purchaseKPIs } from '../../data/purchaseMock';
-import { monthlySalesPurchase } from '../../data/mockData';
+
 
 const fmt = n => '₹' + (n || 0).toLocaleString('en-IN');
 const TABS = ['Purchase Register', 'Order Register'];
@@ -40,6 +40,18 @@ export default function PurchaseModule() {
   const [tab, setTab] = useState(0);
   const { selectedCompany, token, selectedFY, isPaired } = useAuth();
   const isDemo = !isPaired;
+  const monthlyChart = React.useMemo(() => {
+    const src = displayInvoices || [];
+    const map = {};
+    src.forEach(v => {
+      const d = v.date || '';
+      if (!d) return;
+      const mon = new Date(d).toLocaleString('en', { month: 'short' });
+      if (!map[mon]) map[mon] = { month: mon, purchase: 0 };
+      map[mon].purchase += (parseFloat(v.amount) || 0) / 1000;
+    });
+    return Object.values(map).slice(-6);
+  }, [displayInvoices]);
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [usingMock, setUsingMock] = useState(false);
@@ -109,7 +121,7 @@ export default function PurchaseModule() {
           <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Purchase Trend</p>
           <p className="text-xs text-[#6B7280] mb-4">Monthly · {selectedFY?.name ? `FY ${selectedFY.name}` : "FY 2025-26"}</p>
           <ResponsiveContainer width="100%" height={180}>
-            <AreaChart data={monthlySalesPurchase} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+            <AreaChart data={monthlyChart} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="pg2" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#526373" stopOpacity={0.25} />

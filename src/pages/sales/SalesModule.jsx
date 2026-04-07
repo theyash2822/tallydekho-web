@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { TrendingUp, FileText, ShoppingBag, FileCheck, Search, Download, RefreshCw } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import KPICard from '../../components/KPICard';
@@ -7,7 +7,7 @@ import Table from '../../components/Table';
 import Drawer from '../../components/Drawer';
 import InvoicePDF from '../../components/InvoicePDF';
 import VoucherDetail from '../../components/VoucherDetail';
-import { monthlySalesPurchase } from '../../data/mockData';
+import 'react';  // React needed for useMemo
 import { salesInvoices as mockSalesInvoices } from '../../data/salesMock';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
@@ -33,6 +33,19 @@ export default function SalesModule() {
   const pageSize = 50;
   const { selectedCompany, token, selectedFY, isPaired } = useAuth();
   const isDemo = !isPaired;
+  // Compute monthly chart from real invoice data
+  const monthlyChart = React.useMemo(() => {
+    const src = invoices.length > 0 ? invoices : (isDemo ? mockSalesInvoices : []);
+    const map = {};
+    src.forEach(v => {
+      const d = v.date || '';
+      if (!d) return;
+      const mon = new Date(d).toLocaleString('en', { month: 'short' });
+      if (!map[mon]) map[mon] = { month: mon, sales: 0, purchase: 0 };
+      map[mon].sales += (parseFloat(v.amount) || 0) / 1000;
+    });
+    return Object.values(map).slice(-6);
+  }, [invoices, isDemo]);
   const companyGuid = selectedCompany?.guid;
 
   const loadData = useCallback(async (pg = 1, searchText = '') => {
@@ -171,7 +184,7 @@ export default function SalesModule() {
           <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Sales Trend</p>
           <p className="text-xs text-[#9CA3AF] mb-4">Monthly · {selectedFY?.name ? `FY ${selectedFY.name}` : "FY 2025-26"}</p>
           <ResponsiveContainer width="100%" height={180}>
-            <AreaChart data={monthlySalesPurchase} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+            <AreaChart data={monthlyChart} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%"  stopColor="#3F5263" stopOpacity={0.2} />

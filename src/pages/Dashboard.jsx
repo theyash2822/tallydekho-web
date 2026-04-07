@@ -15,14 +15,7 @@ import { alerts, dashboardKPIs } from '../data/mockData';
 import api from '../services/api';
 
 // ─── Chart data ───────────────────────────────────────────────────────────────
-const revenueData = [
-  { month: 'Feb', revenue: 3200, purchase: 2100, expenses: 820 },
-  { month: 'Mar', revenue: 3800, purchase: 2450, expenses: 940 },
-  { month: 'Apr', revenue: 4100, purchase: 2600, expenses: 1020 },
-  { month: 'May', revenue: 3750, purchase: 2300, expenses: 890 },
-  { month: 'Jun', revenue: 4300, purchase: 2700, expenses: 1050 },
-  { month: 'Jul', revenue: 4580, purchase: 2840, expenses: 1120 },
-];
+// revenueData now comes from API (D?.monthlySales)
 const cashFlowData = [
   { month: 'Feb', inflow: 2208, outflow: -1500 },
   { month: 'Mar', inflow: 3100, outflow: -2000 },
@@ -155,6 +148,14 @@ export default function Dashboard() {
   const isDemo = !isPaired || (!dashLoading && !dashData);
   const D = dashData || (isDemo ? dashboardKPIs : null);
   const L = dashLoading && !isDemo;
+  // Real monthly chart data from API, fallback to empty array
+  const revenueData = (D?.monthlySales || []).map(r => ({
+    month: r.month,
+    revenue: Math.round((r.sales || 0) / 1000),
+    purchase: Math.round((r.purchase || 0) / 1000),
+    expenses: Math.round((r.purchase || 0) * 0.1 / 1000),
+  }));
+  const realTopCustomers = D?.topCustomers || [];
   const kpis = [
     { label: 'Total Revenue',  value: L ? '—' : fmtL(D?.totalSales || 0),     sub: selectedCompany?.name || fyLabel, color: '#2D7D46' },
     { label: 'Net Profit',     value: L ? '—' : fmtL(D?.netProfit || 0),       sub: 'This FY',        color: '#3F5263' },
@@ -346,7 +347,7 @@ export default function Dashboard() {
 
         <ChartCard title="Top Customers" sub="By revenue · July 2025">
           <div className="space-y-3 mt-1">
-            {topCustomers.map((c, i) => (
+            {(realTopCustomers.length > 0 ? realTopCustomers.map(c => ({ name: c.name, amount: "₹"+Math.round((c.revenue||0)/100000).toFixed(1)+"L", pct: 100 })) : topCustomers).map((c, i) => (
               <div key={i} className="flex items-center gap-3">
                 <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0" style={{ background: CUSTOMER_COLORS[i] }}>
                   {c.name[0]}
