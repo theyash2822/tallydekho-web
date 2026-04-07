@@ -4,6 +4,15 @@ import wsService from '../services/websocket';
 
 const AuthContext = createContext(null);
 
+// Clear any stale/fake tokens from previous sessions on page load
+// This prevents blank screens caused by expired or fake demo tokens
+(function cleanStaleToken() {
+  const t = localStorage.getItem('authToken');
+  if (t && t.startsWith('demo-token-')) {
+    localStorage.clear();
+  }
+})();
+
 export function AuthProvider({ children }) {
   const [token,     setToken]     = useState(() => localStorage.getItem('authToken'));
   const [user,      setUser]      = useState(() => { try { return JSON.parse(localStorage.getItem('authUser')); } catch { return null; } });
@@ -11,7 +20,7 @@ export function AuthProvider({ children }) {
   const [selectedCompany, setSelectedCompany] = useState(() => { try { return JSON.parse(localStorage.getItem('selectedCompany')); } catch { return null; } });
   const [selectedFY, setSelectedFY] = useState(() => { try { return JSON.parse(localStorage.getItem('selectedFY')); } catch { return null; } });
   const [isPaired,  setIsPaired]  = useState(() => localStorage.getItem('isPaired') === 'true');
-  const [syncToast, setSyncToast] = useState(null); // { message, type }
+  const [syncToast, setSyncToast] = useState(null);
 
   // ── Connect WebSocket when token is available ─────────────────────────────
   useEffect(() => {
@@ -58,16 +67,24 @@ export function AuthProvider({ children }) {
     }
   }, [token, selectedCompany]);
 
-  // Refresh user profile from backend on mount
+  // Validate token on mount — auto-logout if expired or invalid
   useEffect(() => {
     if (!token) return;
     fetchMe().then(res => {
+      if (res?.status === false) {
+        // Token is invalid/expired — clear everything and go to login
+        localStorage.clear();
+        setToken(null); setUser(null); setCompanies([]); setSelectedCompany(null); setIsPaired(false);
+        return;
+      }
       if (res?.data) {
         const fresh = { ...user, ...res.data };
         localStorage.setItem('authUser', JSON.stringify(fresh));
         setUser(fresh);
       }
-    }).catch(() => {});
+    }).catch(() => {
+      // Network error — don't logout, user may be offline
+    });
   }, [token]);
 
   // Load companies on mount
