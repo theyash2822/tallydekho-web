@@ -94,9 +94,10 @@ export default function SalesInvoiceForm({ onClose }) {
       const result = await createSalesInvoice(payload);
       if (result?.status) {
         // Voucher number comes from backend (parsed from Tally XML by desktop)
+        // If desktop was offline, result.queued=true and voucherNumber is empty
         const assignedNumber = result?.voucherNumber || '';
         setCreatedVoucherNumber(assignedNumber);
-        setCreatedPayload(payload);
+        setCreatedPayload({ ...payload, _queued: result?.queued || false, _queueId: result?.queueId });
         setSubmitted(true);
       } else {
         setError(result?.message || 'Failed to create invoice in Tally');
@@ -116,7 +117,7 @@ export default function SalesInvoiceForm({ onClose }) {
   if (submitted) {
     // Build invoice data for PDF
     const invoiceForPDF = createdPayload ? {
-      ref: createdVoucherNumber || 'Pending',
+      ref: createdVoucherNumber || '(Tally will assign)',
       date: invoiceDate,
       customer: partyLedger,
       gstin: '',
@@ -149,22 +150,29 @@ export default function SalesInvoiceForm({ onClose }) {
       return <InvoicePDF open={true} onClose={() => setShowPDF(false)} invoice={invoiceForPDF} companyGuid={selectedCompany?.guid} />;
     }
 
+    const isQueued = createdPayload?._queued;
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
-        <div className="w-16 h-16 rounded-full bg-[#E8F5ED] flex items-center justify-center border border-[#A8D5BC]">
-          <CheckCircle size={32} className="text-[#2D7D46]" />
+        <div className={`w-16 h-16 rounded-full flex items-center justify-center border ${
+          isQueued ? 'bg-amber-50 border-amber-200' : 'bg-[#E8F5ED] border-[#A8D5BC]'
+        }`}>
+          <CheckCircle size={32} className={isQueued ? 'text-amber-500' : 'text-[#2D7D46]'} />
         </div>
         <p className="text-base font-semibold text-[#1C2B3A]">
-          {isOptional ? 'Optional Entry Saved in Tally!' : 'Sales Invoice Created in Tally!'}
+          {isQueued ? 'Entry Saved — Waiting for Desktop' : isOptional ? 'Optional Entry Saved!' : 'Sales Invoice Created in Tally!'}
         </p>
-        {createdVoucherNumber && (
+        {createdVoucherNumber ? (
           <p className="text-sm font-mono font-bold text-[#3F5263] bg-[#ECEEEF] px-3 py-1 rounded-lg">
             {createdVoucherNumber}
           </p>
-        )}
+        ) : isQueued ? (
+          <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 px-3 py-2 rounded-lg text-center max-w-xs">
+            Desktop app is offline. Entry is queued and will push to Tally automatically when desktop connects.
+          </p>
+        ) : null}
         <p className="text-sm text-[#6B7280]">{selectedCompany?.name} · ₹{total.toLocaleString('en-IN')}</p>
         <p className="text-xs text-[#9CA3AF]">
-          {isOptional ? 'Saved as optional entry — will not affect books until approved' : 'Entry posted to Tally books'}
+          {isQueued ? 'Check Audit Trail → My Entries to retry manually' : isOptional ? 'Saved as optional entry — will not affect books until approved' : 'Entry posted to Tally books'}
         </p>
         <div className="flex gap-3 mt-2 flex-wrap justify-center">
           {invoiceForPDF && (

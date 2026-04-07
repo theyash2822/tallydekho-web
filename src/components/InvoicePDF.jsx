@@ -378,10 +378,11 @@ export default function InvoicePDF({ open, onClose, invoice, companyGuid }) {
         </div>
 
         {/* iframe preview */}
-        <div className="flex-1 overflow-hidden bg-[#F7F6F3] p-4">
+        <div className="flex-1 overflow-auto bg-[#F7F6F3] p-4" style={{ minHeight: 0 }}>
           <iframe
             srcDoc={previewHtml}
-            className="w-full h-full rounded-xl border border-[#E8E7E3] bg-white shadow-sm"
+            className="w-full rounded-xl border border-[#E8E7E3] bg-white shadow-sm"
+            style={{ height: '70vh', minHeight: 500 }}
             title="Invoice Preview"
             sandbox="allow-same-origin"
           />
