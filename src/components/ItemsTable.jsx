@@ -104,7 +104,7 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
         {items.map((item, idx) => (
           <div key={item.id} className="border border-[#E8E7E3] rounded-xl p-3 bg-[#FAFAFA] hover:border-[#C7C5C0] transition-colors">
 
-            {/* Row 1: index + product name + delete */}
+            {/* Row 1: index + product name + HSN badge + delete */}
             <div className="flex items-center gap-2 mb-2.5">
               <span className="w-5 h-5 rounded-full bg-[#E8E7E3] text-[10px] font-bold text-[#787774] flex items-center justify-center flex-shrink-0">
                 {idx + 1}
@@ -117,6 +117,11 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
                   fetchFn={fetchProducts}
                 />
               </div>
+              {item.hsn ? (
+                <span className="flex-shrink-0 px-2 py-0.5 rounded-full bg-[#EEF2FF] text-[#4F46E5] text-[9px] font-semibold tracking-wide">
+                  HSN {item.hsn}
+                </span>
+              ) : null}
               <button
                 onClick={() => remove(item.id)}
                 disabled={items.length === 1}
@@ -126,18 +131,8 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
               </button>
             </div>
 
-            {/* Row 2: HSN · Qty · Unit · Rate · Tax · Amount */}
-            <div className="grid grid-cols-6 gap-2">
-              <div className="col-span-1">
-                <p className="text-[9px] text-[#9CA3AF] font-semibold uppercase tracking-wide mb-1">HSN</p>
-                <input
-                  placeholder="HSN"
-                  value={item.hsn}
-                  onChange={e => update(item.id, 'hsn', e.target.value)}
-                  className="notion-input text-xs w-full"
-                />
-              </div>
-
+            {/* Row 2: Qty · Unit · Rate · Tax · Amount */}
+            <div className="grid grid-cols-5 gap-2">
               <div className="col-span-1">
                 <p className="text-[9px] text-[#9CA3AF] font-semibold uppercase tracking-wide mb-1">Qty</p>
                 <input
