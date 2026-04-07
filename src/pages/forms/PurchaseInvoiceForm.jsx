@@ -1,32 +1,84 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { FormField, Input, Select, SectionTitle, Toggle } from '../../components/FormField';
 import ItemsTable from '../../components/ItemsTable';
 import LogisticsSection from '../../components/LogisticsSection';
 import SummaryFooter from '../../components/SummaryFooter';
-import { CheckCircle, Upload, FileText } from 'lucide-react';
+import { CheckCircle, AlertCircle } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { fetchLedgers, fetchStocks } from '../../services/api';
+import LiveSearch from '../../components/LiveSearch';
+import { createPurchaseInvoice } from '../../services/api';
 
 export default function PurchaseInvoiceForm({ onClose }) {
+  const { selectedCompany } = useAuth();
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [createdNumber, setCreatedNumber] = useState('');
+  const [isOptional, setIsOptional] = useState(false);
+
+  const [partyLedger, setPartyLedger] = useState('');
+  const [purchaseLedger, setPurchaseLedger] = useState('Purchase Accounts');
+  const [invoiceDate, setInvoiceDate] = useState(new Date().toISOString().split('T')[0]);
+  const [invoiceNumber, setInvoiceNumber] = useState('');
+  const [narration, setNarration] = useState('');
   const [items, setItems] = useState([]);
   const [warehouse, setWarehouse] = useState('');
-  const [scanned, setScanned] = useState(false);
-  const [isPaid, setIsPaid] = useState(false);
+  const [logistics, setLogistics] = useState([]);
 
-  const subtotal = items.reduce((s, i) => s + (i.amount || 0), 0);
-  const tax = items.reduce((s, i) => s + (i.amount || 0) * 0.18, 0);
+  const subtotal = items.reduce((s, i) => s + (parseFloat(i.amount) || 0), 0);
+  const taxAmt   = items.reduce((s, i) => s + (parseFloat(i.amount) || 0) * ((parseFloat(i.tax) / 100) || 0.18), 0);
+  const logTotal = logistics.reduce((s, l) => s + (parseFloat(l.amount) || 0), 0);
+
+  const fetchVendors = useCallback(async (q) => {
+    if (!selectedCompany?.guid) return [];
+    const res = await fetchLedgers({ companyGuid: selectedCompany.guid, searchText: q, pageSize: 20 });
+    return (res?.data?.ledgers || []).map(l => ({ label: l.name, value: l.name, sub: l.parent || '', badge: l.gstin ? 'GST' : '' }));
+  }, [selectedCompany?.guid]);
+
+  const fetchPurchaseLedgers = useCallback(async (q) => {
+    if (!selectedCompany?.guid) return [];
+    const res = await fetchLedgers({ companyGuid: selectedCompany.guid, searchText: q || 'purchase', pageSize: 15 });
+    return (res?.data?.ledgers || [])
+      .filter(l => (l.parent || '').toLowerCase().includes('purchase') || (l.name || '').toLowerCase().includes('purchase'))
+      .map(l => ({ label: l.name, value: l.name, sub: l.parent || '' }));
+  }, [selectedCompany?.guid]);
+
+  const handleSubmit = async () => {
+    if (!partyLedger) { setError('Please select a vendor / party'); return; }
+    if (!items.length || !items[0]?.name) { setError('Please add at least one item'); return; }
+    if (!selectedCompany) { setError('No company selected'); return; }
+    setSubmitting(true); setError('');
+    try {
+      const result = await createPurchaseInvoice({
+        companyGuid: selectedCompany.guid, companyName: selectedCompany.name,
+        date: invoiceDate.replace(/-/g, ''), partyLedger,
+        purchaseLedger: purchaseLedger || 'Purchase Accounts',
+        items: items.filter(i => i.name).map(i => ({
+          itemName: i.name, billedQty: parseFloat(i.qty) || 1,
+          rate: parseFloat(i.rate) || 0, amount: parseFloat(i.amount) || 0,
+          godown: warehouse, taxLedger: 'Input GST 18%', taxPercent: parseFloat(i.tax) || 18,
+        })),
+        narration, isOptional,
+      });
+      if (result?.status) { setCreatedNumber(result?.voucherNumber || ''); setSubmitted(true); }
+      else setError(result?.message || 'Failed to create purchase invoice');
+    } catch (e) { setError(e.message); }
+    finally { setSubmitting(false); }
+  };
 
   if (submitted) {
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
-        <div className="w-16 h-16 rounded-full bg-[#F0FDF4] flex items-center justify-center border border-[#BBF7D0]">
-          <CheckCircle size={32} className="text-emerald-500" />
+        <div className="w-16 h-16 rounded-full bg-[#E8F5ED] flex items-center justify-center border border-[#A8D5BC]">
+          <CheckCircle size={32} className="text-[#2D7D46]" />
         </div>
-        <p className="text-base font-semibold text-[#1C2B3A]">Purchase Invoice Created!</p>
-        <p className="text-sm text-[#6B7280]">PI-2025-0457</p>
+        <p className="text-base font-semibold text-[#1C2B3A]">{isOptional ? 'Optional Entry Saved!' : 'Purchase Invoice Created in Tally!'}</p>
+        {createdNumber && <p className="text-sm font-mono font-bold text-[#3F5263] bg-[#ECEEEF] px-3 py-1 rounded-lg">{createdNumber}</p>}
+        <p className="text-sm text-[#6B7280]">{selectedCompany?.name}</p>
         <div className="flex gap-3 mt-2">
-          <button className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{ background: '#3F5263' }}>Share PDF</button>
-          <button className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280]">View Scanned Invoice</button>
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280]">Close</button>
+          <button onClick={() => { setSubmitted(false); setPartyLedger(''); setItems([]); setNarration(''); }} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]">Create Another</button>
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]">Close</button>
         </div>
       </div>
     );
@@ -34,63 +86,36 @@ export default function PurchaseInvoiceForm({ onClose }) {
 
   return (
     <div className="space-y-5">
-      {/* OCR Upload */}
-      <div className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-colors ${scanned ? 'border-emerald-300 bg-[#F0FDF4]' : 'border-[#D9DCE0] bg-[#F9F9F9] hover:border-[#3F5263]'}`}
-        onClick={() => setScanned(true)}>
-        {scanned ? (
-          <div className="flex items-center justify-center gap-2 text-[#2D7D46]">
-            <FileText size={16} /><span className="text-sm font-medium">Invoice scanned — data auto-filled below</span>
-          </div>
-        ) : (
-          <div className="space-y-1">
-            <Upload size={20} className="mx-auto text-[#9CA3AF]" />
-            <p className="text-sm font-medium text-[#6B7280]">Upload or Scan Invoice (OCR)</p>
-            <p className="text-xs text-[#9CA3AF]">Supports PDF, JPG, PNG — auto-extracts vendor, items & amounts</p>
-          </div>
-        )}
+      <div className="flex items-center justify-between">
+        <Toggle label="Optional Entry" value={isOptional} onChange={setIsOptional} />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <FormField label="Ledger" required>
-          <Select options={['Purchase - Raw Materials', 'Purchase - Finished Goods', 'Expenses', 'Capital Purchase']} placeholder="Select Ledger" />
+        <FormField label="Vendor / Party" required>
+          <LiveSearch value={partyLedger} onChange={setPartyLedger} placeholder="Search vendor..." fetchFn={fetchVendors} />
         </FormField>
-        <FormField label="Invoice Number"><Input defaultValue="PI-2025-0457" /></FormField>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <FormField label="Invoice Date" required><Input type="date" defaultValue={new Date().toISOString().split('T')[0]} /></FormField>
-        <FormField label="Vendor" required>
-          <Select options={['Shree Polymers', 'Bharat Chemicals', 'National Packaging', 'Excel Logistics']} placeholder="Search or add vendor" />
+        <FormField label="Purchase Ledger" required>
+          <LiveSearch value={purchaseLedger} onChange={setPurchaseLedger} placeholder="Search purchase ledger..." fetchFn={fetchPurchaseLedgers} />
         </FormField>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <FormField label="Purchase Reference No" hint="For internal tracking">
-          <Input placeholder="Optional" />
-        </FormField>
-        <FormField label="Payment Terms">
-          <div className="flex gap-2">
-            <Select options={['Due on Receipt', '15 Days', '30 Days', 'Custom', 'Paid']} onChange={e => setIsPaid(e.target.value === 'Paid')} />
-          </div>
-        </FormField>
+        <FormField label="Invoice Date" required><Input type="date" value={invoiceDate} onChange={e => setInvoiceDate(e.target.value)} /></FormField>
+        <FormField label="Vendor Invoice No"><Input value={invoiceNumber} onChange={e => setInvoiceNumber(e.target.value)} placeholder="Vendor's invoice number" /></FormField>
       </div>
 
-      {isPaid && (
-        <div className="grid grid-cols-2 gap-4 p-4 bg-[#F4F5F6] rounded-xl border border-[#D9DCE0]">
-          <FormField label="Payment Mode"><Select options={['Cash', 'Bank Transfer', 'UPI', 'Cheque']} /></FormField>
-          <FormField label="Amount Paid"><Input type="number" prefix="₹" /></FormField>
-          <FormField label="Reference / UTR"><Input placeholder="Optional" /></FormField>
-          <FormField label="Payment Date"><Input type="date" defaultValue={new Date().toISOString().split('T')[0]} /></FormField>
-        </div>
-      )}
-
-      <SectionTitle title="Stock / Products" />
+      <SectionTitle title="Items / Services" subtitle="Add products with qty, rate and tax" />
       <ItemsTable warehouse={warehouse} onWarehouseChange={setWarehouse} onItemsChange={setItems} />
 
       <SectionTitle title="Logistics / Shipping" subtitle="Optional" />
-      <LogisticsSection />
+      <LogisticsSection onLogisticsChange={setLogistics} />
 
-      <SummaryFooter subtotal={subtotal} tax={Math.round(tax)} onSubmit={() => setSubmitted(true)} onDraft={() => alert('Saved as draft')} submitLabel="Submit Purchase Invoice" />
+      <SectionTitle title="Narration" />
+      <textarea rows={2} value={narration} onChange={e => setNarration(e.target.value)} placeholder="Optional narration" className="notion-input w-full text-sm resize-none" />
+
+      {error && <div className="flex items-center gap-2 p-3 bg-[#FEF2F2] border border-[#FECACA] rounded-xl text-sm text-[#C0392B]"><AlertCircle size={14} />{error}</div>}
+
+      <SummaryFooter subtotal={subtotal} tax={Math.round(taxAmt)} logistics={logTotal} onSubmit={handleSubmit} submitLabel={submitting ? 'Submitting...' : 'Submit to Tally'} showDraft={true} />
     </div>
   );
 }
