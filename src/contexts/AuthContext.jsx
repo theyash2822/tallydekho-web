@@ -89,6 +89,29 @@ export function AuthProvider({ children }) {
     localStorage.setItem('authUser', JSON.stringify(userData));
     setToken(authToken);
     setUser(userData);
+    // Eagerly load companies right after login (don't wait for useEffect)
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/app'}/companies`, {
+        headers: { 'Authorization': `Bearer ${authToken}`, 'Content-Type': 'application/json' }
+      });
+      const data = await res.json();
+      const arr = data?.data?.companies || [];
+      if (arr.length > 0) {
+        localStorage.setItem('companies', JSON.stringify(arr));
+        setCompanies(arr);
+        // Auto-select first company + latest FY
+        const comp = arr[0];
+        localStorage.setItem('selectedCompany', JSON.stringify(comp));
+        setSelectedCompany(comp);
+        if (comp?.years?.length) {
+          const latestFY = comp.years[comp.years.length - 1];
+          localStorage.setItem('selectedFY', JSON.stringify(latestFY));
+          setSelectedFY(latestFY);
+        }
+      }
+    } catch (e) {
+      console.warn('Eager company load failed:', e.message);
+    }
   };
 
   const logout = () => {
