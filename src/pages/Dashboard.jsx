@@ -125,7 +125,7 @@ function ChartCard({ title, sub, action, children }) {
 export default function Dashboard() {
   const navigate = useNavigate();
   const { isPaired, selectedCompany, selectedFY, loadCompanies } = useAuth();
-  const fyLabel = selectedFY?.name ? `FY ${selectedFY.name}` : '{fyLabel}';
+  const fyLabel = selectedFY?.name ? `FY ${selectedFY.name}` : 'FY 2025-26';
   const [dashData, setDashData]   = useState(null);
   const [dashLoading, setDashLoading] = useState(true);
   const [tallyPaired, setTallyPaired] = useState(isPaired);
@@ -156,7 +156,7 @@ export default function Dashboard() {
   const D = dashData || (isDemo ? dashboardKPIs : null);
   const L = dashLoading && !isDemo;
   const kpis = [
-    { label: 'Total Revenue',  value: L ? '—' : fmtL(D?.totalSales || 0),     sub: selectedCompany?.name || '{fyLabel}', color: '#2D7D46' },
+    { label: 'Total Revenue',  value: L ? '—' : fmtL(D?.totalSales || 0),     sub: selectedCompany?.name || fyLabel, color: '#2D7D46' },
     { label: 'Net Profit',     value: L ? '—' : fmtL(D?.netProfit || 0),       sub: 'This FY',        color: '#3F5263' },
     { label: 'Receivables',    value: L ? '—' : fmtL(D?.receivables || 0),     sub: 'Outstanding',    color: '#B45309' },
     { label: 'Payables',       value: L ? '—' : fmtL(D?.payables || 0),        sub: 'Outstanding',    color: '#C0392B' },
@@ -235,7 +235,7 @@ export default function Dashboard() {
       {/* Revenue + GST */}
       <div className="grid grid-cols-3 gap-4">
         <div className="col-span-2">
-          <ChartCard title="Revenue Overview" sub="Sales · Purchase · Expenses — {fyLabel} (₹K)" action="Full report">
+          <ChartCard title="Revenue Overview" sub={`Sales · Purchase · Expenses — ${fyLabel} (₹K)`} action="Full report">
             <ResponsiveContainer width="100%" height={220}>
               <AreaChart data={revenueData} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
                 <defs>
