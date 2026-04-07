@@ -29,13 +29,19 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
   }, [selectedCompany?.guid]);
 
   // Fetch stock items for product search
+  const [stockMap, setStockMap] = useState({});
+
   const fetchProducts = useCallback(async (q) => {
     if (!selectedCompany?.guid) return [];
     const res = await fetchStocks({ companyGuid: selectedCompany.guid, searchText: q, pageSize: 20 });
-    return (res?.data?.stocks || []).map(s => ({
-      label: s.name,
-      value: s.name,
-      sub: s.unit ? `Unit: ${s.unit}${s.closing_qty ? ` · Stock: ${s.closing_qty}` : ''}` : '',
+    const stocks = res?.data?.stocks || [];
+    // Cache stock data for autofill
+    const map = {};
+    stocks.forEach(s => { map[s.name] = s; });
+    setStockMap(prev => ({ ...prev, ...map }));
+    return stocks.map(s => ({
+      label: s.name, value: s.name,
+      sub: s.unit ? `Unit: ${s.unit}${s.closing_qty ? ` · Stock: ${parseFloat(s.closing_qty).toFixed(0)}` : ''}` : '',
       badge: s.hsn || '',
     }));
   }, [selectedCompany?.guid]);
@@ -52,8 +58,20 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
   };
 
   const handleProductSelect = (id, name) => {
-    // When product selected, update name. Rate/HSN auto-fill can be added when stock has price data
-    update(id, 'name', name);
+    const stock = stockMap[name];
+    const updated = items.map(i => {
+      if (i.id !== id) return i;
+      return {
+        ...i,
+        name,
+        unit: stock?.unit || i.unit,
+        hsn: stock?.hsn || i.hsn,
+        // Don't overwrite rate - user enters it
+        amount: (parseFloat(i.qty) || 1) * (parseFloat(i.rate) || 0),
+      };
+    });
+    setItems(updated);
+    onItemsChange && onItemsChange(updated);
   };
 
   const remove = (id) => {
@@ -87,65 +105,67 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
         </select>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto rounded-xl border border-[#E8E7E3]">
-        <table className="w-full text-sm">
-          <thead className="bg-[#FBFAF8] border-b border-[#E8E7E3]">
-            <tr>
-              {['Product / Service', 'HSN/SAC', 'Qty', 'Unit', 'Rate (₹)', 'Tax', 'Amount (₹)', ''].map(h => (
-                <th key={h} className="px-3 py-2.5 text-left text-xs font-semibold text-[#787774] whitespace-nowrap">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item) => (
-              <tr key={item.id} className="border-b border-[#F1F0EC] last:border-0">
-                <td className="px-2 py-1.5" style={{ minWidth: 180 }}>
-                  <LiveSearch
-                    value={item.name}
-                    onChange={name => handleProductSelect(item.id, name)}
-                    placeholder="Search product..."
-                    fetchFn={fetchProducts}
-                    className="w-44"
-                  />
-                </td>
-                <td className="px-3 py-2">
-                  <input placeholder="HSN" value={item.hsn} onChange={e => update(item.id, 'hsn', e.target.value)}
-                    className="notion-input text-sm w-20" />
-                </td>
-                <td className="px-3 py-2">
-                  <input type="number" min="1" value={item.qty} onChange={e => update(item.id, 'qty', e.target.value)}
-                    className="notion-input text-sm w-16" />
-                </td>
-                <td className="px-3 py-2">
-                  <select value={item.unit} onChange={e => update(item.id, 'unit', e.target.value)}
-                    className="notion-input text-sm w-16">
-                    {UNITS.map(u => <option key={u}>{u}</option>)}
-                  </select>
-                </td>
-                <td className="px-3 py-2">
-                  <input type="number" placeholder="0.00" value={item.rate} onChange={e => update(item.id, 'rate', e.target.value)}
-                    className="notion-input text-sm w-24" />
-                </td>
-                <td className="px-3 py-2">
-                  <select value={item.tax} onChange={e => update(item.id, 'tax', e.target.value)}
-                    className="notion-input text-sm w-20">
-                    {TAX_RATES.map(r => <option key={r}>{r}</option>)}
-                  </select>
-                </td>
-                <td className="px-3 py-2 font-medium text-[#1A1A1A] whitespace-nowrap">
-                  ₹{item.amount.toLocaleString('en-IN')}
-                </td>
-                <td className="px-3 py-2">
-                  <button onClick={() => remove(item.id)} className="w-6 h-6 flex items-center justify-center rounded text-[#AEACA8] hover:text-rose-500 hover:bg-rose-50 transition-colors">
-                    <Trash2 size={13} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* Items - card layout instead of table to avoid overflow clipping */}
+      <div className="space-y-2">
+        {/* Header row */}
+        <div className="grid gap-2 text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-1"
+          style={{ gridTemplateColumns: '2fr 80px 70px 70px 90px 70px 70px 24px' }}>
+          <span>Product / Service</span>
+          <span>HSN</span>
+          <span>Qty</span>
+          <span>Unit</span>
+          <span>Rate (₹)</span>
+          <span>Tax</span>
+          <span>Amount</span>
+          <span></span>
+        </div>
+
+        {items.map((item) => (
+          <div key={item.id} className="grid gap-2 items-center px-1"
+            style={{ gridTemplateColumns: '2fr 80px 70px 70px 90px 70px 70px 24px' }}>
+
+            {/* Product - LiveSearch with overflow visible */}
+            <div className="relative">
+              <LiveSearch
+                value={item.name}
+                onChange={name => handleProductSelect(item.id, name)}
+                placeholder="Search product..."
+                fetchFn={fetchProducts}
+              />
+            </div>
+
+            <input placeholder="HSN" value={item.hsn} onChange={e => update(item.id, 'hsn', e.target.value)}
+              className="notion-input text-sm w-full" />
+
+            <input type="number" min="0.01" step="0.01" value={item.qty} onChange={e => update(item.id, 'qty', e.target.value)}
+              className="notion-input text-sm w-full" />
+
+            <select value={item.unit} onChange={e => update(item.id, 'unit', e.target.value)}
+              className="notion-input text-sm w-full">
+              {UNITS.map(u => <option key={u}>{u}</option>)}
+            </select>
+
+            <input type="number" placeholder="0.00" min="0" step="0.01" value={item.rate}
+              onChange={e => update(item.id, 'rate', e.target.value)}
+              className="notion-input text-sm w-full" />
+
+            <select value={item.tax} onChange={e => update(item.id, 'tax', e.target.value)}
+              className="notion-input text-sm w-full">
+              {TAX_RATES.map(r => <option key={r}>{r}</option>)}
+            </select>
+
+            <div className="text-sm font-semibold text-[#1A1A1A] text-right">
+              ₹{(item.amount || 0).toLocaleString('en-IN')}
+            </div>
+
+            <button onClick={() => remove(item.id)}
+              className="w-6 h-6 flex items-center justify-center rounded text-[#AEACA8] hover:text-rose-500 hover:bg-rose-50 transition-colors">
+              <Trash2 size={13} />
+            </button>
+          </div>
+        ))}
       </div>
+
       <button onClick={add} className="flex items-center gap-1.5 mt-2 text-xs text-[#3F5263] hover:text-[#526373] font-medium transition-colors">
         <Plus size={13} /> Add Item
       </button>
