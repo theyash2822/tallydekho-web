@@ -279,7 +279,7 @@ export default function AuditTrail() {
                 <div className="flex gap-1.5">
                   {['all','success','desktop_offline','failed'].map(k => (
                     <button key={k} onClick={() => setMyFilter(k)} className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
-                      myFilter === k ? 'bg-[#3F5263] text-white border-[#3F5263]' : 'bg-white text-[#6B7280] border-[#D9DCE0] hover:border-[#3F5263]'
+                      myFilter === k ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]' : 'bg-white text-[#6B7280] border-[#D9DCE0] hover:border-[#1A1A1A]'
                     }`}>{k === 'all' ? 'All' : k === 'success' ? '✓ In Tally' : k === 'desktop_offline' ? '⏳ Offline' : '✗ Failed'}</button>
                   ))}
                 </div>
@@ -315,7 +315,7 @@ export default function AuditTrail() {
                         <span className={`flex-shrink-0 px-2 py-0.5 rounded-md text-[10px] font-semibold border ${cfg.cls}`}>{cfg.label}</span>
                         {e.status !== 'success' && (
                           <button onClick={() => retryEntry(e.id)} disabled={retrying[e.id]}
-                            className="flex-shrink-0 flex items-center gap-1 px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-[#3F5263] text-white hover:bg-[#526373] disabled:opacity-50 transition-colors">
+                            className="flex-shrink-0 flex items-center gap-1 px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-[#1A1A1A] text-white hover:bg-[#333] disabled:opacity-50 transition-colors">
                             <RotateCcw size={10} className={retrying[e.id] ? 'animate-spin' : ''} />
                             {retrying[e.id] ? '…' : 'Push'}
                           </button>
@@ -358,7 +358,7 @@ export default function AuditTrail() {
                 </div>
               ))}
             </div>
-            <button className="w-full py-2.5 rounded-lg text-sm font-medium text-white" style={{ background: '#3F5263' }}>
+            <button className="w-full py-2.5 rounded-lg text-sm font-medium text-white" style={{ background: '#1A1A1A' }}>
               View Full Voucher
             </button>
           </div>
