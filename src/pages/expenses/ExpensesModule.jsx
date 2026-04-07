@@ -1,139 +1,145 @@
-import { useState } from 'react';
-import { Receipt, Search, Download, PieChart as PieIcon } from 'lucide-react';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { useState, useEffect } from 'react';
+import { Receipt, Search, AlertCircle, RefreshCw, Link2 } from 'lucide-react';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import KPICard from '../../components/KPICard';
 import Badge from '../../components/Badge';
 import Table from '../../components/Table';
-import Drawer from '../../components/Drawer';
-import { expenses, expenseCategories, expenseKPIs } from '../../data/expensesMock';
+import { useAuth } from '../../contexts/AuthContext';
+import api from '../../services/api';
 
-const fmt = n => '₹' + (n || 0).toLocaleString('en-IN');
-const statusVariant = { Paid: 'green', Unpaid: 'red' };
-const COLORS = ['#3F5263','#526373','#798692','#9FA9B1','#B2BAC1'];
+const fmt  = n => '₹' + (n || 0).toLocaleString('en-IN');
+const fmtL = n => {
+  if (!n || n === 0) return '—';
+  if (n >= 100000) return '₹' + (n / 100000).toFixed(2) + ' L';
+  return fmt(n);
+};
+
+const COLORS = ['#3F5263','#0D9488','#D97706','#E5484D','#798692','#2563EB','#7C3AED','#059669','#DC2626','#9CA3AF'];
 
 const cols = [
-  { key: 'date', label: 'Date', render: v => <span className="text-[#6B7280]">{v}</span> },
-  { key: 'voucher', label: 'Voucher', render: v => <span className="font-mono text-xs text-[#3F5263] font-semibold">{v}</span> },
-  { key: 'category', label: 'Category' },
-  { key: 'ledger', label: 'Ledger', render: v => <span className="text-[#6B7280]">{v}</span> },
-  { key: 'amount', label: 'Amount', render: v => <span className="font-semibold">{fmt(v)}</span> },
-  { key: 'tax', label: 'Tax', render: v => v ? fmt(v) : <span className="text-[#9CA3AF]">—</span> },
-  { key: 'mode', label: 'Mode', render: v => <span className="text-xs text-[#6B7280]">{v}</span> },
-  { key: 'status', label: 'Status', render: v => <Badge label={v} variant={statusVariant[v]} /> },
-  { key: 'attachment', label: 'Docs', render: v => v ? <span className="text-xs text-[#3F5263] font-medium">📎</span> : <span className="text-[#C5CBD0]">—</span> },
+  { key: 'ref',      label: 'Reference', render: v => <span className="font-mono text-xs text-[#3F5263]">{v || '—'}</span> },
+  { key: 'vendor',   label: 'Party' },
+  { key: 'category', label: 'Category', render: v => <span className="text-xs text-[#6B7280]">{v || '—'}</span> },
+  { key: 'date',     label: 'Date',     render: v => <span className="text-[#6B7280]">{v || '—'}</span> },
+  { key: 'amount',   label: 'Amount',   render: v => <span className="font-semibold">{fmt(v)}</span> },
+  { key: 'voucher_type', label: 'Type', render: v => <Badge label={v} variant="gray" /> },
 ];
 
 export default function ExpensesModule() {
-  const [search, setSearch] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('All');
-  const [modeFilter, setModeFilter] = useState('All');
-  const [drawer, setDrawer] = useState(null);
+  const { selectedCompany, selectedFY, isPaired } = useAuth();
+  const [data, setData]       = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState(null);
+  const [search, setSearch]   = useState('');
 
-  const categories = ['All', ...Array.from(new Set(expenses.map(e => e.category)))];
-  const filtered = expenses.filter(e => {
-    const s = !search || e.category.toLowerCase().includes(search.toLowerCase()) || e.voucher.toLowerCase().includes(search.toLowerCase());
-    const c = categoryFilter === 'All' || e.category === categoryFilter;
-    const m = modeFilter === 'All' || e.mode === modeFilter;
-    return s && c && m;
-  });
+  const load = () => {
+    if (!selectedCompany?.guid) { setLoading(false); return; }
+    setLoading(true);
+    setError(null);
+    api.fetchExpenses({
+      companyGuid: selectedCompany.guid,
+      fromDate: selectedFY?.startDate,
+      toDate:   selectedFY?.endDate,
+    })
+      .then(res => { if (res?.data) setData(res.data); else setError('No data returned'); })
+      .catch(err => setError(err?.response?.data?.message || err?.message || 'Failed to load expenses'))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => { setData(null); load(); }, [selectedCompany?.guid, selectedFY?.uniqueId]);
+
+  const fyLabel    = selectedFY?.name ? `FY ${selectedFY.name}` : 'FY 2025-26';
+  const expenses   = data?.expenses   || [];
+  const categories = data?.categories || [];
+  const summary    = data?.summary    || {};
+
+  const filtered = search
+    ? expenses.filter(e => (e.vendor || '').toLowerCase().includes(search.toLowerCase()) || (e.ref || '').toLowerCase().includes(search.toLowerCase()) || (e.category || '').toLowerCase().includes(search.toLowerCase()))
+    : expenses;
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Expenses</h1>
-        <p className="text-sm text-[#6B7280] mt-0.5">July 2025</p>
+      {error && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs">
+          <AlertCircle size={14} className="flex-shrink-0" />
+          <span><strong>Error:</strong> {error}</span>
+          <button onClick={load} className="ml-auto underline font-medium">Retry</button>
+        </div>
+      )}
+      {!isPaired && (
+        <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs">
+          <Link2 size={13} />
+          <span>Pair your Desktop App to see real expense data. <a href="/settings?tab=integrations&sub=Tally+ERP+Sync" className="underline font-medium">Connect →</a></span>
+        </div>
+      )}
+
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="page-title">Expenses</h1>
+          <p className="page-subtitle">{selectedCompany?.name || '—'} · {fyLabel}</p>
+        </div>
+        <button onClick={load} disabled={loading} className="flex items-center gap-1.5 text-xs text-[#6B7280] hover:text-[#1C2B3A] transition-colors disabled:opacity-40">
+          <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
+        </button>
       </div>
 
-      <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Expenses" value={fmt(expenseKPIs.total)} icon={Receipt} accent="#3F5263" />
-        <KPICard title="Total Tax"       value={fmt(expenseKPIs.tax)}   icon={Receipt} accent="#B45309" />
-        <KPICard title="Paid"            value={expenseKPIs.paid}       icon={Receipt} accent="#2D7D46" />
-        <KPICard title="Unpaid"          value={expenseKPIs.unpaid}     icon={Receipt} accent="#C0392B" />
+      <div className="grid grid-cols-3 gap-3">
+        <KPICard title="Total Expenses" value={loading ? '—' : fmtL(summary.totalExpenses)} icon={Receipt} accent="#C0392B" />
+        <KPICard title="Transactions"   value={loading ? '—' : summary.count || 0}           icon={Receipt} accent="#3F5263" />
+        <KPICard title="Categories"     value={loading ? '—' : categories.length || 0}       icon={Receipt} accent="#D97706" />
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-2 bg-white border border-[#D9DCE0] rounded-2xl p-5">
-          <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Expense by Category</p>
-          <p className="text-xs text-[#6B7280] mb-4">July 2025</p>
-          <ResponsiveContainer width="100%" height={170}>
-            <BarChart data={expenseCategories} barSize={28} layout="vertical" margin={{ left: 80 }}>
-              <CartesianGrid strokeDasharray="2 4" stroke="#F0EFE9" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 10, fill: '#6B7280' }} axisLine={false} tickLine={false} tickFormatter={v => '₹' + (v / 1000) + 'K'} />
-              <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#6B7280' }} axisLine={false} tickLine={false} width={80} />
-              <Tooltip formatter={v => fmt(v)} contentStyle={{ fontSize: 11, borderRadius: 10, border: '1px solid #D9DCE0' }} />
-              <Bar dataKey="amount" fill="#3F5263" radius={[0, 4, 4, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="bg-white border border-[#D9DCE0] rounded-2xl p-5">
-          <p className="text-sm font-semibold text-[#1C2B3A] mb-3">Category Mix</p>
-          <ResponsiveContainer width="100%" height={130}>
-            <PieChart>
-              <Pie data={expenseCategories} cx="50%" cy="50%" innerRadius={35} outerRadius={60} dataKey="amount" paddingAngle={2}>
-                {expenseCategories.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
-              </Pie>
-              <Tooltip formatter={v => fmt(v)} contentStyle={{ fontSize: 11, borderRadius: 10, border: '1px solid #D9DCE0' }} />
-            </PieChart>
-          </ResponsiveContainer>
-          <div className="space-y-1.5 mt-2">
-            {expenseCategories.map((c, i) => (
-              <div key={i} className="flex justify-between text-xs">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full" style={{ background: COLORS[i] }} />
-                  <span className="text-[#6B7280] truncate max-w-24">{c.name}</span>
-                </div>
-                <span className="font-semibold text-[#1C2B3A]">{c.pct}%</span>
-              </div>
-            ))}
+        <div className="col-span-2 bg-white border border-[#D9DCE0] rounded-xl p-5">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-sm font-semibold text-[#1C2B3A]">Expense Transactions</p>
+            <div className="relative">
+              <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
+              <input value={search} onChange={e => setSearch(e.target.value)}
+                placeholder="Search..."
+                className="pl-7 pr-3 py-1.5 text-xs bg-[#F4F5F6] border border-[#ECEEEF] rounded-lg outline-none focus:border-[#3F5263]" />
+            </div>
           </div>
+          {loading ? (
+            <div className="h-40 flex items-center justify-center text-xs text-[#9CA3AF]">Loading…</div>
+          ) : filtered.length === 0 ? (
+            <div className="h-40 flex items-center justify-center text-xs text-[#9CA3AF]">{isPaired ? 'No expense data for this period' : 'Pair desktop app to see expenses'}</div>
+          ) : (
+            <Table columns={cols} data={filtered} />
+          )}
+        </div>
+
+        <div className="bg-white border border-[#D9DCE0] rounded-xl p-5">
+          <p className="text-sm font-semibold text-[#1C2B3A] mb-4">By Category</p>
+          {loading ? (
+            <div className="h-40 flex items-center justify-center text-xs text-[#9CA3AF]">Loading…</div>
+          ) : categories.length === 0 ? (
+            <div className="h-40 flex items-center justify-center text-xs text-[#9CA3AF]">No data</div>
+          ) : (
+            <>
+              <ResponsiveContainer width="100%" height={160}>
+                <PieChart>
+                  <Pie data={categories} dataKey="amount" nameKey="name" cx="50%" cy="50%" innerRadius={40} outerRadius={70}>
+                    {categories.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} stroke="none" />)}
+                  </Pie>
+                  <Tooltip formatter={v => ['₹' + v.toLocaleString('en-IN')]} contentStyle={{ fontSize: 11, borderRadius: 8 }} />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="space-y-2 mt-2">
+                {categories.slice(0, 6).map((c, i) => (
+                  <div key={i} className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
+                      <span className="text-[#6B7280] truncate max-w-[100px]">{c.name}</span>
+                    </div>
+                    <span className="font-semibold text-[#1C2B3A]">{fmtL(c.amount)}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </div>
-
-      <div className="bg-white border border-[#D9DCE0] rounded-2xl p-5">
-        <div className="flex gap-3 mb-4 flex-wrap">
-          <div className="relative flex-1 min-w-48">
-            <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
-            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search category or voucher..."
-              className="notion-input pl-8 w-full text-sm" />
-          </div>
-          <select value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)} className="notion-input text-sm text-[#6B7280]">
-            {categories.map(c => <option key={c}>{c}</option>)}
-          </select>
-          <select value={modeFilter} onChange={e => setModeFilter(e.target.value)} className="notion-input text-sm text-[#6B7280]">
-            {['All', 'Cash', 'Bank', 'Credit'].map(m => <option key={m}>{m}</option>)}
-          </select>
-          <button className="flex items-center gap-1.5 px-3 py-2 border border-[#D9DCE0] rounded-lg text-xs text-[#6B7280] hover:bg-[#F4F5F6]">
-            <Download size={12} /> Export
-          </button>
-        </div>
-        <Table columns={cols} data={filtered} onRowClick={setDrawer} />
-      </div>
-
-      <Drawer open={!!drawer} onClose={() => setDrawer(null)} title={drawer?.voucher || 'Expense Details'}>
-        {drawer && (
-          <div className="space-y-4">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="font-semibold text-[#1C2B3A]">{drawer.category}</p>
-                <p className="font-mono text-xs text-[#6B7280] mt-0.5">{drawer.voucher}</p>
-              </div>
-              <Badge label={drawer.status} variant={statusVariant[drawer.status]} />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              {[['Date',drawer.date],['Ledger',drawer.ledger],['Amount',fmt(drawer.amount)],['Tax',fmt(drawer.tax)],['Mode',drawer.mode],['Attachment',drawer.attachment?'Yes':'No']].map(([l,v])=>(
-                <div key={l} className="p-3 bg-[#F9F9F9] rounded-xl border border-[#D9DCE0]">
-                  <p className="text-xs text-[#6B7280] mb-1">{l}</p>
-                  <p className="font-medium text-[#1C2B3A] text-sm">{v}</p>
-                </div>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <button className="flex-1 py-2.5 rounded-lg text-sm font-medium text-white" style={{ background: '#3F5263' }}>View PDF</button>
-              <button className="px-4 py-2.5 rounded-lg text-sm text-[#6B7280] border border-[#D9DCE0] hover:bg-[#F4F5F6]">Edit</button>
-            </div>
-          </div>
-        )}
-      </Drawer>
     </div>
   );
 }

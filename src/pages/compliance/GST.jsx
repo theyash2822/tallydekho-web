@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { ShieldCheck, CheckCircle, AlertTriangle, XCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ShieldCheck, CheckCircle, AlertTriangle, XCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import KPICard from '../../components/KPICard';
 import Badge from '../../components/Badge';
 import Table from '../../components/Table';
 import Drawer from '../../components/Drawer';
-import { gstr1Data, gstr2aData } from '../../data/mockData';
+import { useAuth } from '../../contexts/AuthContext';
+import api from '../../services/api';
 
 const fmt = n => '₹' + n.toLocaleString('en-IN');
 const statusVariant = { Filed: 'green', Pending: 'yellow', Matched: 'green', Unmatched: 'red', Suggested: 'yellow', Rejected: 'red' };
@@ -20,6 +21,25 @@ const gstr3b = [
 export default function GST() {
   const [tab, setTab] = useState(0);
   const [drawer, setDrawer] = useState(null);
+  const { selectedCompany, selectedFY, isPaired } = useAuth();
+  const [gstData, setGstData]   = useState(null);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState(null);
+
+  const load = () => {
+    if (!selectedCompany?.guid) { setLoading(false); return; }
+    setLoading(true); setError(null);
+    api.fetchGSTSummary({ companyGuid: selectedCompany.guid, fromDate: selectedFY?.startDate, toDate: selectedFY?.endDate })
+      .then(res => { if (res?.data) setGstData(res.data); else setError('No GST data returned'); })
+      .catch(err => setError(err?.response?.data?.message || err?.message || 'Failed to load GST data'))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => { setGstData(null); load(); }, [selectedCompany?.guid, selectedFY?.uniqueId]);
+
+  const gstSummary = gstData?.summary || {};
+  const fyLabel    = selectedFY?.name ? `FY ${selectedFY.name}` : 'FY 2025-26';
+  const fmtL = n => { if (!n || n === 0) return '—'; if (n >= 100000) return '₹' + (n / 100000).toFixed(2) + ' L'; return '₹' + n.toLocaleString('en-IN'); };
 
   const gstr1Cols = [
     { key: 'invoice',  label: 'Invoice No', render: v => <span className="font-mono text-xs text-[#3F5263] font-semibold">{v}</span> },
@@ -49,16 +69,28 @@ export default function GST() {
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="page-title">GST Compliance</h1>
-        <p className="page-subtitle">FY 2025-26 · July 2025</p>
+      {error && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs">
+          <AlertCircle size={14} className="flex-shrink-0" />
+          <span><strong>Error:</strong> {error}</span>
+          <button onClick={load} className="ml-auto underline font-medium">Retry</button>
+        </div>
+      )}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="page-title">GST Compliance</h1>
+          <p className="page-subtitle">{selectedCompany?.name || '—'} · {fyLabel}</p>
+        </div>
+        <button onClick={load} disabled={loading} className="flex items-center gap-1.5 text-xs text-[#6B7280] hover:text-[#1C2B3A] transition-colors disabled:opacity-40">
+          <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
+        </button>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="GSTR-1 Status"  value="Filed"      sub="July 2025"     icon={CheckCircle}  accent="#2D7D46" />
-        <KPICard title="GSTR-3B Status" value="Pending"    sub="Due 20 Aug"    icon={AlertTriangle} accent="#B45309" />
-        <KPICard title="2A Mismatches"  value="2 entries"                      icon={XCircle}      accent="#C0392B" />
-        <KPICard title="ITC Available"  value="₹1,29,150"                      icon={ShieldCheck}  accent="#3F5263" />
+        <KPICard title="CGST Payable"  value={loading ? '—' : fmtL(gstSummary.cgst)}  icon={ShieldCheck}   accent="#3F5263" />
+        <KPICard title="SGST Payable"  value={loading ? '—' : fmtL(gstSummary.sgst)}  icon={ShieldCheck}   accent="#0D9488" />
+        <KPICard title="IGST Payable"  value={loading ? '—' : fmtL(gstSummary.igst)}  icon={ShieldCheck}   accent="#D97706" />
+        <KPICard title="Total GST"     value={loading ? '—' : fmtL(gstSummary.total)} icon={CheckCircle}   accent="#2D7D46" />
       </div>
 
       <div className="bg-white border border-[#D9DCE0] rounded-xl overflow-hidden">

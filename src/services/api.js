@@ -69,7 +69,11 @@ export const fetchDashboard = (body) => post('/dashboard', body);
 
 // ─── Reports ──────────────────────────────────────────────────────────────────
 export const fetchReportsPL = (body) => post('/reports/pl', body);
-export const fetchReportsBS = (body) => post('/reports/balance-sheet', body);
+export const fetchReportsBS           = (body) => post('/reports/balance-sheet', body);
+export const fetchCashBank            = (body) => post('/cash-bank', body);
+export const fetchReceivablesPayables = (body) => post('/receivables-payables', body);
+export const fetchExpenses            = (body) => post('/expenses', body);
+export const fetchGSTSummary          = (body) => post('/gst-summary', body);
 
 // ─── Tally Write API (creates vouchers/masters in Tally via desktop proxy) ────
 // Note: /tally/* routes are on root, not /app — use separate base URL
@@ -116,6 +120,7 @@ const api = {
   fetchStockSummary, fetchStockFilters, fetchStocks, fetchStockDetails,
   // Vouchers & Reports
   fetchVouchers, fetchDashboard, fetchReportsPL, fetchReportsBS,
+  fetchCashBank, fetchReceivablesPayables, fetchExpenses, fetchGSTSummary,
   // Tally Write
   createSalesInvoice, createSalesOrder, createPurchaseInvoice, createPurchaseOrder,
   createPaymentVoucher, createReceiptVoucher, createJournalVoucher, createContraVoucher,

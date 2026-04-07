@@ -4,7 +4,7 @@ import api from '../../services/api';
 import { TrendingUp, ChevronDown, ChevronRight } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import KPICard from '../../components/KPICard';
-import { balanceSheetData, trialBalance } from '../../data/mockData'; // only used for balance sheet structure
+// No mock data
 
 const fmt = n => '₹' + n.toLocaleString('en-IN');
 const fmtL = n => '₹' + (n / 100000).toFixed(1) + 'L';
@@ -41,7 +41,7 @@ function ExpandRow({ label, amount, children, highlight }) {
 
 export default function Reports() {
   const [tab, setTab] = useState(0);
-  const { selectedCompany, token, selectedFY } = useAuth();
+  const { selectedCompany, token, selectedFY, isPaired } = useAuth();
   const [plReport, setPlReport] = useState(null);
   const [bsReport, setBsReport] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -72,8 +72,10 @@ export default function Reports() {
   const netProfit     = plReport?.summary?.netProfit     ?? (totalIncome - totalExpenses);
   const grossProfit   = plReport?.summary?.grossProfit   ?? netProfit;
 
-  const totalAssets = bsReport?.summary?.totalAssets ?? [...balanceSheetData.assets.fixedAssets, ...balanceSheetData.assets.currentAssets].reduce((s, a) => s + a.amount, 0);
-  const totalLiab   = bsReport?.summary?.totalLiabilities ?? [...balanceSheetData.liabilities.capital, ...balanceSheetData.liabilities.longTermLiabilities, ...balanceSheetData.liabilities.currentLiabilities].reduce((s, a) => s + a.amount, 0);
+  const totalAssets = bsReport?.summary?.totalAssets ?? 0;
+  const totalLiab   = bsReport?.summary?.totalLiabilities ?? 0;
+  const bsAssets      = bsReport?.assets      || [];
+  const bsLiabilities = bsReport?.liabilities || [];
 
   // Expense breakdown for chart
   const expBreakdown = expenseRows.length > 0
@@ -190,27 +192,26 @@ export default function Reports() {
           )}
           {tab === 1 && (
             <div className="grid grid-cols-2 gap-8">
-              {[['ASSETS', [['Fixed Assets', balanceSheetData.assets.fixedAssets], ['Current Assets', balanceSheetData.assets.currentAssets]], totalAssets], ['LIABILITIES', [['Capital', balanceSheetData.liabilities.capital], ['Long-Term', balanceSheetData.liabilities.longTermLiabilities], ['Current', balanceSheetData.liabilities.currentLiabilities]], totalLiab]].map(([title, groups, total]) => (
-                <div key={title}>
-                  <h3 className="text-xs font-bold text-[#9CA3AF] uppercase tracking-widest mb-4 pb-2 border-b border-[#D9DCE0]">{title}</h3>
-                  <div className="space-y-4 text-sm">
-                    {groups.map(([gName, items]) => (
-                      <div key={gName}>
-                        <p className="font-semibold text-[#6B7280] text-xs uppercase tracking-wide mb-2">{gName}</p>
-                        {items.map(a => (
-                          <div key={a.ledger} className="flex justify-between py-1.5 pl-3 border-b border-[#F0EFE9] last:border-0">
-                            <span className="text-[#6B7280]">{a.ledger}</span>
-                            <span className="font-medium text-[#1C2B3A]">{fmt(a.amount)}</span>
-                          </div>
-                        ))}
+              {bsAssets.length === 0 && bsLiabilities.length === 0 ? (
+                <div className="col-span-2 py-10 text-center text-xs text-[#9CA3AF]">{isPaired ? 'No balance sheet data for this period' : 'Pair desktop app to see balance sheet'}</div>
+              ) : (
+                [['ASSETS', bsAssets, totalAssets], ['LIABILITIES', bsLiabilities, totalLiab]].map(([title, rows, total]) => (
+                  <div key={title}>
+                    <h3 className="text-xs font-bold text-[#9CA3AF] uppercase tracking-widest mb-4 pb-2 border-b border-[#D9DCE0]">{title}</h3>
+                    <div className="space-y-1 text-sm">
+                      {rows.slice(0, 30).map((a, i) => (
+                        <div key={i} className="flex justify-between py-1.5 pl-3 border-b border-[#F0EFE9] last:border-0">
+                          <span className="text-[#6B7280] truncate max-w-[200px]">{a.name}</span>
+                          <span className="font-medium text-[#1C2B3A] ml-2">{fmt(parseFloat(a.closing_balance || 0))}</span>
+                        </div>
+                      ))}
+                      <div className="flex justify-between py-2.5 mt-2 border-t-2 border-[#3F5263] font-bold text-[#3F5263]">
+                        <span>Total {title}</span><span>{fmt(total)}</span>
                       </div>
-                    ))}
-                    <div className="flex justify-between py-2.5 mt-2 border-t-2 border-[#3F5263] font-bold text-[#3F5263]">
-                      <span>Total {title}</span><span>{fmt(total)}</span>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           )}
           {tab === 2 && (
@@ -222,13 +223,21 @@ export default function Reports() {
                   ))}</tr>
                 </thead>
                 <tbody>
-                  {trialBalance.map((row, i) => (
+                  {[...bsAssets, ...bsLiabilities].length === 0 ? (
+                    <tr><td colSpan={8} className="px-3 py-10 text-center text-xs text-[#9CA3AF]">{isPaired ? 'No ledger data available' : 'Pair desktop app to see trial balance'}</td></tr>
+                  ) : [
+                    ...bsAssets.map(l => ({ ...l, side: 'Dr' })),
+                    ...bsLiabilities.map(l => ({ ...l, side: 'Cr' }))
+                  ].map((row, i) => (
                     <tr key={i} className="border-b border-[#F0EFE9] hover:bg-[#F4F5F6]">
-                      <td className="px-3 py-2.5 font-medium text-[#1C2B3A]">{row.ledger}</td>
-                      <td className="px-3 py-2.5 text-[#6B7280]">{row.group}</td>
-                      {[row.openingDr, row.openingCr, row.periodDr, row.periodCr, row.closingDr, row.closingCr].map((v, j) => (
-                        <td key={j} className="px-3 py-2.5 text-right">{v ? fmt(v) : <span className="text-[#9CA3AF]">—</span>}</td>
-                      ))}
+                      <td className="px-3 py-2.5 font-medium text-[#1C2B3A]">{row.name}</td>
+                      <td className="px-3 py-2.5 text-[#6B7280]">{row.parent || '—'}</td>
+                      <td className="px-3 py-2.5 text-right">{row.side === 'Dr' ? fmt(parseFloat(row.opening_balance || 0)) : <span className="text-[#9CA3AF]">—</span>}</td>
+                      <td className="px-3 py-2.5 text-right">{row.side === 'Cr' ? fmt(parseFloat(row.opening_balance || 0)) : <span className="text-[#9CA3AF]">—</span>}</td>
+                      <td className="px-3 py-2.5 text-right text-[#9CA3AF]">—</td>
+                      <td className="px-3 py-2.5 text-right text-[#9CA3AF]">—</td>
+                      <td className="px-3 py-2.5 text-right">{row.side === 'Dr' ? fmt(parseFloat(row.closing_balance || 0)) : <span className="text-[#9CA3AF]">—</span>}</td>
+                      <td className="px-3 py-2.5 text-right">{row.side === 'Cr' ? fmt(parseFloat(row.closing_balance || 0)) : <span className="text-[#9CA3AF]">—</span>}</td>
                     </tr>
                   ))}
                 </tbody>

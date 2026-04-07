@@ -5,7 +5,7 @@ import KPICard from '../../components/KPICard';
 import Badge from '../../components/Badge';
 import Table from '../../components/Table';
 import Drawer from '../../components/Drawer';
-import { payments, receipts, paymentKPIs } from '../../data/paymentsMock';
+// No mock data
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 
@@ -64,8 +64,8 @@ export default function PaymentsModule() {
     }).finally(() => setLoading(false));
   }, [selectedCompany?.guid, selectedFY?.uniqueId]);
 
-  const displayPayments = realPayments.length > 0 ? realPayments : (isDemo ? payments : []);
-  const displayReceipts = realReceipts.length > 0 ? realReceipts : (isDemo ? receipts : []);
+  const displayPayments = realPayments;
+  const displayReceipts = realReceipts;
   const filteredPayments = displayPayments.filter(p => !search || (p.party||'').toLowerCase().includes(search.toLowerCase()) || (p.voucher||'').toLowerCase().includes(search.toLowerCase()));
   const filteredReceipts = displayReceipts.filter(r => !search || (r.party||'').toLowerCase().includes(search.toLowerCase()) || (r.voucher||'').toLowerCase().includes(search.toLowerCase()));
 
