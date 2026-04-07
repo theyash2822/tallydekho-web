@@ -96,7 +96,7 @@ export default function EWayBill() {
               ))}
             </div>
             <div className="flex gap-2">
-              <button className="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">View PDF</button>
+              <button className="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">View PDF</button>
               <button className="px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] border border-[#D9DCE0] hover:bg-[#F4F5F6] transition-colors">Share</button>
             </div>
           </div>

@@ -178,7 +178,7 @@ export default function Login() {
 
           {/* Mobile logo */}
           <div className="flex items-center gap-3 mb-10 lg:hidden">
-            <div className="w-8 h-8 rounded-xl bg-[#3F5263] flex items-center justify-center font-bold text-white text-sm">T</div>
+            <div className="w-8 h-8 rounded-xl bg-[#1A1A1A] flex items-center justify-center font-bold text-white text-sm">T</div>
             <span className="font-semibold text-[#1C2B3A] tracking-tight">TallyDekho</span>
           </div>
 

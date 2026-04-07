@@ -155,7 +155,7 @@ export default function AuditTrail() {
             onClick={() => setFilter(f.key)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
               filter === f.key
-                ? 'bg-[#3F5263] text-white border-[#3F5263]'
+                ? 'bg-[#1A1A1A] text-white border-[#3F5263]'
                 : 'bg-white text-[#6B7280] border-[#D9DCE0] hover:border-[#3F5263] hover:text-[#3F5263]'
             }`}
           >
@@ -217,7 +217,7 @@ export default function AuditTrail() {
                     <button
                       onClick={() => retry(entry.id)}
                       disabled={retrying[entry.id]}
-                      className="flex-shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#3F5263] text-white hover:bg-[#526373] disabled:opacity-50 transition-colors"
+                      className="flex-shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1A1A1A] text-white hover:bg-[#333] disabled:opacity-50 transition-colors"
                     >
                       <RotateCcw size={11} className={retrying[entry.id] ? 'animate-spin' : ''} />
                       {retrying[entry.id] ? 'Pushing…' : 'Push to Tally'}

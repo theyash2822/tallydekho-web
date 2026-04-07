@@ -292,7 +292,7 @@ export default function SalesModule() {
                     {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                       const pg = Math.max(1, Math.min(page - 2, totalPages - 4)) + i;
                       return <button key={pg} onClick={() => { setPage(pg); loadData(pg, search); }}
-                        className={`w-8 h-8 text-xs rounded-lg ${pg === page ? 'bg-[#3F5263] text-white' : 'border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]'}`}>{pg}</button>;
+                        className={`w-8 h-8 text-xs rounded-lg ${pg === page ? 'bg-[#1A1A1A] text-white' : 'border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]'}`}>{pg}</button>;
                     })}
                     <button onClick={() => { const pg = page + 1; setPage(pg); loadData(pg, search); }} disabled={page >= totalPages}
                       className="px-3 py-1.5 text-xs border border-[#D9DCE0] rounded-lg disabled:opacity-40 hover:bg-[#F4F5F6]">Next →</button>
@@ -328,7 +328,7 @@ export default function SalesModule() {
               ))}
             </div>
             <div className="flex gap-2">
-              <button onClick={() => setPdfInvoice(drawer)} className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">View PDF</button>
+              <button onClick={() => setPdfInvoice(drawer)} className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">View PDF</button>
               <button className="px-4 py-2.5 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6] transition-colors">Share</button>
             </div>
           </div>

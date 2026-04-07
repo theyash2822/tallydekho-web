@@ -52,7 +52,7 @@ export default function SummaryFooter({ subtotal = 0, discount = 0, tax = 0, log
             </button>
           )}
           <button onClick={handleSubmit}
-            className="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">
+            className="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">
             {submitLabel}
           </button>
         </div>

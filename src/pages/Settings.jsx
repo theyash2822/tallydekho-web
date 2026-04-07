@@ -55,10 +55,10 @@ function AIChatPanel() {
         {msgs.map((m, i) => (
           <div key={m.id || i} className={`flex gap-2 ${m.from === 'me' ? 'flex-row-reverse' : ''}`}>
             <div className={`w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[9px] font-bold ${
-              m.from === 'bot' ? 'bg-[#3F5263] text-white' : 'bg-[#D9DCE0] text-[#1C2B3A]'}`}>{
+              m.from === 'bot' ? 'bg-[#1A1A1A] text-white' : 'bg-[#D9DCE0] text-[#1C2B3A]'}`}>{
               m.from === 'bot' ? 'TD' : 'Me'}</div>
             <div className={`max-w-[78%] px-3 py-2 rounded-xl text-sm leading-relaxed whitespace-pre-wrap ${
-              m.from === 'me' ? 'bg-[#3F5263] text-white' : 'bg-[#F4F5F6] border border-[#D9DCE0] text-[#1C2B3A]'}`}>
+              m.from === 'me' ? 'bg-[#1A1A1A] text-white' : 'bg-[#F4F5F6] border border-[#D9DCE0] text-[#1C2B3A]'}`}>
               {m.loading ? <span className="text-[#9CA3AF] italic">Thinking...</span> : m.text}
             </div>
           </div>
@@ -210,7 +210,7 @@ function VoucherConfigSettings({ companyGuid }) {
           </div>
         ))}
       </div>
-      <button onClick={save} className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">
+      <button onClick={save} className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">
         {saved ? '✓ Saved!' : 'Save Format'}
       </button>
     </div>
@@ -257,7 +257,7 @@ function InvoiceTemplateSettings({ companyGuid }) {
                   <FileText size={15} className="text-[#3F5263] flex-shrink-0" />
                   <span className="text-sm font-semibold text-[#1C2B3A]">{tpl.name}</span>
                   {tpl.badge && (
-                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#3F5263] text-white tracking-wide">{tpl.badge}</span>
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#1A1A1A] text-white tracking-wide">{tpl.badge}</span>
                   )}
                 </div>
                 <p className="text-xs text-[#787774] mt-1.5 ml-5">{tpl.desc}</p>
@@ -269,7 +269,7 @@ function InvoiceTemplateSettings({ companyGuid }) {
                   className="px-2.5 py-1 rounded-lg text-[11px] font-medium border border-[#D9DCE0] text-[#6B7280] hover:border-[#3F5263] hover:text-[#3F5263] transition-colors"
                 >Preview</button>
                 {selected === tpl.id && (
-                  <div className="w-5 h-5 rounded-full bg-[#3F5263] flex items-center justify-center flex-shrink-0">
+                  <div className="w-5 h-5 rounded-full bg-[#1A1A1A] flex items-center justify-center flex-shrink-0">
                     <Check size={12} className="text-white" />
                   </div>
                 )}
@@ -281,7 +281,7 @@ function InvoiceTemplateSettings({ companyGuid }) {
 
       <button
         onClick={save}
-        className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors"
+        className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors"
       >
         {saved ? '✓ Saved!' : 'Save Template'}
       </button>
@@ -316,7 +316,7 @@ const Toggle = ({label,sub,on}) => {
   return (
     <div className="flex items-center justify-between p-4 border border-[#D9DCE0] rounded-xl">
       <div><p className="text-sm font-medium text-[#1C2B3A]">{label}</p>{sub&&<p className="text-xs text-[#6B7280] mt-0.5">{sub}</p>}</div>
-      <button onClick={()=>setActive(p=>!p)} className={`w-10 h-5 rounded-full transition-colors relative ${active?'bg-[#3F5263]':'bg-[#D9DCE0]'}`}>
+      <button onClick={()=>setActive(p=>!p)} className={`w-10 h-5 rounded-full transition-colors relative ${active?'bg-[#1A1A1A]':'bg-[#D9DCE0]'}`}>
         <div className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-transform ${active?'translate-x-5':'translate-x-0.5'}`}/>
       </button>
     </div>
@@ -382,7 +382,7 @@ export default function Settings() {
                     {g.subs.map(sub=>(
                       <button key={sub} onClick={()=>setActiveSub(sub)}
                         className={`w-full flex items-center gap-2 pl-9 pr-4 py-2 text-xs transition-colors ${activeSub===sub?'text-[#3F5263] font-semibold':'text-[#6B7280] hover:text-[#1C2B3A]'}`}>
-                        {activeSub===sub&&<span className="w-1.5 h-1.5 rounded-full bg-[#3F5263] flex-shrink-0"/>}{sub}
+                        {activeSub===sub&&<span className="w-1.5 h-1.5 rounded-full bg-[#1A1A1A] flex-shrink-0"/>}{sub}
                       </button>
                     ))}
                   </div>
@@ -418,7 +418,7 @@ export default function Settings() {
                     setTimeout(()=>setProfileMsg(''),2000);
                   } catch(e){ setProfileMsg('Save failed'); }
                   finally{ setProfileSaving(false); }
-                }} className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">
+                }} className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">
                   {profileSaving ? 'Saving...' : 'Save'}
                 </button>
                 {profileMsg && <span className="text-xs text-[#059669]">{profileMsg}</span>}
@@ -434,7 +434,7 @@ export default function Settings() {
               <Field label="Address" defaultValue={company.address}/>
               <Field label="Phone" defaultValue={company.phone}/>
               <Field label="Email" defaultValue={company.email}/>
-              <button className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">Save</button>
+              <button className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">Save</button>
             </div>
           )}
           {activeGroup==='account'&&activeSub==='License'&&(
@@ -471,7 +471,7 @@ export default function Settings() {
                   <select className="notion-input w-full text-sm text-[#1C2B3A]">{opts.map(o=><option key={o}>{o}</option>)}</select>
                 </div>
               ))}
-              <button className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">Save</button>
+              <button className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">Save</button>
             </div>
           )}
           {activeGroup==='preferences'&&activeSub==='Invoice Templates'&&(
@@ -489,7 +489,7 @@ export default function Settings() {
                   <div><label className="text-xs text-[#6B7280] block mb-1.5">To</label><input type="time" defaultValue="08:00" className="notion-input w-full text-sm"/></div>
                 </div>
               </div>
-              <button className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">Save</button>
+              <button className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">Save</button>
             </div>
           )}
           {activeGroup==='integrations'&&activeSub==='Tally ERP Sync'&&(
@@ -516,7 +516,7 @@ export default function Settings() {
                     />
                     {pairingError && <p className="text-xs text-[#C0392B] mt-1">{pairingError}</p>}
                   </div>
-                  <button onClick={handlePair} className="px-5 py-2 rounded-lg text-sm font-medium text-white w-full bg-[#3F5263] hover:bg-[#526373] transition-colors">Connect to Tally</button>
+                  <button onClick={handlePair} className="px-5 py-2 rounded-lg text-sm font-medium text-white w-full bg-[#1A1A1A] hover:bg-[#333] transition-colors">Connect to Tally</button>
                 </div>
               )}
               {pairingState==='pairing'&&(
@@ -560,7 +560,7 @@ export default function Settings() {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <p className="text-base font-semibold text-[#1C2B3A]">Bank Feeds</p>
-                <button className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">+ Add Bank</button>
+                <button className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">+ Add Bank</button>
               </div>
               {[['HDFC Bank','A/c XXXX 0259','Mumbai Branch'],['ICICI Bank','A/c XXXX 1147','BKC Branch']].map(([bank,acc,branch])=>(
                 <div key={bank} className="flex items-center justify-between p-4 border border-[#D9DCE0] rounded-xl">

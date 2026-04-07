@@ -122,14 +122,14 @@ export default function GetStarted() {
 
           {/* Mobile logo */}
           <div className="flex items-center gap-3 mb-8 lg:hidden">
-            <div className="w-8 h-8 rounded-xl bg-[#3F5263] flex items-center justify-center font-bold text-white text-sm">T</div>
+            <div className="w-8 h-8 rounded-xl bg-[#1A1A1A] flex items-center justify-center font-bold text-white text-sm">T</div>
             <span className="font-semibold text-[#1C2B3A]">TallyDekho</span>
           </div>
 
           {/* Mobile progress */}
           <div className="flex items-center gap-2 mb-8 lg:hidden">
             {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
-              <div key={i} className={`h-1 rounded-full flex-1 transition-all duration-300 ${i < step ? 'bg-[#3F5263]' : 'bg-[#E9E8E3]'}`} />
+              <div key={i} className={`h-1 rounded-full flex-1 transition-all duration-300 ${i < step ? 'bg-[#1A1A1A]' : 'bg-[#E9E8E3]'}`} />
             ))}
           </div>
 
@@ -202,7 +202,7 @@ export default function GetStarted() {
                     onClick={() => setLanguage(l)}
                     className={`py-3 px-4 rounded-xl text-sm font-medium text-left transition-all border ${
                       language === l
-                        ? 'bg-[#3F5263] text-white border-[#3F5263] shadow-sm'
+                        ? 'bg-[#1A1A1A] text-white border-[#3F5263] shadow-sm'
                         : 'bg-white text-[#1C2B3A] border-[#D9DCE0] hover:border-[#3F5263] hover:bg-[#F5F4EF]'
                     }`}
                   >
@@ -239,7 +239,7 @@ export default function GetStarted() {
                       <p className="text-xs text-[#6B7280] mt-0.5">{r.desc}</p>
                     </div>
                     {role === r.id && (
-                      <div className="w-5 h-5 rounded-full bg-[#3F5263] flex items-center justify-center flex-shrink-0">
+                      <div className="w-5 h-5 rounded-full bg-[#1A1A1A] flex items-center justify-center flex-shrink-0">
                         <Check size={11} className="text-white" />
                       </div>
                     )}
@@ -293,7 +293,7 @@ export default function GetStarted() {
                   <div
                     onClick={() => { setAgreed(p => !p); setErrors({}); }}
                     className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${
-                      agreed ? 'bg-[#3F5263] border-[#3F5263]' : 'bg-white border-[#D9DCE0]'
+                      agreed ? 'bg-[#1A1A1A] border-[#3F5263]' : 'bg-white border-[#D9DCE0]'
                     }`}
                   >
                     {agreed && <Check size={11} className="text-white" />}
@@ -323,7 +323,7 @@ export default function GetStarted() {
             <button
               onClick={next}
               disabled={submitting}
-              className="flex-1 h-11 rounded-xl text-sm font-semibold bg-[#3F5263] text-white hover:bg-[#526373] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 transition-all"
+              className="flex-1 h-11 rounded-xl text-sm font-semibold bg-[#1A1A1A] text-white hover:bg-[#333] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 transition-all"
             >
               {submitting
                 ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -358,7 +358,7 @@ export default function GetStarted() {
               <p><strong className="text-[#1C2B3A]">4. Service Availability:</strong> We strive for 99.9% uptime but cannot guarantee uninterrupted service.</p>
               <p><strong className="text-[#1C2B3A]">5. Updates:</strong> We may update these terms with notice to users.</p>
             </div>
-            <button onClick={() => setShowTerms(false)} className="mt-6 w-full py-2.5 bg-[#3F5263] text-white rounded-xl text-sm font-semibold">Got it</button>
+            <button onClick={() => setShowTerms(false)} className="mt-6 w-full py-2.5 bg-[#1A1A1A] text-white rounded-xl text-sm font-semibold">Got it</button>
           </div>
         </div>
       )}
@@ -376,7 +376,7 @@ export default function GetStarted() {
               <p><strong className="text-[#1C2B3A]">Data Deletion:</strong> You can request deletion of your account and all associated data at any time.</p>
               <p><strong className="text-[#1C2B3A]">Contact:</strong> privacy@tallydekho.com</p>
             </div>
-            <button onClick={() => setShowPrivacy(false)} className="mt-6 w-full py-2.5 bg-[#3F5263] text-white rounded-xl text-sm font-semibold">Got it</button>
+            <button onClick={() => setShowPrivacy(false)} className="mt-6 w-full py-2.5 bg-[#1A1A1A] text-white rounded-xl text-sm font-semibold">Got it</button>
           </div>
         </div>
       )}

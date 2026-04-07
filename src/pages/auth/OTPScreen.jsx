@@ -165,7 +165,7 @@ export default function OTPScreen() {
                 <div
                   key={i}
                   className={`h-1 rounded-full transition-all duration-200 ${
-                    i < otp.length ? 'w-8 bg-[#3F5263]' : 'w-4 bg-[#ECEEEF]'
+                    i < otp.length ? 'w-8 bg-[#1A1A1A]' : 'w-4 bg-[#ECEEEF]'
                   }`}
                 />
               ))}
@@ -176,7 +176,7 @@ export default function OTPScreen() {
           <button
             onClick={() => handleVerify()}
             disabled={verifying || otp.length < 4}
-            className="w-full h-11 rounded-xl text-sm font-semibold bg-[#3F5263] text-white hover:bg-[#526373] active:scale-[0.98] disabled:opacity-45 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
+            className="w-full h-11 rounded-xl text-sm font-semibold bg-[#1A1A1A] text-white hover:bg-[#333] active:scale-[0.98] disabled:opacity-45 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
           >
             {verifying
               ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

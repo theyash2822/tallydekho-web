@@ -137,7 +137,7 @@ export default function VoucherDetail({ voucherId, companyGuid, companyName, onB
             {copied ? <><Check size={12} className="text-[#2D7D46]" /> Copied</> : <><Share2 size={12} /> Share</>}
           </button>
           <button onClick={handlePrint}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#3F5263] hover:bg-[#526373] rounded-lg transition-colors">
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#1A1A1A] hover:bg-[#333] rounded-lg transition-colors">
             <Printer size={12} /> Print / PDF
           </button>
         </div>
@@ -223,7 +223,7 @@ export default function VoucherDetail({ voucherId, companyGuid, companyName, onB
         </div>
 
         {/* Grand total */}
-        <div className="flex justify-between items-center p-4 bg-[#3F5263] rounded-xl">
+        <div className="flex justify-between items-center p-4 bg-[#1A1A1A] rounded-xl">
           <span className="text-sm font-semibold text-white/80">Net Amount</span>
           <span className="text-xl font-bold text-white">{fmt(voucher.amount)}</span>
         </div>

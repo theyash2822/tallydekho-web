@@ -194,7 +194,7 @@ export default function AuditTrail() {
             <div className="space-y-2.5">
               {vouchers.slice(0, 5).map((v, i) => (
                 <div key={i} className="flex items-start gap-2.5 cursor-pointer hover:bg-[#F4F5F6] p-1.5 rounded-lg" onClick={() => setDrawer(v)}>
-                  <span className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0 bg-[#3F5263]" />
+                  <span className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0 bg-[#1A1A1A]" />
                   <div>
                     <p className="text-xs font-medium text-[#1C2B3A]">{v.voucher_number} – {getVoucherTypeLabel(v.voucher_type)}</p>
                     <p className="text-xs text-[#6B7280]">{v.party_name || '—'} · {v.date || '—'}</p>

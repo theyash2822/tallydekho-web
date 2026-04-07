@@ -113,7 +113,7 @@ export default function VoucherForm({ onClose }) {
             New Voucher
           </button>
           <button onClick={onClose}
-            className="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">
+            className="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">
             Close
           </button>
         </div>
@@ -143,7 +143,7 @@ export default function VoucherForm({ onClose }) {
           {VOUCHER_TYPES.map(t => (
             <button key={t} onClick={() => setType(t)}
               className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-colors ${
-                type === t ? 'bg-[#3F5263] text-white border-transparent' : 'border-[#D9DCE0] text-[#6B7280] hover:border-[#3F5263]'
+                type === t ? 'bg-[#1A1A1A] text-white border-transparent' : 'border-[#D9DCE0] text-[#6B7280] hover:border-[#3F5263]'
               }`}>
               {t}
             </button>

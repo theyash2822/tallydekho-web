@@ -130,7 +130,7 @@ export default function GST() {
               <div className="flex justify-between items-center mb-4">
                 <p className="text-sm font-semibold text-[#1C2B3A]">GSTR-2A Reconciliation</p>
                 <div className="flex gap-2">
-                  <button className="px-3 py-1.5 text-xs font-semibold text-white rounded-lg bg-[#3F5263] hover:bg-[#526373] transition-colors">
+                  <button className="px-3 py-1.5 text-xs font-semibold text-white rounded-lg bg-[#1A1A1A] hover:bg-[#333] transition-colors">
                     Auto-Match All
                   </button>
                   <button className="px-3 py-1.5 border border-[#D9DCE0] text-[#6B7280] text-xs rounded-lg hover:bg-[#F4F5F6] transition-colors">

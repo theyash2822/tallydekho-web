@@ -177,7 +177,7 @@ export default function SalesInvoiceForm({ onClose }) {
         <div className="flex gap-3 mt-2 flex-wrap justify-center">
           {invoiceForPDF && (
             <button onClick={() => setShowPDF(true)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">
               <Printer size={14} /> View / Print PDF
             </button>
           )}

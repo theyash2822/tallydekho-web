@@ -439,7 +439,7 @@ export default function Ledgers() {
                         onClick={() => { setPage(pg); load(search, pg); }}
                         className={`w-8 h-8 text-xs font-medium rounded-lg transition-colors ${
                           pg === page
-                            ? 'bg-[#3F5263] text-white'
+                            ? 'bg-[#1A1A1A] text-white'
                             : 'border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]'
                         }`}
                       >
