@@ -58,6 +58,7 @@ export const fetchVoucherDetail  = (body) => post('/voucher-detail', body);  // 
 // ─── Stocks ───────────────────────────────────────────────────────────────────
 export const fetchStockSummary = (companyGuid)       => post('/stock-dashboard', { companyGuid });
 export const fetchStockFilters = (companyGuid)       => post('/stock-filters',   { companyGuid });
+export const fetchParties      = (body)               => post('/parties',          body);
 export const fetchStocks       = (body, signal)      => post('/stocks',          body);
 export const fetchStockDetails = (body)              => post('/stock',           body);
 
@@ -129,7 +130,7 @@ const api = {
   // Ledgers
   fetchLedgers, fetchLedgerDetails, fetchLedgerVouchers, fetchVoucherDetail,
   // Stocks
-  fetchStockSummary, fetchStockFilters, fetchStocks, fetchStockDetails,
+  fetchStockSummary, fetchStockFilters, fetchStocks, fetchStockDetails, fetchParties,
   // Vouchers & Reports
   fetchVouchers, fetchDashboard, fetchReportsPL, fetchReportsBS,
   fetchCashBank, fetchReceivablesPayables, fetchExpenses, fetchGSTSummary,

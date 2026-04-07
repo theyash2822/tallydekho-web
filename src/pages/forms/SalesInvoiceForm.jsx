@@ -5,7 +5,7 @@ import LogisticsSection from '../../components/LogisticsSection';
 import SummaryFooter from '../../components/SummaryFooter';
 import { CheckCircle, AlertCircle, Printer } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { createSalesInvoice, fetchLedgers, fetchStocks } from '../../services/api';
+import { createSalesInvoice, fetchLedgers, fetchStocks, fetchParties as fetchPartiesAPI } from '../../services/api';
 import InvoicePDF from '../../components/InvoicePDF';
 import LiveSearch from '../../components/LiveSearch';
 
@@ -17,11 +17,10 @@ export default function SalesInvoiceForm({ onClose }) {
   // Live search fetch functions using real company data
   const fetchParties = useCallback(async (q) => {
     if (!selectedCompany?.guid) return [];
-    const res = await fetchLedgers({ companyGuid: selectedCompany.guid, searchText: q, pageSize: 20 });
-    return (res?.data?.ledgers || []).map(l => ({
+    const res = await fetchPartiesAPI({ companyGuid: selectedCompany.guid, searchText: q || '', pageSize: 30 });
+    return (res?.data?.parties || []).map(l => ({
       label: l.name, value: l.name,
-      sub: l.parent || l.group || '',
-      badge: l.gstin ? 'GST' : '',
+      sub: l.parent || '',
     }));
   }, [selectedCompany?.guid]);
 
