@@ -188,7 +188,7 @@ export default function GetStarted() {
           {step === 3 && (
             <div className="space-y-6">
               <div>
-                <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">Step 2 of {TOTAL_STEPS}</p>
+                <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">Step 3 of {TOTAL_STEPS}</p>
                 <h2 className="text-2xl font-bold text-[#1C2B3A] tracking-tight">Preferred language?</h2>
                 <p className="text-sm text-[#6B7280] mt-1">Choose the language you're most comfortable with</p>
               </div>
@@ -212,7 +212,7 @@ export default function GetStarted() {
           )}
 
           {/* ── Step 3: Role ── */}
-          {step === 3 && (
+          {step === 4 && (
             <div className="space-y-6">
               <div>
                 <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">Step 3 of {TOTAL_STEPS}</p>

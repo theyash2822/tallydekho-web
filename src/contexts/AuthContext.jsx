@@ -27,11 +27,18 @@ export function AuthProvider({ children }) {
     if (!token) return;
     wsService.connect(token);
 
-    const unSynced   = wsService.on('synced',   (d) => showToast('✅ Tally data synced', 'success'));
+    const unSynced   = wsService.on('synced',   (d) => { showToast('✅ Tally data synced', 'success'); loadCompanies(); });
     const unUnpaired = wsService.on('unpaired', (d) => { setIsPaired(false); localStorage.removeItem('isPaired'); showToast('⚠️ Tally unpaired', 'warning'); });
     const unLogout   = wsService.on('logout',   (d) => logout());
+    // Auto-refresh everything after successful pairing
+    const unPaired   = wsService.on('paired', async (d) => {
+      localStorage.setItem('isPaired', 'true');
+      setIsPaired(true);
+      showToast(`✅ Paired with ${d?.deviceName || 'Desktop App'}! Loading your data...`, 'success');
+      await loadCompanies(); // Load real companies + years immediately
+    });
 
-    return () => { unSynced(); unUnpaired(); unLogout(); wsService.disconnect(); };
+    return () => { unSynced(); unUnpaired(); unLogout(); unPaired(); wsService.disconnect(); };
   }, [token]);
 
   const showToast = (message, type = 'info') => {
