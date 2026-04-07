@@ -57,9 +57,11 @@ export default function OTPScreen() {
         await login(res.data.token, { mobileNumber: phone, countryCode, name: res.data.user?.name });
         // Preserve paired state from server response - never reset on login
         if (res.data.isPaired) markPaired();
-        // New user flow always goes to onboarding; returning users go to dashboard
-        const isReturning = localStorage.getItem('onboardingDone') === 'true' && !isNewUser;
-        navigate(isReturning ? '/' : '/auth/get-started');
+        // Auto-detect new user: if name is null, they never completed onboarding
+        const userHasName = !!res.data.user?.name;
+        const onboardingDone = localStorage.getItem('onboardingDone') === 'true';
+        const shouldOnboard = isNewUser || !userHasName || !onboardingDone;
+        navigate(shouldOnboard ? '/auth/get-started' : '/');
       } else {
         // Wrong OTP - show error, do NOT login
         setError(res?.message || 'Invalid OTP. Please try again.');
