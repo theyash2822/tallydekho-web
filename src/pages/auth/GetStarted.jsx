@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, ArrowRight, ArrowLeft, User, Globe, Briefcase, ShieldCheck } from 'lucide-react';
+import { Check, ArrowRight, ArrowLeft, User, Globe, Mail, Briefcase, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 
@@ -16,13 +16,14 @@ const ROLES = [
   { id: 'other', icon: '✨', label: 'Other', desc: 'Something else' },
 ];
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 5;
 
 export default function GetStarted() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [fullName, setFullName] = useState(user?.name || '');
+  const [email, setEmail] = useState(user?.email || '');
   const [language, setLanguage] = useState('English');
   const [role, setRole] = useState('');
   const [agreed, setAgreed] = useState(false);
@@ -31,11 +32,14 @@ export default function GetStarted() {
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
 
+  const validateEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
   const validate = () => {
     const e = {};
     if (step === 1 && !fullName.trim()) e.fullName = 'Please enter your full name';
-    if (step === 3 && !role) e.role = 'Please select your role';
-    if (step === 4 && !agreed) e.agreed = 'Please accept the Terms of Service';
+    if (step === 2 && email && !validateEmail(email)) e.email = 'Please enter a valid email address';
+    if (step === 4 && !role) e.role = 'Please select your role';
+    if (step === 5 && !agreed) e.agreed = 'Please accept the Terms of Service';
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -52,10 +56,10 @@ export default function GetStarted() {
     if (!agreed) { setErrors({ agreed: 'Please accept Terms of Service' }); return; }
     setSubmitting(true);
     try {
-      await api.submitOnboarding({ name: fullName.trim(), language });
+      await api.submitOnboarding({ name: fullName.trim(), email: email.trim(), language });
     } catch { /* continue even if fails */ } finally {
       localStorage.setItem('onboardingDone', 'true');
-      localStorage.setItem('authUser', JSON.stringify({ ...user, name: fullName.trim(), language }));
+      localStorage.setItem('authUser', JSON.stringify({ ...user, name: fullName.trim(), email: email.trim(), language }));
       navigate('/');
       setSubmitting(false);
     }
@@ -78,9 +82,10 @@ export default function GetStarted() {
           <div className="space-y-4">
             {[
               { n: 1, label: 'Your Name', icon: User },
-              { n: 2, label: 'Language', icon: Globe },
-              { n: 3, label: 'Your Role', icon: Briefcase },
-              { n: 4, label: 'Get Started', icon: ShieldCheck },
+              { n: 2, label: 'Email Address', icon: Mail },
+              { n: 3, label: 'Language', icon: Globe },
+              { n: 4, label: 'Your Role', icon: Briefcase },
+              { n: 5, label: 'Get Started', icon: ShieldCheck },
             ].map(({ n, label, icon: Icon }) => (
               <div key={n} className={`flex items-center gap-3 transition-all duration-300 ${step >= n ? 'opacity-100' : 'opacity-30'}`}>
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
@@ -151,8 +156,36 @@ export default function GetStarted() {
             </div>
           )}
 
-          {/* ── Step 2: Language ── */}
+          {/* ── Step 2: Email ── */}
           {step === 2 && (
+            <div className="space-y-6 animate-fade-in">
+              <div>
+                <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">Step 2 of {TOTAL_STEPS}</p>
+                <h2 className="text-2xl font-bold text-[#1C2B3A] tracking-tight">Your email address</h2>
+                <p className="text-sm text-[#6B7280] mt-1">For account recovery and important updates. Optional but recommended.</p>
+              </div>
+              <div>
+                <label className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-widest block mb-1.5">Email Address <span className="text-[#9CA3AF] font-normal normal-case">(optional)</span></label>
+                <div className="relative">
+                  <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
+                  <input
+                    autoFocus
+                    type="email"
+                    value={email}
+                    onChange={e => { setEmail(e.target.value); setErrors({}); }}
+                    onKeyDown={e => e.key === 'Enter' && next()}
+                    placeholder="Enter your email address"
+                    className="w-full h-12 pl-9 pr-4 bg-white border border-[#D9DCE0] rounded-xl text-sm text-[#1C2B3A] outline-none focus:border-[#3F5263] focus:ring-2 focus:ring-[#3F5263]/10 transition-all placeholder:text-[#9CA3AF]"
+                  />
+                </div>
+                {errors.email && <p className="text-xs text-[#C0392B] mt-1.5">{errors.email}</p>}
+                <p className="text-xs text-[#9CA3AF] mt-2">Your email will be visible in your profile and desktop app. You can update it anytime in Settings.</p>
+              </div>
+            </div>
+          )}
+
+          {/* ── Step 3: Language ── */}
+          {step === 3 && (
             <div className="space-y-6">
               <div>
                 <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">Step 2 of {TOTAL_STEPS}</p>
@@ -215,10 +248,10 @@ export default function GetStarted() {
           )}
 
           {/* ── Step 4: Terms ── */}
-          {step === 4 && (
+          {step === 5 && (
             <div className="space-y-6">
               <div>
-                <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">Step 4 of {TOTAL_STEPS}</p>
+                <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">Step 5 of {TOTAL_STEPS}</p>
                 <h2 className="text-2xl font-bold text-[#1C2B3A] tracking-tight">Almost there!</h2>
                 <p className="text-sm text-[#6B7280] mt-1">Review and accept to start using TallyDekho</p>
               </div>
@@ -228,6 +261,7 @@ export default function GetStarted() {
                 <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest">Your Setup</p>
                 {[
                   { label: 'Name', value: fullName },
+                  { label: 'Email', value: email || 'Not provided' },
                   { label: 'Language', value: language },
                   { label: 'Role', value: ROLES.find(r => r.id === role)?.label || 'Not set' },
                 ].map(({ label, value }) => (
