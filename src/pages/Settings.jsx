@@ -137,6 +137,86 @@ const SAMPLE_INV = {
   mode: 'Credit', terms: 'Payment due within 30 days.',
 };
 
+const VOUCHER_FORMATS = [
+  {
+    id: 'tally_default',
+    name: 'Tally Default',
+    desc: 'Matches Tally Prime auto-numbering — voucher type prefix + sequential number',
+    examples: ['Sales-1', 'Sales-2', 'Pmt-1', 'Rcpt-1'],
+    badge: 'Default',
+  },
+  {
+    id: 'financial_year',
+    name: 'Financial Year',
+    desc: 'Year-based numbering resets each FY — INV/2025-26/0001',
+    examples: ['INV/2025-26/0001', 'PUR/2025-26/0001', 'PMT/2025-26/0001'],
+    badge: null,
+  },
+  {
+    id: 'date_based',
+    name: 'Date Based',
+    desc: 'Date prefix + sequential — INV-20250407-001',
+    examples: ['INV-20250407-001', 'PUR-20250407-001', 'PMT-20250407-001'],
+    badge: null,
+  },
+];
+
+function VoucherConfigSettings({ companyGuid }) {
+  const [selected, setSelected] = useState(() => {
+    try { return localStorage.getItem(`voucher_format_${companyGuid}`) || 'tally_default'; } catch { return 'tally_default'; }
+  });
+  const [saved, setSaved] = useState(false);
+
+  const save = () => {
+    try { localStorage.setItem(`voucher_format_${companyGuid}`, selected); } catch {}
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  return (
+    <div className="space-y-5">
+      <div>
+        <p className="text-base font-semibold text-[#1C2B3A]">Voucher Number Format</p>
+        <p className="text-xs text-[#787774] mt-1">Choose how voucher numbers are displayed. Tally Prime controls the actual numbering — this affects display format only.</p>
+      </div>
+      <div className="space-y-3">
+        {VOUCHER_FORMATS.map(fmt => (
+          <div
+            key={fmt.id}
+            onClick={() => setSelected(fmt.id)}
+            className={`cursor-pointer rounded-xl border-2 p-4 transition-all ${
+              selected === fmt.id ? 'border-[#1C2B3A] bg-[#F4F5F6]' : 'border-[#D9DCE0] bg-white hover:border-[#9FA9B1]'
+            }`}
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-[#1C2B3A]">{fmt.name}</span>
+                  {fmt.badge && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#1C2B3A] text-white tracking-wide">{fmt.badge}</span>}
+                </div>
+                <p className="text-xs text-[#787774] mt-1">{fmt.desc}</p>
+                <div className="flex gap-2 mt-2 flex-wrap">
+                  {fmt.examples.map(e => (
+                    <span key={e} className="px-2 py-0.5 rounded-md bg-white border border-[#D9DCE0] text-[10px] font-mono text-[#3F5263]">{e}</span>
+                  ))}
+                </div>
+              </div>
+              {selected === fmt.id && (
+                <div className="w-5 h-5 rounded-full bg-[#1C2B3A] flex items-center justify-center flex-shrink-0 ml-3">
+                  <Check size={12} className="text-white" />
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+      <button onClick={save} className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#1C2B3A] hover:bg-[#2C3B4A] transition-colors">
+        {saved ? '✓ Saved!' : 'Save Format'}
+      </button>
+    </div>
+  );
+}
+
 function InvoiceTemplateSettings({ companyGuid }) {
   const [selected, setSelected] = useState(() => getPDFTemplate(companyGuid));
   const [preview, setPreview] = useState(null);
@@ -508,7 +588,10 @@ export default function Settings() {
             <AIChatPanel />
           )}
           {/* Fallback */}
-          {!['Profile','Company Info','License','Language & Region','Channels & Quiet Hours','Tally ERP Sync','Bank Feeds','About & Versions','Help Center'].includes(activeSub)&&(
+          {activeGroup==='preferences'&&activeSub==='Voucher Config'&&(
+            <VoucherConfigSettings companyGuid={selectedCompany?.guid} />
+          )}
+          {!['Profile','Company Info','License','Language & Region','Channels & Quiet Hours','Tally ERP Sync','Bank Feeds','About & Versions','Help Center','Invoice Templates','Voucher Config'].includes(activeSub)&&(
             <div className="flex flex-col items-center justify-center h-48 text-[#9CA3AF]">
               <div className="text-4xl mb-3">⚙️</div>
               <p className="text-sm font-medium text-[#6B7280]">{activeSub}</p>

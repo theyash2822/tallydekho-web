@@ -199,7 +199,7 @@ export default function Dashboard() {
           </div>
           <button
             onClick={() => navigate('/settings?tab=integrations&sub=Tally+ERP+Sync')}
-            className="px-4 py-2 rounded-lg text-sm font-semibold bg-white text-[#3F5263] hover:bg-white/90 transition-colors flex-shrink-0"
+            className="px-4 py-2 rounded-lg text-sm font-semibold bg-white text-[#1C2B3A] hover:bg-white/90 transition-colors flex-shrink-0"
           >
             Connect →
           </button>
