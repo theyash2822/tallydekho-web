@@ -27,6 +27,7 @@ export default function SalesModule() {
   const [pdfInvoice, setPdfInvoice] = useState(null);
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState(null);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const pageSize = 50;
@@ -101,7 +102,7 @@ export default function SalesModule() {
         setTotal(0);
       }
     } catch (e) {
-      console.error('Sales load error:', e.message);
+      setError(e?.response?.data?.message || e?.message || 'Failed to load sales data');
       setInvoices([]);
     } finally {
       setLoading(false);
@@ -114,6 +115,7 @@ export default function SalesModule() {
     setTotal(0);
     setPage(1);
     setSearch('');
+    setError(null);
     if (companyGuid) loadData(1, '');
   }, [companyGuid, selectedFY?.uniqueId]); // eslint-disable-line
 
@@ -152,7 +154,14 @@ export default function SalesModule() {
 
   return (
     <div className="space-y-5">
-      {isDemo && (
+      {error && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs">
+          <span className="flex-shrink-0">⚠️</span>
+          <span><strong>Error:</strong> {error}</span>
+          <button onClick={() => { setError(null); loadData(1, search); }} className="ml-auto underline font-medium">Retry</button>
+        </div>
+      )}
+      {!error && isDemo && (
         <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs">
           <span className="text-base">🎭</span>
           <span><strong>Demo Mode</strong> — Showing sample data. Pair Desktop App for real Tally data. <a href="/settings?tab=integrations&sub=Tally+ERP+Sync" className="underline font-medium">Settings →</a></span>

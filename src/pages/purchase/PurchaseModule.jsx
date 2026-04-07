@@ -43,19 +43,20 @@ export default function PurchaseModule() {
 
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState(null);
   const [usingMock, setUsingMock] = useState(false);
 
-  useEffect(() => {
-    setInvoices([]); setPage(1);
-    if (!selectedCompany?.guid) {
-      setLoading(false);
-      return;
-    }
+  const loadData = () => {
+    if (!selectedCompany?.guid) { setLoading(false); return; }
     setLoading(true);
-    // Fetch all purchase-type vouchers
+    setError(null);
     const PURCHASE_TYPES = ['Purchase GST', 'Purchase'];
     Promise.all(
-      PURCHASE_TYPES.map(vt => api.fetchVouchers({ companyGuid: selectedCompany.guid, voucherType: vt, page: 1, pageSize: 100, fromDate: selectedFY?.startDate, toDate: selectedFY?.endDate }).catch(() => null))
+      PURCHASE_TYPES.map(vt => api.fetchVouchers({
+        companyGuid: selectedCompany.guid, voucherType: vt,
+        page: 1, pageSize: 100,
+        fromDate: selectedFY?.startDate, toDate: selectedFY?.endDate
+      }).catch(() => null))
     ).then(results => {
       const all = results.flatMap(r => r?.data?.vouchers || []);
       if (all.length > 0) {
@@ -67,10 +68,16 @@ export default function PurchaseModule() {
           status: v.is_cancelled ? 'Cancelled' : parseFloat(v.amount) > 0 ? 'Paid' : 'Unpaid',
           mode: 'Bank', received: 'Complete',
         })));
-        setUsingMock(false);
-      } else { setInvoices([]); setUsingMock(false); }
-    }).catch(() => { setInvoices([]); setUsingMock(false); })
-    .finally(() => setLoading(false));
+      } else { setInvoices([]); }
+    }).catch(err => {
+      setError(err?.response?.data?.message || err?.message || 'Failed to load purchase data');
+      setInvoices([]);
+    }).finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    setInvoices([]); setPage(1); setError(null);
+    loadData();
   }, [selectedCompany?.guid, selectedFY?.uniqueId]);
 
   const [page, setPage] = useState(1);
@@ -99,7 +106,14 @@ export default function PurchaseModule() {
 
   return (
     <div className="space-y-5">
-      {isDemo && (
+      {error && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs">
+          <span className="flex-shrink-0">⚠️</span>
+          <span><strong>Error:</strong> {error}</span>
+          <button onClick={loadData} className="ml-auto underline font-medium">Retry</button>
+        </div>
+      )}
+      {!error && isDemo && (
         <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs">
           <span className="text-base">🎭</span>
           <span><strong>Demo Mode</strong> — Showing sample data. <a href="/settings?tab=integrations&sub=Tally+ERP+Sync" className="underline font-medium">Pair Desktop App →</a></span>
