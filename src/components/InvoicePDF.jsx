@@ -135,7 +135,7 @@ export default function InvoicePDF({ open, onClose, invoice }) {
           <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E7E3] flex-shrink-0">
             <div>
               <p className="text-sm font-semibold text-[#1A1A1A]">Invoice Preview</p>
-              <p className="text-xs text-[#787774] mt-0.5">{inv.ref} · {inv.date}</p>
+              <p className="text-xs text-[#787774] mt-0.5">{inv.ref && inv.ref !== 'Pending' ? inv.ref + ' · ' : ''}{inv.date}</p>
             </div>
             <div className="flex items-center gap-2">
               <button onClick={handlePrint}

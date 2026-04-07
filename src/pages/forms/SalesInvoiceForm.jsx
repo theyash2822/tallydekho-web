@@ -113,7 +113,7 @@ export default function SalesInvoiceForm({ onClose }) {
   if (submitted) {
     // Build invoice data for PDF
     const invoiceForPDF = createdPayload ? {
-      ref: createdVoucherNumber || 'Auto-assigned by Tally',
+      ref: createdVoucherNumber || 'Pending',
       date: invoiceDate,
       customer: partyLedger,
       gstin: '',
