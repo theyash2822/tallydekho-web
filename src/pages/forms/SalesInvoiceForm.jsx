@@ -1,17 +1,37 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { FormField, Input, Select, SectionTitle, Toggle } from '../../components/FormField';
 import ItemsTable from '../../components/ItemsTable';
 import LogisticsSection from '../../components/LogisticsSection';
 import SummaryFooter from '../../components/SummaryFooter';
 import { CheckCircle, AlertCircle, Printer } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { createSalesInvoice } from '../../services/api';
+import { createSalesInvoice, fetchLedgers, fetchStocks } from '../../services/api';
 import InvoicePDF from '../../components/InvoicePDF';
+import LiveSearch from '../../components/LiveSearch';
 
 const PAYMENT_TERMS = ['Paid / Due on Receipt', '15 Days', '30 Days', 'Custom'];
 
 export default function SalesInvoiceForm({ onClose }) {
   const { selectedCompany } = useAuth();
+
+  // Live search fetch functions using real company data
+  const fetchParties = useCallback(async (q) => {
+    if (!selectedCompany?.guid) return [];
+    const res = await fetchLedgers({ companyGuid: selectedCompany.guid, searchText: q, pageSize: 20 });
+    return (res?.data?.ledgers || []).map(l => ({
+      label: l.name, value: l.name,
+      sub: l.parent || l.group || '',
+      badge: l.gstin ? 'GST' : '',
+    }));
+  }, [selectedCompany?.guid]);
+
+  const fetchSalesLedgers = useCallback(async (q) => {
+    if (!selectedCompany?.guid) return [];
+    const res = await fetchLedgers({ companyGuid: selectedCompany.guid, searchText: q || 'Sales', pageSize: 15 });
+    return (res?.data?.ledgers || [])
+      .filter(l => (l.parent || '').toLowerCase().includes('sales') || (l.name || '').toLowerCase().includes('sales'))
+      .map(l => ({ label: l.name, value: l.name, sub: l.parent || '' }));
+  }, [selectedCompany?.guid]);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -185,10 +205,20 @@ export default function SalesInvoiceForm({ onClose }) {
 
       <div className="grid grid-cols-2 gap-4">
         <FormField label="Customer / Party" required>
-          <Input value={partyLedger} onChange={e => setPartyLedger(e.target.value)} placeholder="Type party name exactly as in Tally" />
+          <LiveSearch
+            value={partyLedger}
+            onChange={setPartyLedger}
+            placeholder="Search party name..."
+            fetchFn={fetchParties}
+          />
         </FormField>
         <FormField label="Sales Ledger" required>
-          <Input value={salesLedger} onChange={e => setSalesLedger(e.target.value)} placeholder="e.g. Sales Account" />
+          <LiveSearch
+            value={salesLedger}
+            onChange={setSalesLedger}
+            placeholder="Search sales ledger..."
+            fetchFn={fetchSalesLedgers}
+          />
         </FormField>
       </div>
 

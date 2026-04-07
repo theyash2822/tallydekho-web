@@ -1,14 +1,30 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { FormField, Input, Select, SectionTitle, Textarea } from '../../components/FormField';
 import SummaryFooter from '../../components/SummaryFooter';
 import { CheckCircle, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { fetchLedgers } from '../../services/api';
+import LiveSearch from '../../components/LiveSearch';
 import { createPaymentVoucher, createReceiptVoucher, createJournalVoucher, createContraVoucher } from '../../services/api';
 
 const VOUCHER_TYPES = ['Payment', 'Receipt', 'Journal', 'Contra'];
 
 export default function VoucherForm({ onClose }) {
   const { selectedCompany } = useAuth();
+
+  const fetchAllLedgers = useCallback(async (q) => {
+    if (!selectedCompany?.guid) return [];
+    const res = await fetchLedgers({ companyGuid: selectedCompany.guid, searchText: q, pageSize: 20 });
+    return (res?.data?.ledgers || []).map(l => ({ label: l.name, value: l.name, sub: l.parent || '', badge: l.balance_type }));
+  }, [selectedCompany?.guid]);
+
+  const fetchBankLedgers = useCallback(async (q) => {
+    if (!selectedCompany?.guid) return [];
+    const res = await fetchLedgers({ companyGuid: selectedCompany.guid, searchText: q || 'bank', pageSize: 15 });
+    return (res?.data?.ledgers || [])
+      .filter(l => ['bank','cash','wallet'].some(k => (l.parent||'').toLowerCase().includes(k) || (l.name||'').toLowerCase().includes(k)))
+      .map(l => ({ label: l.name, value: l.name, sub: l.parent || '' }));
+  }, [selectedCompany?.guid]);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -148,11 +164,11 @@ export default function VoucherForm({ onClose }) {
       {(type === 'Payment' || type === 'Receipt') && (
         <div className="grid grid-cols-1 gap-4">
           <FormField label={type === 'Payment' ? 'Pay To (Party)' : 'Receive From (Party)'} required>
-            <Input value={partyLedger} onChange={e => setPartyLedger(e.target.value)}
+            <LiveSearch value={partyLedger} onChange={setPartyLedger}
               placeholder="Party name exactly as in Tally" />
           </FormField>
           <FormField label={type === 'Payment' ? 'Pay From (Bank/Cash)' : 'Deposit To (Bank/Cash)'} required>
-            <Input value={bankLedger} onChange={e => setBankLedger(e.target.value)}
+            <LiveSearch value={bankLedger} onChange={setBankLedger}
               placeholder="e.g. HDFC Bank A/C or Cash" />
           </FormField>
         </div>
@@ -162,10 +178,10 @@ export default function VoucherForm({ onClose }) {
       {type === 'Journal' && (
         <div className="grid grid-cols-1 gap-4">
           <FormField label="Debit Ledger (Dr)" required>
-            <Input value={drLedger} onChange={e => setDrLedger(e.target.value)} placeholder="Ledger to debit" />
+            <LiveSearch value={drLedger} onChange={setDrLedger} placeholder="Search debit ledger..." fetchFn={fetchAllLedgers} />
           </FormField>
           <FormField label="Credit Ledger (Cr)" required>
-            <Input value={crLedger} onChange={e => setCrLedger(e.target.value)} placeholder="Ledger to credit" />
+            <LiveSearch value={crLedger} onChange={setCrLedger} placeholder="Search credit ledger..." fetchFn={fetchAllLedgers} />
           </FormField>
         </div>
       )}
@@ -174,10 +190,10 @@ export default function VoucherForm({ onClose }) {
       {type === 'Contra' && (
         <div className="grid grid-cols-1 gap-4">
           <FormField label="Transfer From" required>
-            <Input value={fromLedger} onChange={e => setFromLedger(e.target.value)} placeholder="e.g. Cash in Hand" />
+            <LiveSearch value={fromLedger} onChange={setFromLedger} placeholder="Search source ledger..." fetchFn={fetchBankLedgers} />
           </FormField>
           <FormField label="Transfer To" required>
-            <Input value={toLedger} onChange={e => setToLedger(e.target.value)} placeholder="e.g. HDFC Bank A/C" />
+            <LiveSearch value={toLedger} onChange={setToLedger} placeholder="Search destination ledger..." fetchFn={fetchBankLedgers} />
           </FormField>
         </div>
       )}
