@@ -32,17 +32,24 @@ const PageLoader = () => (
   </div>
 );
 
-// Error boundary - catches render crashes and shows login instead of blank
+// Error boundary - catches render crashes and shows a friendly error
 class ErrorBoundary extends Component {
-  constructor(props) { super(props); this.state = { hasError: false }; }
-  static getDerivedStateFromError() { return { hasError: true }; }
+  constructor(props) { super(props); this.state = { hasError: false, error: '' }; }
+  static getDerivedStateFromError(err) { return { hasError: true, error: err.message }; }
   componentDidCatch(err) { console.error('[TallyDekho] Render error:', err.message); }
   render() {
     if (this.state.hasError) {
-      // Clear bad state and redirect to login
-      localStorage.removeItem('authToken');
-      window.location.href = '/auth/login';
-      return null;
+      return (
+        <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100vh',gap:16,fontFamily:'sans-serif'}}>
+          <div style={{fontSize:32}}>⚠️</div>
+          <div style={{fontSize:16,fontWeight:600,color:'#1C2B3A'}}>Something went wrong</div>
+          <div style={{fontSize:12,color:'#6B7280',maxWidth:300,textAlign:'center'}}>{this.state.error}</div>
+          <button onClick={()=>{ localStorage.clear(); window.location.href='/auth/login'; }}
+            style={{padding:'8px 20px',background:'#3F5263',color:'white',border:'none',borderRadius:8,cursor:'pointer',fontSize:14}}>
+            Back to Login
+          </button>
+        </div>
+      );
     }
     return this.props.children;
   }

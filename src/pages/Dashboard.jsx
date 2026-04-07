@@ -11,7 +11,7 @@ import {
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
   ComposedChart, Line, ReferenceLine
 } from 'recharts';
-import { alerts } from '../data/mockData';
+import { alerts, dashboardKPIs } from '../data/mockData';
 import api from '../services/api';
 
 // ─── Chart data ───────────────────────────────────────────────────────────────
