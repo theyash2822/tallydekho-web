@@ -13,6 +13,7 @@ export default function OTPScreen() {
   const countryCode = location.state?.countryCode || '+91';
   const countryFlag = location.state?.countryFlag || '🇮🇳';
   const countryName = location.state?.countryName || 'India';
+  const isNewUser   = location.state?.isNewUser   || false;
 
   const [otp, setOtp]                   = useState('');
   const [error, setError]               = useState('');
@@ -56,7 +57,9 @@ export default function OTPScreen() {
         await login(res.data.token, { mobileNumber: phone, countryCode, name: res.data.user?.name });
         // Preserve paired state from server response - never reset on login
         if (res.data.isPaired) markPaired();
-        navigate(localStorage.getItem('onboardingDone') === 'true' ? '/' : '/auth/get-started');
+        // New user flow always goes to onboarding; returning users go to dashboard
+        const isReturning = localStorage.getItem('onboardingDone') === 'true' && !isNewUser;
+        navigate(isReturning ? '/' : '/auth/get-started');
       } else {
         // Wrong OTP - show error, do NOT login
         setError(res?.message || 'Invalid OTP. Please try again.');

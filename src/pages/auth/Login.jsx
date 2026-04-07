@@ -104,6 +104,7 @@ export default function Login() {
   const [country, setCountry] = useState(COUNTRIES[0]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [mode, setMode] = useState('signin'); // 'signin' | 'create'
 
   const handleSendOTP = async () => {
     if (!phone.trim()) { setError('Please enter your WhatsApp number'); return; }
@@ -116,10 +117,10 @@ export default function Login() {
     try {
       const cleanPhone = phone.replace(/\D/g, '');
       await api.sendOtp(cleanPhone, country.code);
-      navigate('/auth/otp', { state: { phone: cleanPhone, countryCode: country.code, countryFlag: country.flag, countryName: country.name } });
+      navigate('/auth/otp', { state: { phone: cleanPhone, countryCode: country.code, countryFlag: country.flag, countryName: country.name, isNewUser: mode === 'create' } });
     } catch {
       const cleanPhone = phone.replace(/\D/g, '');
-      navigate('/auth/otp', { state: { phone: cleanPhone, countryCode: country.code, countryFlag: country.flag, countryName: country.name } });
+      navigate('/auth/otp', { state: { phone: cleanPhone, countryCode: country.code, countryFlag: country.flag, countryName: country.name, isNewUser: mode === 'create' } });
     } finally {
       setLoading(false);
     }
@@ -176,8 +177,35 @@ export default function Login() {
             <span className="font-semibold text-[#1C2B3A] tracking-tight">TallyDekho</span>
           </div>
 
-          <h2 className="text-[22px] font-bold text-[#1C2B3A] mb-1 tracking-tight">Welcome back</h2>
-          <p className="text-sm text-[#6B7280] mb-8">Enter your WhatsApp number to sign in</p>
+          {/* Sign In / Create Account tabs */}
+          <div className="flex bg-[#F5F4EF] rounded-xl p-1 mb-6">
+            <button
+              onClick={() => setMode('signin')}
+              className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${
+                mode === 'signin' ? 'bg-white text-[#1C2B3A] shadow-sm' : 'text-[#6B7280] hover:text-[#1C2B3A]'
+              }`}
+            >
+              Sign In
+            </button>
+            <button
+              onClick={() => setMode('create')}
+              className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${
+                mode === 'create' ? 'bg-white text-[#1C2B3A] shadow-sm' : 'text-[#6B7280] hover:text-[#1C2B3A]'
+              }`}
+            >
+              Create Account
+            </button>
+          </div>
+
+          <h2 className="text-[22px] font-bold text-[#1C2B3A] mb-1 tracking-tight">
+            {mode === 'signin' ? 'Welcome back' : 'Create your account'}
+          </h2>
+          <p className="text-sm text-[#6B7280] mb-6">
+            {mode === 'signin'
+              ? 'Enter your WhatsApp number to sign in'
+              : 'Enter your WhatsApp number to get started — it takes 30 seconds'
+            }
+          </p>
 
           <div className="space-y-4">
             <div>
@@ -211,7 +239,7 @@ export default function Login() {
             >
               {loading
                 ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                : <><Phone size={14} /> Send OTP via WhatsApp</>
+                : <><Phone size={14} /> {mode === 'create' ? 'Create Account via WhatsApp' : 'Send OTP via WhatsApp'}</>
               }
             </button>
           </div>
