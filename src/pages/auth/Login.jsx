@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Phone, Search, ChevronDown, X, Check } from 'lucide-react';
+import { Phone, Search, ChevronDown, X, Check, ArrowRight } from 'lucide-react';
 import api from '../../services/api';
 import COUNTRIES, { COUNTRY_GROUPS } from '../../data/countries';
 
@@ -34,7 +34,7 @@ function CountryPicker({ selected, onSelect }) {
       <button
         type="button"
         onClick={() => setOpen(p => !p)}
-        className="flex items-center gap-2 px-3 h-11 bg-white border border-[#D9DCE0] rounded-xl text-sm text-[#1C2B3A] hover:border-[#9FA9B1] transition-colors whitespace-nowrap"
+        className="flex items-center gap-2 px-3 h-12 bg-white border border-[#D9DCE0] rounded-xl text-sm text-[#1C2B3A] hover:border-[#9FA9B1] transition-colors whitespace-nowrap"
       >
         <span className="text-base leading-none">{selected.flag}</span>
         <span className="text-[#6B7280]">{selected.code}</span>
@@ -64,12 +64,12 @@ function CountryPicker({ selected, onSelect }) {
             {filtered ? (
               filtered.length === 0
                 ? <div className="text-center py-8 text-sm text-[#9CA3AF]">No results for "{search}"</div>
-                : <div className="py-1">{filtered.map(c => <CountryRow key={c.iso+c.code} country={c} selected={selected} onSelect={() => { onSelect(c); setOpen(false); setSearch(''); }} />)}</div>
+                : <div className="py-1">{filtered.map(c => <CountryRow key={c.iso + c.code} country={c} selected={selected} onSelect={() => { onSelect(c); setOpen(false); setSearch(''); }} />)}</div>
             ) : (
               COUNTRY_GROUPS.map(group => (
                 <div key={group.label}>
                   <div className="px-4 pt-3 pb-1.5 text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-widest">{group.label}</div>
-                  {group.countries.map(c => <CountryRow key={c.iso+c.code} country={c} selected={selected} onSelect={() => { onSelect(c); setOpen(false); }} />)}
+                  {group.countries.map(c => <CountryRow key={c.iso + c.code} country={c} selected={selected} onSelect={() => { onSelect(c); setOpen(false); }} />)}
                 </div>
               ))
             )}
@@ -97,32 +97,37 @@ function CountryRow({ country, selected, onSelect }) {
   );
 }
 
-// ── Login ──────────────────────────────────────────────────────────────────────
+// ── Login — single unified entry point ────────────────────────────────────────
 export default function Login() {
   const navigate = useNavigate();
   const [phone, setPhone] = useState('');
   const [country, setCountry] = useState(COUNTRIES[0]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [mode, setMode] = useState('signin'); // 'signin' | 'create'
 
-  const handleSendOTP = async () => {
-    if (!phone.trim()) { setError('Please enter your WhatsApp number'); return; }
-    if (phone.replace(/\D/g, '').length < country.digits) {
-      setError(`Enter a valid ${country.digits}-digit number for ${country.name}`);
+  const handleContinue = async () => {
+    const clean = phone.replace(/\D/g, '');
+    if (!clean) { setError('Enter your mobile number'); return; }
+    if (clean.length < country.digits) {
+      setError(`Enter a valid ${country.digits}-digit number`);
       return;
     }
     setError('');
     setLoading(true);
     try {
-      const cleanPhone = phone.replace(/\D/g, '');
-      await api.sendOtp(cleanPhone, country.code);
-      navigate('/auth/otp', { state: { phone: cleanPhone, countryCode: country.code, countryFlag: country.flag, countryName: country.name, isNewUser: mode === 'create' } });
+      await api.sendOtp(clean, country.code);
     } catch {
-      const cleanPhone = phone.replace(/\D/g, '');
-      navigate('/auth/otp', { state: { phone: cleanPhone, countryCode: country.code, countryFlag: country.flag, countryName: country.name, isNewUser: mode === 'create' } });
+      // Even if sendOtp fails, navigate to OTP — backend handles it
     } finally {
       setLoading(false);
+      navigate('/auth/otp', {
+        state: {
+          phone: clean,
+          countryCode: country.code,
+          countryFlag: country.flag,
+          countryName: country.name,
+        },
+      });
     }
   };
 
@@ -168,7 +173,7 @@ export default function Login() {
       </div>
 
       {/* ── Right — form ──────────────────────────────────────────────── */}
-      <div className="flex-1 flex items-center justify-center p-6" style={{ background: '#F5F4EF' }}>
+      <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-sm">
 
           {/* Mobile logo */}
@@ -177,40 +182,18 @@ export default function Login() {
             <span className="font-semibold text-[#1C2B3A] tracking-tight">TallyDekho</span>
           </div>
 
-          {/* Sign In / Create Account tabs */}
-          <div className="flex bg-[#F5F4EF] rounded-xl p-1 mb-6">
-            <button
-              onClick={() => setMode('signin')}
-              className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${
-                mode === 'signin' ? 'bg-white text-[#1C2B3A] shadow-sm' : 'text-[#6B7280] hover:text-[#1C2B3A]'
-              }`}
-            >
-              Sign In
-            </button>
-            <button
-              onClick={() => setMode('create')}
-              className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${
-                mode === 'create' ? 'bg-white text-[#1C2B3A] shadow-sm' : 'text-[#6B7280] hover:text-[#1C2B3A]'
-              }`}
-            >
-              Create Account
-            </button>
-          </div>
-
-          <h2 className="text-[22px] font-bold text-[#1C2B3A] mb-1 tracking-tight">
-            {mode === 'signin' ? 'Welcome back' : 'Create your account'}
+          <h2 className="text-[26px] font-bold text-[#1C2B3A] mb-2 tracking-tight">
+            Get started
           </h2>
-          <p className="text-sm text-[#6B7280] mb-6">
-            {mode === 'signin'
-              ? 'Enter your WhatsApp number to sign in'
-              : 'Enter your WhatsApp number to get started — it takes 30 seconds'
-            }
+          <p className="text-sm text-[#6B7280] mb-8 leading-relaxed">
+            Enter your mobile number — we'll send an OTP.<br />
+            <span className="text-[#9CA3AF]">New here? We'll set up your account automatically.</span>
           </p>
 
           <div className="space-y-4">
             <div>
               <label className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-widest block mb-1.5">
-                WhatsApp Number
+                Mobile Number
               </label>
               <div className="flex gap-2">
                 <CountryPicker selected={country} onSelect={c => { setCountry(c); setError(''); }} />
@@ -218,28 +201,24 @@ export default function Login() {
                   type="tel"
                   value={phone}
                   onChange={e => { setPhone(e.target.value.replace(/\D/g, '')); setError(''); }}
-                  onKeyDown={e => e.key === 'Enter' && handleSendOTP()}
+                  onKeyDown={e => e.key === 'Enter' && handleContinue()}
                   placeholder={`${country.digits}-digit number`}
                   maxLength={country.digits}
-                  className="flex-1 h-11 px-4 bg-white border border-[#D9DCE0] rounded-xl text-sm text-[#1C2B3A] outline-none focus:border-[#3F5263] focus:ring-2 focus:ring-[#3F5263]/10 transition-all placeholder:text-[#9CA3AF]"
+                  autoFocus
+                  className="flex-1 h-12 px-4 bg-white border border-[#D9DCE0] rounded-xl text-sm text-[#1C2B3A] outline-none focus:border-[#3F5263] focus:ring-2 focus:ring-[#3F5263]/10 transition-all placeholder:text-[#9CA3AF]"
                 />
               </div>
               {error && <p className="text-xs text-[#C0392B] mt-1.5">{error}</p>}
-              {country && (
-                <p className="text-xs text-[#9CA3AF] mt-1.5">
-                  {country.flag} {country.name} · {country.code}
-                </p>
-              )}
             </div>
 
             <button
-              onClick={handleSendOTP}
+              onClick={handleContinue}
               disabled={loading}
-              className="w-full h-11 rounded-xl text-sm font-semibold bg-[#1C2B3A] text-white hover:bg-[#333] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
+              className="w-full h-12 rounded-xl text-sm font-semibold bg-[#1C2B3A] text-white hover:bg-[#2C3B4A] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
             >
               {loading
                 ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                : <><Phone size={14} /> {mode === 'create' ? 'Create Account via WhatsApp' : 'Send OTP via WhatsApp'}</>
+                : <><Phone size={14} /> Continue with OTP <ArrowRight size={14} /></>
               }
             </button>
           </div>
