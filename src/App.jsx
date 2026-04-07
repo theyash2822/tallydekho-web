@@ -62,12 +62,10 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
-// Redirect logged-in users away from auth pages
-// Note: OTP page is excluded from redirect to prevent crash during login flow
+// Redirect already-logged-in users away from auth pages (login only)
 function AuthRoute({ children }) {
   const { token } = useAuth();
-  const isOTPPage = window.location.pathname === '/auth/otp';
-  if (token && !isOTPPage) return <Navigate to="/" replace />;
+  if (token) return <Navigate to="/" replace />;
   return children;
 }
 
@@ -77,7 +75,8 @@ function AppRoutes() {
       <Routes>
         {/* Auth routes */}
         <Route path="/auth/login" element={<AuthRoute><Login /></AuthRoute>} />
-        <Route path="/auth/otp" element={<AuthRoute><OTPScreen /></AuthRoute>} />
+        {/* OTP page: NO AuthRoute wrapper - login() sets token here, AuthRoute would race-redirect */}
+        <Route path="/auth/otp" element={<OTPScreen />} />
         <Route path="/auth/get-started" element={<ProtectedRoute><GetStarted /></ProtectedRoute>} />
 
         {/* Protected app routes */}
