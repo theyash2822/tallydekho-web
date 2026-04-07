@@ -62,7 +62,15 @@ export default function OTPScreen() {
         setTimeout(() => inputRef.current?.focus(), 100);
       }
     } catch (err) {
-      setError('Could not connect to server. Please check your internet connection.');
+      // API throws on non-2xx — extract the actual error message
+      const msg = err?.data?.message || err?.message || '';
+      if (msg.toLowerCase().includes('invalid') || msg.toLowerCase().includes('otp') || msg.toLowerCase().includes('expired')) {
+        setError(msg);
+        setOtp('');
+        setTimeout(() => inputRef.current?.focus(), 100);
+      } else {
+        setError('Could not connect to server. Please check your internet connection.');
+      }
     } finally {
       setVerifying(false);
     }

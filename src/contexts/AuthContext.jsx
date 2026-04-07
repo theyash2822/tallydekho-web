@@ -67,24 +67,18 @@ export function AuthProvider({ children }) {
     }
   }, [token, selectedCompany]);
 
-  // Validate token on mount — auto-logout if expired or invalid
+  // Refresh user profile from backend on mount
   useEffect(() => {
     if (!token) return;
-    fetchMe().then(res => {
-      if (res?.status === false) {
-        // Token is invalid/expired — clear everything and go to login
-        localStorage.clear();
-        setToken(null); setUser(null); setCompanies([]); setSelectedCompany(null); setIsPaired(false);
-        return;
-      }
-      if (res?.data) {
-        const fresh = { ...user, ...res.data };
-        localStorage.setItem('authUser', JSON.stringify(fresh));
-        setUser(fresh);
-      }
-    }).catch(() => {
-      // Network error — don't logout, user may be offline
-    });
+    fetchMe()
+      .then(res => {
+        if (res?.data) {
+          const fresh = { ...user, ...res.data };
+          localStorage.setItem('authUser', JSON.stringify(fresh));
+          setUser(fresh);
+        }
+      })
+      .catch(() => {}); // silent - network error or token expired, don't crash
   }, [token]);
 
   // Load companies on mount

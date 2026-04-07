@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, Component } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import AppShell from './layouts/AppShell';
@@ -28,9 +28,25 @@ const PaymentsModule = lazy(() => import('./pages/payments/PaymentsModule'));
 
 const PageLoader = () => (
   <div className="flex items-center justify-center h-screen">
-    <div className="w-6 h-6 border-2 border-[#059669] border-t-transparent rounded-full animate-spin" />
+    <div className="w-6 h-6 border-2 border-[#3F5263] border-t-transparent rounded-full animate-spin" />
   </div>
 );
+
+// Error boundary - catches render crashes and shows login instead of blank
+class ErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { hasError: false }; }
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(err) { console.error('[TallyDekho] Render error:', err.message); }
+  render() {
+    if (this.state.hasError) {
+      // Clear bad state and redirect to login
+      localStorage.removeItem('authToken');
+      window.location.href = '/auth/login';
+      return null;
+    }
+    return this.props.children;
+  }
+}
 
 // Protect routes — redirect to login if not authenticated
 function ProtectedRoute({ children }) {
@@ -40,9 +56,11 @@ function ProtectedRoute({ children }) {
 }
 
 // Redirect logged-in users away from auth pages
+// Note: OTP page is excluded from redirect to prevent crash during login flow
 function AuthRoute({ children }) {
   const { token } = useAuth();
-  if (token) return <Navigate to="/" replace />;
+  const isOTPPage = window.location.pathname === '/auth/otp';
+  if (token && !isOTPPage) return <Navigate to="/" replace />;
   return children;
 }
 
@@ -88,9 +106,11 @@ function AppRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
+      <ErrorBoundary>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </ErrorBoundary>
     </BrowserRouter>
   );
 }
