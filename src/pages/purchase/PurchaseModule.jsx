@@ -40,18 +40,7 @@ export default function PurchaseModule() {
   const [tab, setTab] = useState(0);
   const { selectedCompany, token, selectedFY, isPaired } = useAuth();
   const isDemo = !isPaired;
-  const monthlyChart = useMemo(() => {
-    const src = displayInvoices || [];
-    const map = {};
-    src.forEach(v => {
-      const d = v.date || '';
-      if (!d) return;
-      const mon = new Date(d).toLocaleString('en', { month: 'short' });
-      if (!map[mon]) map[mon] = { month: mon, purchase: 0 };
-      map[mon].purchase += (parseFloat(v.amount) || 0) / 1000;
-    });
-    return Object.values(map).slice(-6);
-  }, [displayInvoices]);
+
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [usingMock, setUsingMock] = useState(false);
@@ -90,6 +79,18 @@ export default function PurchaseModule() {
   const [drawer, setDrawer] = useState(null);
 
   const displayInvoices = invoices.length > 0 ? invoices : (isDemo ? purchaseInvoices : []);
+  const monthlyChart = useMemo(() => {
+    const src = displayInvoices || [];
+    const map = {};
+    src.forEach(v => {
+      const d = v.date || '';
+      if (!d) return;
+      const mon = new Date(d).toLocaleString('en', { month: 'short' });
+      if (!map[mon]) map[mon] = { month: mon, purchase: 0 };
+      map[mon].purchase += (parseFloat(v.amount) || 0) / 1000;
+    });
+    return Object.values(map).slice(-6);
+  }, [displayInvoices]);
   const filtered = displayInvoices.filter(r => {
     const s = !search || (r.vendor||'').toLowerCase().includes(search.toLowerCase()) || (r.ref||'').toLowerCase().includes(search.toLowerCase());
     const f = statusFilter === 'All' || r.status === statusFilter;
