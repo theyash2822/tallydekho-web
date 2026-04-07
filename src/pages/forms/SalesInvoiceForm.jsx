@@ -42,7 +42,7 @@ export default function SalesInvoiceForm({ onClose }) {
 
   // Form fields
   const [partyLedger, setPartyLedger] = useState('');
-  const [salesLedger, setSalesLedger] = useState('Sales Account');
+  const [salesLedger, setSalesLedger] = useState('');
   const [invoiceDate, setInvoiceDate] = useState(new Date().toISOString().split('T')[0]);
   const [narration, setNarration] = useState('');
   const [reference, setReference] = useState('');
@@ -59,6 +59,7 @@ export default function SalesInvoiceForm({ onClose }) {
 
   const handleSubmit = async () => {
     if (!partyLedger) { setError('Please select a customer / party'); return; }
+    if (!salesLedger) { setError('Please select a sales ledger (e.g. Sales, Sales Account GST)'); return; }
     if (items.length === 0 || !items[0]?.name) { setError('Please add at least one item'); return; }
     if (!selectedCompany) { setError('No company selected'); return; }
 
@@ -87,7 +88,10 @@ export default function SalesInvoiceForm({ onClose }) {
           salesLedger,
           godown: warehouse || 'Main Location',
         })),
-        taxes: taxAmt > 0 ? [{ ledgerName: 'Output GST', taxAmount: taxAmt, taxableValue: subtotal }] : [],
+        taxes: taxAmt > 0 ? [
+          { ledgerName: 'CGST', taxAmount: Math.round(taxAmt / 2), taxableValue: subtotal },
+          { ledgerName: 'SGST', taxAmount: Math.round(taxAmt / 2), taxableValue: subtotal },
+        ] : [],
         logistics: logistics.filter(l => l.amount > 0).map(l => ({ ledgerName: l.type || 'Freight', amount: l.amount })),
       };
 

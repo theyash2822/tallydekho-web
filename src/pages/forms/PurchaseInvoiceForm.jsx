@@ -18,7 +18,7 @@ export default function PurchaseInvoiceForm({ onClose }) {
   const [isOptional, setIsOptional] = useState(false);
 
   const [partyLedger, setPartyLedger] = useState('');
-  const [purchaseLedger, setPurchaseLedger] = useState('Purchase Accounts');
+  const [purchaseLedger, setPurchaseLedger] = useState('');
   const [invoiceDate, setInvoiceDate] = useState(new Date().toISOString().split('T')[0]);
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [narration, setNarration] = useState('');
@@ -53,7 +53,7 @@ export default function PurchaseInvoiceForm({ onClose }) {
       const result = await createPurchaseInvoice({
         companyGuid: selectedCompany.guid, companyName: selectedCompany.name,
         date: invoiceDate.replace(/-/g, ''), partyLedger,
-        purchaseLedger: purchaseLedger || 'Purchase Accounts',
+        purchaseLedger: purchaseLedger || 'Purchase Account GST',
         items: items.filter(i => i.name).map(i => ({
           itemName: i.name, billedQty: parseFloat(i.qty) || 1,
           rate: parseFloat(i.rate) || 0, amount: parseFloat(i.amount) || 0,
