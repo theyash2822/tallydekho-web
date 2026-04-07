@@ -1,39 +1,111 @@
-// LiveSearch — reusable searchable dropdown for ledgers, stocks, etc.
-// Queries real Tally data from backend as user types
+// LiveSearch — searchable dropdown with portal rendering (no clipping issues)
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { Search, ChevronDown, X } from 'lucide-react';
+
+function Dropdown({ anchorRef, results, loading, query, onSelect, onUseRaw }) {
+  const [pos, setPos] = useState({ top: 0, left: 0, width: 200 });
+
+  useEffect(() => {
+    if (!anchorRef.current) return;
+    const rect = anchorRef.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    const showAbove = spaceBelow < 220 && spaceAbove > spaceBelow;
+    setPos({
+      top: showAbove ? rect.top + window.scrollY - 4 : rect.bottom + window.scrollY + 4,
+      left: rect.left + window.scrollX,
+      width: rect.width,
+      showAbove,
+    });
+  }, [results, loading]);
+
+  return createPortal(
+    <div
+      style={{
+        position: 'absolute',
+        top: pos.showAbove ? undefined : pos.top,
+        bottom: pos.showAbove ? window.innerHeight - pos.top : undefined,
+        left: pos.left,
+        width: pos.width,
+        zIndex: 99999,
+      }}
+      className="bg-white border border-[#D9DCE0] rounded-xl shadow-2xl overflow-hidden max-h-56 overflow-y-auto"
+    >
+      {loading && (
+        <div className="px-3 py-2.5 text-xs text-[#9CA3AF] flex items-center gap-2">
+          <div className="w-3 h-3 border border-[#9CA3AF] border-t-transparent rounded-full animate-spin flex-shrink-0" />
+          Searching...
+        </div>
+      )}
+      {!loading && results.length === 0 && query.length === 0 && (
+        <div className="px-3 py-2.5 text-xs text-[#9CA3AF]">Start typing to search...</div>
+      )}
+      {!loading && results.length === 0 && query.length > 0 && (
+        <div className="px-3 py-2 text-center">
+          <p className="text-xs text-[#9CA3AF]">No results for "{query}"</p>
+        </div>
+      )}
+      {results.map((item, i) => (
+        <button
+          key={i}
+          type="button"
+          onMouseDown={e => { e.preventDefault(); onSelect(item); }}
+          className="w-full flex items-center gap-2 px-3 py-2.5 hover:bg-[#F4F5F6] text-left border-b border-[#F4F5F6] last:border-0 transition-colors"
+        >
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-[#1C2B3A] truncate">{item.label}</p>
+            {item.sub && <p className="text-xs text-[#9CA3AF] truncate">{item.sub}</p>}
+          </div>
+          {item.badge && (
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#ECEEEF] text-[#6B7280] flex-shrink-0">{item.badge}</span>
+          )}
+        </button>
+      ))}
+      {!loading && query && !results.find(r => r.label === query) && (
+        <button
+          type="button"
+          onMouseDown={e => { e.preventDefault(); onUseRaw(query); }}
+          className="w-full flex items-center gap-2 px-3 py-2 hover:bg-[#EEF1F3] text-left border-t border-[#F4F5F6]"
+        >
+          <span className="text-xs text-[#3F5263] font-medium">Use "{query}"</span>
+        </button>
+      )}
+    </div>,
+    document.body
+  );
+}
 
 export default function LiveSearch({
   value,
   onChange,
   placeholder = 'Search...',
-  fetchFn,           // async (query) => [{ label, value, sub }]
+  fetchFn,
   disabled = false,
   required = false,
   className = '',
 }) {
-  const [query, setQuery] = useState(value || '');
+  const [query, setQuery]     = useState(value || '');
   const [results, setResults] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen]       = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selected, setSelected] = useState(value || '');
-  const ref = useRef(null);
-  const debounceRef = useRef(null);
+  const anchorRef             = useRef(null);
+  const debounceRef           = useRef(null);
+
+  // Sync external value changes
+  useEffect(() => {
+    setQuery(value || '');
+  }, [value]);
 
   // Close on outside click
   useEffect(() => {
-    const h = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    if (!open) return;
+    const h = e => {
+      if (anchorRef.current && !anchorRef.current.contains(e.target)) setOpen(false);
+    };
     document.addEventListener('mousedown', h);
     return () => document.removeEventListener('mousedown', h);
-  }, []);
-
-  // Sync external value
-  useEffect(() => {
-    if (value !== selected) {
-      setSelected(value || '');
-      setQuery(value || '');
-    }
-  }, [value]);
+  }, [open]);
 
   const search = useCallback(async (q) => {
     if (!fetchFn) return;
@@ -50,15 +122,13 @@ export default function LiveSearch({
 
   const handleInput = (val) => {
     setQuery(val);
-    setSelected('');
-    onChange(''); // clear until selected
+    onChange('');
     setOpen(true);
     clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => search(val), 250);
   };
 
   const handleSelect = (item) => {
-    setSelected(item.value);
     setQuery(item.label);
     onChange(item.value);
     setOpen(false);
@@ -66,11 +136,7 @@ export default function LiveSearch({
   };
 
   const handleClear = () => {
-    setQuery('');
-    setSelected('');
-    onChange('');
-    setResults([]);
-    setOpen(false);
+    setQuery(''); onChange(''); setResults([]); setOpen(false);
   };
 
   const handleFocus = () => {
@@ -79,31 +145,26 @@ export default function LiveSearch({
   };
 
   return (
-    <div className={`relative ${className}`} ref={ref}>
+    <div className={`relative ${className}`} ref={anchorRef}>
       <div className="relative">
         <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none" />
         <input
           value={query}
           onChange={e => handleInput(e.target.value)}
           onFocus={handleFocus}
+          onBlur={() => setTimeout(() => setOpen(false), 150)}
           placeholder={placeholder}
           disabled={disabled}
           required={required}
           autoComplete="off"
-          className={`w-full pl-8 pr-8 py-2 text-sm border rounded-lg outline-none transition-all
-            ${selected
-              ? 'border-[#3F5263] bg-white text-[#1C2B3A]'
-              : 'border-[#D9DCE0] bg-white text-[#1C2B3A] focus:border-[#3F5263]'
-            }
+          className={`w-full pl-8 pr-7 py-2 text-sm border rounded-lg outline-none transition-all
+            ${query ? 'border-[#3F5263] bg-white' : 'border-[#D9DCE0] bg-white focus:border-[#3F5263]'}
             ${disabled ? 'bg-[#F4F5F6] cursor-not-allowed' : ''}
           `}
         />
         {query ? (
-          <button
-            type="button"
-            onClick={handleClear}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280]"
-          >
+          <button type="button" onMouseDown={e => { e.preventDefault(); handleClear(); }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280]">
             <X size={13} />
           </button>
         ) : (
@@ -112,49 +173,14 @@ export default function LiveSearch({
       </div>
 
       {open && (
-        <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-[#D9DCE0] rounded-xl shadow-lg overflow-hidden max-h-56 overflow-y-auto">
-          {loading && (
-            <div className="px-3 py-2.5 text-xs text-[#9CA3AF] flex items-center gap-2">
-              <div className="w-3 h-3 border border-[#9CA3AF] border-t-transparent rounded-full animate-spin" />
-              Searching...
-            </div>
-          )}
-          {!loading && results.length === 0 && query.length > 0 && (
-            <div className="px-3 py-3 text-center">
-              <p className="text-xs text-[#9CA3AF]">No results for "{query}"</p>
-              <p className="text-xs text-[#C5CBD0] mt-0.5">Press Enter to use this name directly</p>
-            </div>
-          )}
-          {!loading && results.length === 0 && query.length === 0 && (
-            <div className="px-3 py-2.5 text-xs text-[#9CA3AF]">Start typing to search...</div>
-          )}
-          {results.map((item, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => handleSelect(item)}
-              className="w-full flex items-start gap-2 px-3 py-2.5 hover:bg-[#F4F5F6] transition-colors text-left border-b border-[#F4F5F6] last:border-0"
-            >
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-[#1C2B3A] truncate">{item.label}</p>
-                {item.sub && <p className="text-xs text-[#9CA3AF] truncate mt-0.5">{item.sub}</p>}
-              </div>
-              {item.badge && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#ECEEEF] text-[#6B7280] flex-shrink-0 mt-0.5">{item.badge}</span>
-              )}
-            </button>
-          ))}
-          {/* Allow typing custom value not in list */}
-          {!loading && query && !results.find(r => r.label === query) && (
-            <button
-              type="button"
-              onClick={() => handleSelect({ label: query, value: query })}
-              className="w-full flex items-center gap-2 px-3 py-2.5 hover:bg-[#EEF1F3] transition-colors text-left border-t border-[#F4F5F6]"
-            >
-              <span className="text-xs text-[#3F5263] font-medium">Use "{query}"</span>
-            </button>
-          )}
-        </div>
+        <Dropdown
+          anchorRef={anchorRef}
+          results={results}
+          loading={loading}
+          query={query}
+          onSelect={handleSelect}
+          onUseRaw={(q) => { setQuery(q); onChange(q); setOpen(false); }}
+        />
       )}
     </div>
   );
