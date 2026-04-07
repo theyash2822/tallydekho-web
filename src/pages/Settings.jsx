@@ -210,7 +210,7 @@ function VoucherConfigSettings({ companyGuid }) {
           </div>
         ))}
       </div>
-      <button onClick={save} className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#1C2B3A] hover:bg-[#2C3B4A] transition-colors">
+      <button onClick={save} className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#3F5263] hover:bg-[#526373] transition-colors">
         {saved ? '✓ Saved!' : 'Save Format'}
       </button>
     </div>
