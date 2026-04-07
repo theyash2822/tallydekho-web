@@ -43,6 +43,7 @@ export default function PaymentsModule() {
   const [realPayments, setRealPayments] = useState([]);
   const [realReceipts, setRealReceipts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState(null);
   const { selectedCompany, selectedFY, isPaired } = useAuth();
   const isDemo = !isPaired;
 
@@ -50,6 +51,7 @@ export default function PaymentsModule() {
     setRealPayments([]); setRealReceipts([]);
     if (!selectedCompany?.guid) { setLoading(false); return; }
     setLoading(true);
+    setError(null);
     Promise.all([
       api.fetchVouchers({ companyGuid: selectedCompany.guid, voucherType: 'Payment', page: 1, pageSize: 100, fromDate: selectedFY?.startDate, toDate: selectedFY?.endDate }).catch(() => null),
       api.fetchVouchers({ companyGuid: selectedCompany.guid, voucherType: 'Receipt', page: 1, pageSize: 100, fromDate: selectedFY?.startDate, toDate: selectedFY?.endDate }).catch(() => null),
@@ -57,6 +59,8 @@ export default function PaymentsModule() {
       const mapV = v => ({ id: v.id, voucher: v.voucher_number || v.id, party: v.party_name || '—', date: v.date || '—', amount: parseFloat(v.amount) || 0, mode: 'Bank', status: 'Cleared', ref: v.reference || '' });
       if (p?.data?.vouchers?.length) setRealPayments(p.data.vouchers.map(mapV));
       if (r?.data?.vouchers?.length) setRealReceipts(r.data.vouchers.map(mapV));
+    }).catch(err => {
+      setError(err?.response?.data?.message || err?.message || 'Failed to load payments data');
     }).finally(() => setLoading(false));
   }, [selectedCompany?.guid, selectedFY?.uniqueId]);
 
@@ -67,6 +71,13 @@ export default function PaymentsModule() {
 
   return (
     <div className="space-y-5">
+      {error && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs">
+          <span className="flex-shrink-0">⚠️</span>
+          <span><strong>Error:</strong> {error}</span>
+          <button onClick={() => window.location.reload()} className="ml-auto underline font-medium">Retry</button>
+        </div>
+      )}
       {isDemo && (
         <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs">
           <span className="text-base">🎭</span>

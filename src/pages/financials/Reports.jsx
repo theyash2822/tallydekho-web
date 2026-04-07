@@ -45,18 +45,22 @@ export default function Reports() {
   const [plReport, setPlReport] = useState(null);
   const [bsReport, setBsReport] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState(null);
 
   useEffect(() => {
     setPlReport(null);
     setBsReport(null);
     if (!selectedCompany?.guid) { setLoading(false); return; }
     setLoading(true);
+    setError(null);
     Promise.all([
       api.fetchReportsPL({ companyGuid: selectedCompany.guid }).catch(() => null),
       api.fetchReportsBS({ companyGuid: selectedCompany.guid }).catch(() => null),
     ]).then(([pl, bs]) => {
       if (pl?.data) setPlReport(pl.data);
       if (bs?.data) setBsReport(bs.data);
+    }).catch(err => {
+      setError(err?.response?.data?.message || err?.message || 'Failed to load reports data');
     }).finally(() => setLoading(false));
   }, [selectedCompany?.guid]);
 
@@ -78,6 +82,13 @@ export default function Reports() {
 
   return (
     <div className="space-y-5">
+      {error && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs">
+          <span className="flex-shrink-0">⚠️</span>
+          <span><strong>Error:</strong> {error}</span>
+          <button onClick={() => window.location.reload()} className="ml-auto underline font-medium">Retry</button>
+        </div>
+      )}
       <div>
         <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Financial Reports</h1>
         <p className="text-sm text-[#6B7280] mt-0.5">{selectedFY?.name ? `FY ${selectedFY.name}` : "FY 2025-26"}</p>

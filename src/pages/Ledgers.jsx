@@ -260,6 +260,13 @@ export default function Ledgers() {
 
   return (
     <div className="space-y-5">
+      {error && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs">
+          <span className="flex-shrink-0">⚠️</span>
+          <span><strong>Error:</strong> {error}</span>
+          <button onClick={() => window.location.reload()} className="ml-auto underline font-medium">Retry</button>
+        </div>
+      )}
 
       {/* Header */}
       <div className="flex items-center justify-between">

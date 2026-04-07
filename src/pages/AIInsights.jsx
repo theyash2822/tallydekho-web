@@ -13,13 +13,15 @@ export default function AIInsights() {
   const { selectedCompany } = useAuth();
   const [dashData, setDashData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState(null);
 
   useEffect(() => {
     if (!selectedCompany?.guid) { setLoading(false); return; }
     setLoading(true);
+    setError(null);
     api.fetchDashboard({ companyGuid: selectedCompany.guid })
       .then(r => setDashData(r?.data))
-      .catch(() => {})
+      .catch(err => { setError(err?.response?.data?.message || err?.message || 'Failed to load insights data'); })
       .finally(() => setLoading(false));
   }, [selectedCompany?.guid]);
 
@@ -74,6 +76,13 @@ export default function AIInsights() {
 
   return (
     <div className="space-y-6">
+      {error && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs">
+          <span className="flex-shrink-0">⚠️</span>
+          <span><strong>Error:</strong> {error}</span>
+          <button onClick={() => window.location.reload()} className="ml-auto underline font-medium">Retry</button>
+        </div>
+      )}
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -82,7 +91,7 @@ export default function AIInsights() {
           </h1>
           <p className="page-subtitle">{selectedCompany?.name || 'Select a company'} · Powered by Tally data</p>
         </div>
-        <button onClick={() => { setLoading(true); api.fetchDashboard({ companyGuid: selectedCompany?.guid }).then(r => setDashData(r?.data)).catch(()=>{}).finally(()=>setLoading(false)); }}
+        <button onClick={() => { setLoading(true); api.fetchDashboard({ companyGuid: selectedCompany?.guid }).then(r => { if(r?.data) setDashData(r.data); }).catch(err => setError(err?.message || 'Failed to load')).finally(()=>setLoading(false)); }}
           className="flex items-center gap-1.5 text-xs text-[#3F5263] font-medium hover:text-[#526373]">
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>

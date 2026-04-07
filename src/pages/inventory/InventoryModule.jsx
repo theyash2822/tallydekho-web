@@ -30,6 +30,7 @@ export default function InventoryModule() {
   const [drawer, setDrawer] = useState(null);
   const [stockItems, setStockItems] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState(null);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [categories, setCategories] = useState(['All']);
@@ -44,7 +45,7 @@ export default function InventoryModule() {
       if (pg === 1) {
         api.fetchStockFilters(selectedCompany.guid)
           .then(r => setCategories(['All', ...(r?.data?.categories || []), ...(r?.data?.groups || [])].filter(Boolean)))
-          .catch(() => {});
+          .catch(() => {}); // categories failure is non-fatal
       }
 
       const res = await api.fetchStocks({
@@ -79,7 +80,7 @@ export default function InventoryModule() {
         setTotal(0);
       }
     } catch (e) {
-      console.error('Stock load error:', e.message);
+      setError(e?.response?.data?.message || e?.message || 'Failed to load inventory data');
     } finally {
       setLoading(false);
     }
@@ -123,6 +124,13 @@ export default function InventoryModule() {
 
   return (
     <div className="space-y-5">
+      {error && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs">
+          <span className="flex-shrink-0">⚠️</span>
+          <span><strong>Error:</strong> {error}</span>
+          <button onClick={() => window.location.reload()} className="ml-auto underline font-medium">Retry</button>
+        </div>
+      )}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="page-title">Inventory</h1>
