@@ -49,18 +49,20 @@ export default function OTPScreen() {
     const otpCode = code || otp;
     if (otpCode.length !== 4) { setError('Please enter the 4-digit OTP'); return; }
     setVerifying(true);
+    setError('');
     try {
       const res = await api.verifyOtp(phone, otpCode, countryCode);
       if (res?.status && res?.data?.token) {
         await login(res.data.token, { mobileNumber: phone, countryCode, name: res.data.user?.name });
         navigate(localStorage.getItem('onboardingDone') === 'true' ? '/' : '/auth/get-started');
       } else {
-        await login('demo-token-' + Date.now(), { mobileNumber: phone, countryCode });
-        navigate(localStorage.getItem('onboardingDone') === 'true' ? '/' : '/auth/get-started');
+        // Wrong OTP - show error, do NOT login
+        setError(res?.message || 'Invalid OTP. Please try again.');
+        setOtp('');
+        setTimeout(() => inputRef.current?.focus(), 100);
       }
-    } catch {
-      await login('demo-token-' + Date.now(), { mobileNumber: phone, countryCode });
-      navigate(localStorage.getItem('onboardingDone') === 'true' ? '/' : '/auth/get-started');
+    } catch (err) {
+      setError('Could not connect to server. Please check your internet connection.');
     } finally {
       setVerifying(false);
     }
