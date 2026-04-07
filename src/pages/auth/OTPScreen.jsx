@@ -7,7 +7,7 @@ import api from '../../services/api';
 export default function OTPScreen() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login, markPaired } = useAuth();
 
   const phone       = location.state?.phone       || '';
   const countryCode = location.state?.countryCode || '+91';
@@ -54,6 +54,8 @@ export default function OTPScreen() {
       const res = await api.verifyOtp(phone, otpCode, countryCode);
       if (res?.status && res?.data?.token) {
         await login(res.data.token, { mobileNumber: phone, countryCode, name: res.data.user?.name });
+        // Preserve paired state from server response - never reset on login
+        if (res.data.isPaired) markPaired();
         navigate(localStorage.getItem('onboardingDone') === 'true' ? '/' : '/auth/get-started');
       } else {
         // Wrong OTP - show error, do NOT login

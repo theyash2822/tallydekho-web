@@ -115,8 +115,11 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
+    // Keep isPaired in localStorage - pairing is device-level, not session-level
+    const pairedState = localStorage.getItem('isPaired');
     localStorage.clear();
-    setToken(null); setUser(null); setCompanies([]); setSelectedCompany(null); setIsPaired(false);
+    if (pairedState) localStorage.setItem('isPaired', pairedState);
+    setToken(null); setUser(null); setCompanies([]); setSelectedCompany(null);
     wsService.disconnect();
   };
 
