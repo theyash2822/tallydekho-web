@@ -14,7 +14,6 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
   const [warehouses, setWarehouses] = useState([]);
   const { selectedCompany } = useAuth();
 
-  // Load real warehouses from backend
   useEffect(() => {
     if (!selectedCompany?.guid) return;
     fetchLedgers({ companyGuid: selectedCompany.guid, searchText: 'warehouse', pageSize: 30 })
@@ -28,14 +27,12 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
       }).catch(() => {});
   }, [selectedCompany?.guid]);
 
-  // Fetch stock items for product search
   const [stockMap, setStockMap] = useState({});
 
   const fetchProducts = useCallback(async (q) => {
     if (!selectedCompany?.guid) return [];
     const res = await fetchStocks({ companyGuid: selectedCompany.guid, searchText: q, pageSize: 20 });
     const stocks = res?.data?.stocks || [];
-    // Cache stock data for autofill
     const map = {};
     stocks.forEach(s => { map[s.name] = s; });
     setStockMap(prev => ({ ...prev, ...map }));
@@ -54,7 +51,7 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
       return item;
     });
     setItems(updated);
-    onItemsChange && onItemsChange(updated);
+    onItemsChange?.(updated);
   };
 
   const handleProductSelect = (id, name) => {
@@ -66,107 +63,141 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
         name,
         unit: stock?.unit || i.unit,
         hsn: stock?.hsn || i.hsn,
-        // Don't overwrite rate - user enters it
         amount: (parseFloat(i.qty) || 1) * (parseFloat(i.rate) || 0),
       };
     });
     setItems(updated);
-    onItemsChange && onItemsChange(updated);
+    onItemsChange?.(updated);
   };
 
   const remove = (id) => {
     if (items.length === 1) return;
     const updated = items.filter(i => i.id !== id);
     setItems(updated);
-    onItemsChange && onItemsChange(updated);
+    onItemsChange?.(updated);
   };
 
   const add = () => {
     const updated = [...items, emptyItem()];
     setItems(updated);
-    onItemsChange && onItemsChange(updated);
+    onItemsChange?.(updated);
   };
 
   return (
     <div>
       {/* Warehouse selector */}
-      <div className="flex items-center gap-3 mb-3">
+      <div className="flex items-center gap-3 mb-4">
         <Package size={14} className="text-[#787774] flex-shrink-0" />
         <select
           value={warehouse}
-          onChange={e => onWarehouseChange && onWarehouseChange(e.target.value)}
+          onChange={e => onWarehouseChange?.(e.target.value)}
           className="notion-input text-sm flex-1 max-w-xs"
         >
           <option value="">Select Warehouse</option>
-          {warehouses.length > 0
-            ? warehouses.map(w => <option key={w}>{w}</option>)
-            : ['Main Warehouse', 'Godown 1', 'Godown 2'].map(w => <option key={w}>{w}</option>)
-          }
+          {(warehouses.length > 0 ? warehouses : ['Main Warehouse', 'Godown 1', 'Godown 2'])
+            .map(w => <option key={w}>{w}</option>)}
         </select>
       </div>
 
-      {/* Items - card layout instead of table to avoid overflow clipping */}
-      <div className="space-y-2">
-        {/* Header row */}
-        <div className="grid gap-2 text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-1"
-          style={{ gridTemplateColumns: '2fr 80px 70px 70px 90px 70px 70px 24px' }}>
-          <span>Product / Service</span>
-          <span>HSN</span>
-          <span>Qty</span>
-          <span>Unit</span>
-          <span>Rate (₹)</span>
-          <span>Tax</span>
-          <span>Amount</span>
-          <span></span>
-        </div>
+      {/* Item cards */}
+      <div className="space-y-3">
+        {items.map((item, idx) => (
+          <div key={item.id} className="border border-[#E8E7E3] rounded-xl p-3 bg-[#FAFAFA] hover:border-[#C7C5C0] transition-colors">
 
-        {items.map((item) => (
-          <div key={item.id} className="grid gap-2 items-center px-1"
-            style={{ gridTemplateColumns: '2fr 80px 70px 70px 90px 70px 70px 24px' }}>
-
-            {/* Product - LiveSearch with overflow visible */}
-            <div className="relative">
-              <LiveSearch
-                value={item.name}
-                onChange={name => handleProductSelect(item.id, name)}
-                placeholder="Search product..."
-                fetchFn={fetchProducts}
-              />
+            {/* Row 1: index + product name + delete */}
+            <div className="flex items-center gap-2 mb-2.5">
+              <span className="w-5 h-5 rounded-full bg-[#E8E7E3] text-[10px] font-bold text-[#787774] flex items-center justify-center flex-shrink-0">
+                {idx + 1}
+              </span>
+              <div className="flex-1 min-w-0">
+                <LiveSearch
+                  value={item.name}
+                  onChange={name => handleProductSelect(item.id, name)}
+                  placeholder="Search product / service..."
+                  fetchFn={fetchProducts}
+                />
+              </div>
+              <button
+                onClick={() => remove(item.id)}
+                disabled={items.length === 1}
+                className="w-6 h-6 flex items-center justify-center rounded text-[#AEACA8] hover:text-rose-500 hover:bg-rose-50 transition-colors disabled:opacity-30 flex-shrink-0"
+              >
+                <Trash2 size={13} />
+              </button>
             </div>
 
-            <input placeholder="HSN" value={item.hsn} onChange={e => update(item.id, 'hsn', e.target.value)}
-              className="notion-input text-sm w-full" />
+            {/* Row 2: HSN · Qty · Unit · Rate · Tax · Amount */}
+            <div className="grid grid-cols-6 gap-2">
+              <div className="col-span-1">
+                <p className="text-[9px] text-[#9CA3AF] font-semibold uppercase tracking-wide mb-1">HSN</p>
+                <input
+                  placeholder="HSN"
+                  value={item.hsn}
+                  onChange={e => update(item.id, 'hsn', e.target.value)}
+                  className="notion-input text-xs w-full"
+                />
+              </div>
 
-            <input type="number" min="0.01" step="0.01" value={item.qty} onChange={e => update(item.id, 'qty', e.target.value)}
-              className="notion-input text-sm w-full" />
+              <div className="col-span-1">
+                <p className="text-[9px] text-[#9CA3AF] font-semibold uppercase tracking-wide mb-1">Qty</p>
+                <input
+                  type="number" min="0.01" step="0.01"
+                  value={item.qty}
+                  onChange={e => update(item.id, 'qty', e.target.value)}
+                  className="notion-input text-xs w-full"
+                />
+              </div>
 
-            <select value={item.unit} onChange={e => update(item.id, 'unit', e.target.value)}
-              className="notion-input text-sm w-full">
-              {UNITS.map(u => <option key={u}>{u}</option>)}
-            </select>
+              <div className="col-span-1">
+                <p className="text-[9px] text-[#9CA3AF] font-semibold uppercase tracking-wide mb-1">Unit</p>
+                <select
+                  value={item.unit}
+                  onChange={e => update(item.id, 'unit', e.target.value)}
+                  className="notion-input text-xs w-full"
+                >
+                  {UNITS.map(u => <option key={u}>{u}</option>)}
+                </select>
+              </div>
 
-            <input type="number" placeholder="0.00" min="0" step="0.01" value={item.rate}
-              onChange={e => update(item.id, 'rate', e.target.value)}
-              className="notion-input text-sm w-full" />
+              <div className="col-span-1">
+                <p className="text-[9px] text-[#9CA3AF] font-semibold uppercase tracking-wide mb-1">Rate (₹)</p>
+                <input
+                  type="number" placeholder="0.00" min="0" step="0.01"
+                  value={item.rate}
+                  onChange={e => update(item.id, 'rate', e.target.value)}
+                  className="notion-input text-xs w-full"
+                />
+              </div>
 
-            <select value={item.tax} onChange={e => update(item.id, 'tax', e.target.value)}
-              className="notion-input text-sm w-full">
-              {TAX_RATES.map(r => <option key={r}>{r}</option>)}
-            </select>
+              <div className="col-span-1">
+                <p className="text-[9px] text-[#9CA3AF] font-semibold uppercase tracking-wide mb-1">Tax</p>
+                <select
+                  value={item.tax}
+                  onChange={e => update(item.id, 'tax', e.target.value)}
+                  className="notion-input text-xs w-full"
+                >
+                  {TAX_RATES.map(r => <option key={r}>{r}</option>)}
+                </select>
+              </div>
 
-            <div className="text-sm font-semibold text-[#1A1A1A] text-right">
-              ₹{(item.amount || 0).toLocaleString('en-IN')}
+              <div className="col-span-1 flex flex-col justify-end">
+                <p className="text-[9px] text-[#9CA3AF] font-semibold uppercase tracking-wide mb-1">Amount</p>
+                <div className="h-[30px] flex items-center justify-end">
+                  <span className="text-sm font-bold text-[#1A1A1A]">
+                    ₹{(item.amount || 0).toLocaleString('en-IN')}
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <button onClick={() => remove(item.id)}
-              className="w-6 h-6 flex items-center justify-center rounded text-[#AEACA8] hover:text-rose-500 hover:bg-rose-50 transition-colors">
-              <Trash2 size={13} />
-            </button>
           </div>
         ))}
       </div>
 
-      <button onClick={add} className="flex items-center gap-1.5 mt-2 text-xs text-[#3F5263] hover:text-[#526373] font-medium transition-colors">
+      <button
+        onClick={add}
+        className="flex items-center gap-1.5 mt-3 text-xs text-[#3F5263] hover:text-[#526373] font-medium transition-colors"
+      >
         <Plus size={13} /> Add Item
       </button>
     </div>
