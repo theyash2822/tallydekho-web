@@ -70,15 +70,15 @@ export default function PurchaseInvoiceForm({ onClose }) {
   if (submitted) {
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
-        <div className="w-16 h-16 rounded-full bg-[#E8F5ED] flex items-center justify-center border border-[#A8D5BC]">
-          <CheckCircle size={32} className="text-[#2D7D46]" />
+        <div className="w-16 h-16 rounded-full bg-[#EDF3EC] flex items-center justify-center border border-[#B7D4B2]">
+          <CheckCircle size={32} className="text-[#0F7B6C]" />
         </div>
-        <p className="text-base font-semibold text-[#1C2B3A]">{isOptional ? 'Optional Entry Saved!' : 'Purchase Invoice Created in Tally!'}</p>
-        {createdNumber && <p className="text-sm font-mono font-bold text-[#3F5263] bg-[#ECEEEF] px-3 py-1 rounded-lg">{createdNumber}</p>}
-        <p className="text-sm text-[#6B7280]">{selectedCompany?.name}</p>
+        <p className="text-base font-semibold text-[#37352F]">{isOptional ? 'Optional Entry Saved!' : 'Purchase Invoice Created in Tally!'}</p>
+        {createdNumber && <p className="text-sm font-mono font-bold text-[#37352F] bg-[#EFEFEF] px-3 py-1 rounded-lg">{createdNumber}</p>}
+        <p className="text-sm text-[#787774]">{selectedCompany?.name}</p>
         <div className="flex gap-3 mt-2">
-          <button onClick={() => { setSubmitted(false); setPartyLedger(''); setItems([]); setNarration(''); }} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]">Create Another</button>
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]">Close</button>
+          <button onClick={() => { setSubmitted(false); setPartyLedger(''); setItems([]); setNarration(''); }} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D3D1CB] text-[#787774] hover:bg-[#F7F7F5]">Create Another</button>
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D3D1CB] text-[#787774] hover:bg-[#F7F7F5]">Close</button>
         </div>
       </div>
     );
@@ -113,7 +113,7 @@ export default function PurchaseInvoiceForm({ onClose }) {
       <SectionTitle title="Narration" />
       <textarea rows={2} value={narration} onChange={e => setNarration(e.target.value)} placeholder="Optional narration" className="notion-input w-full text-sm resize-none" />
 
-      {error && <div className="flex items-center gap-2 p-3 bg-[#FEF2F2] border border-[#FECACA] rounded-xl text-sm text-[#C0392B]"><AlertCircle size={14} />{error}</div>}
+      {error && <div className="flex items-center gap-2 p-3 bg-[#FEF2F2] border border-[#FECACA] rounded-xl text-sm text-[#EB5757]"><AlertCircle size={14} />{error}</div>}
 
       <SummaryFooter subtotal={subtotal} tax={Math.round(taxAmt)} logistics={logTotal} onSubmit={handleSubmit} submitLabel={submitting ? 'Submitting...' : 'Submit to Tally'} showDraft={true} />
     </div>

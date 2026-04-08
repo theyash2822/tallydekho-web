@@ -118,14 +118,14 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
                 />
               </div>
               {item.hsn ? (
-                <span className="flex-shrink-0 px-2 py-0.5 rounded-full bg-[#EEF2FF] text-[#4F46E5] text-[9px] font-semibold tracking-wide">
+                <span className="flex-shrink-0 px-2 py-0.5 rounded-full bg-[#EEF2FF] text-[#2383E2] text-[9px] font-semibold tracking-wide">
                   HSN {item.hsn}
                 </span>
               ) : null}
               <button
                 onClick={() => remove(item.id)}
                 disabled={items.length === 1}
-                className="w-6 h-6 flex items-center justify-center rounded text-[#AEACA8] hover:text-rose-500 hover:bg-rose-50 transition-colors disabled:opacity-30 flex-shrink-0"
+                className="w-6 h-6 flex items-center justify-center rounded text-[#9A9A97] hover:text-rose-500 hover:bg-rose-50 transition-colors disabled:opacity-30 flex-shrink-0"
               >
                 <Trash2 size={13} />
               </button>
@@ -134,7 +134,7 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
             {/* Row 2: Qty · Unit · Rate · Tax · Amount */}
             <div className="grid grid-cols-5 gap-2">
               <div className="col-span-1">
-                <p className="text-[9px] text-[#9CA3AF] font-semibold uppercase tracking-wide mb-1">Qty</p>
+                <p className="text-[9px] text-[#9A9A97] font-semibold uppercase tracking-wide mb-1">Qty</p>
                 <input
                   type="number" min="0.01" step="0.01"
                   value={item.qty}
@@ -144,7 +144,7 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
               </div>
 
               <div className="col-span-1">
-                <p className="text-[9px] text-[#9CA3AF] font-semibold uppercase tracking-wide mb-1">Unit</p>
+                <p className="text-[9px] text-[#9A9A97] font-semibold uppercase tracking-wide mb-1">Unit</p>
                 <select
                   value={item.unit}
                   onChange={e => update(item.id, 'unit', e.target.value)}
@@ -155,7 +155,7 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
               </div>
 
               <div className="col-span-1">
-                <p className="text-[9px] text-[#9CA3AF] font-semibold uppercase tracking-wide mb-1">Rate (₹)</p>
+                <p className="text-[9px] text-[#9A9A97] font-semibold uppercase tracking-wide mb-1">Rate (₹)</p>
                 <input
                   type="number" placeholder="0.00" min="0" step="0.01"
                   value={item.rate}
@@ -165,7 +165,7 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
               </div>
 
               <div className="col-span-1">
-                <p className="text-[9px] text-[#9CA3AF] font-semibold uppercase tracking-wide mb-1">Tax</p>
+                <p className="text-[9px] text-[#9A9A97] font-semibold uppercase tracking-wide mb-1">Tax</p>
                 <select
                   value={item.tax}
                   onChange={e => update(item.id, 'tax', e.target.value)}
@@ -176,7 +176,7 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
               </div>
 
               <div className="col-span-1 flex flex-col justify-end">
-                <p className="text-[9px] text-[#9CA3AF] font-semibold uppercase tracking-wide mb-1">Amount</p>
+                <p className="text-[9px] text-[#9A9A97] font-semibold uppercase tracking-wide mb-1">Amount</p>
                 <div className="h-[30px] flex items-center justify-end">
                   <span className="text-sm font-bold text-[#1A1A1A]">
                     ₹{(item.amount || 0).toLocaleString('en-IN')}
@@ -191,7 +191,7 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
 
       <button
         onClick={add}
-        className="flex items-center gap-1.5 mt-3 text-xs text-[#3F5263] hover:text-[#526373] font-medium transition-colors"
+        className="flex items-center gap-1.5 mt-3 text-xs text-[#37352F] hover:text-[#787774] font-medium transition-colors"
       >
         <Plus size={13} /> Add Item
       </button>

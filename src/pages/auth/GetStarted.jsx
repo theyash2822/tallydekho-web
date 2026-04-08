@@ -71,7 +71,7 @@ export default function GetStarted() {
   const progress = (step / TOTAL_STEPS) * 100;
 
   return (
-    <div className="min-h-screen flex" style={{ background: "#F5F4EF" }}>
+    <div className="min-h-screen flex" style={{ background: "#F7F7F5" }}>
 
       {/* Left panel */}
       <div className="hidden lg:flex lg:w-[42%] flex-col justify-between p-12 brand-gradient sticky top-0 h-screen">
@@ -95,7 +95,7 @@ export default function GetStarted() {
                   step > n ? 'bg-white' : step === n ? 'bg-white/20 ring-2 ring-white/50' : 'bg-white/10'
                 }`}>
                   {step > n
-                    ? <Check size={14} className="text-[#3F5263]" />
+                    ? <Check size={14} className="text-[#37352F]" />
                     : <Icon size={14} className="text-white" />
                   }
                 </div>
@@ -123,13 +123,13 @@ export default function GetStarted() {
           {/* Mobile logo */}
           <div className="flex items-center gap-3 mb-8 lg:hidden">
             <div className="w-8 h-8 rounded-xl bg-[#1A1A1A] flex items-center justify-center font-bold text-white text-sm">T</div>
-            <span className="font-semibold text-[#1C2B3A]">TallyDekho</span>
+            <span className="font-semibold text-[#37352F]">TallyDekho</span>
           </div>
 
           {/* Mobile progress */}
           <div className="flex items-center gap-2 mb-8 lg:hidden">
             {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
-              <div key={i} className={`h-1 rounded-full flex-1 transition-all duration-300 ${i < step ? 'bg-[#1A1A1A]' : 'bg-[#E9E8E3]'}`} />
+              <div key={i} className={`h-1 rounded-full flex-1 transition-all duration-300 ${i < step ? 'bg-[#1A1A1A]' : 'bg-[#E9E9E7]'}`} />
             ))}
           </div>
 
@@ -137,24 +137,24 @@ export default function GetStarted() {
           {step === 1 && (
             <div className="space-y-6 animate-fade-in">
               <div>
-                <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">Step 1 of {TOTAL_STEPS}</p>
-                <h2 className="text-[22px] font-bold text-[#1C2B3A] tracking-tight mb-1">What's your name?</h2>
-                <p className="text-sm text-[#6B7280] mt-1">We'll personalise TallyDekho for you</p>
+                <p className="text-xs font-semibold text-[#9A9A97] uppercase tracking-widest mb-1">Step 1 of {TOTAL_STEPS}</p>
+                <h2 className="text-[22px] font-bold text-[#37352F] tracking-tight mb-1">What's your name?</h2>
+                <p className="text-sm text-[#787774] mt-1">We'll personalise TallyDekho for you</p>
               </div>
               <div>
-                <label className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-widest block mb-1.5">Full Name</label>
+                <label className="text-[11px] font-semibold text-[#9A9A97] uppercase tracking-widest block mb-1.5">Full Name</label>
                 <div className="relative">
-                  <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
+                  <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9A9A97]" />
                   <input
                     autoFocus
                     value={fullName}
                     onChange={e => { setFullName(e.target.value); setErrors({}); }}
                     onKeyDown={e => e.key === 'Enter' && next()}
                     placeholder="Enter your full name"
-                    className="w-full h-12 pl-9 pr-4 bg-white border border-[#D9DCE0] rounded-xl text-sm text-[#1C2B3A] outline-none focus:border-[#3F5263] focus:ring-2 focus:ring-[#3F5263]/10 transition-all placeholder:text-[#9CA3AF]"
+                    className="w-full h-12 pl-9 pr-4 bg-white border border-[#D3D1CB] rounded-xl text-sm text-[#37352F] outline-none focus:border-[#37352F] focus:ring-2 focus:ring-[#37352F]/10 transition-all placeholder:text-[#9A9A97]"
                   />
                 </div>
-                {errors.fullName && <p className="text-xs text-[#C0392B] mt-1.5">{errors.fullName}</p>}
+                {errors.fullName && <p className="text-xs text-[#EB5757] mt-1.5">{errors.fullName}</p>}
               </div>
             </div>
           )}
@@ -163,14 +163,14 @@ export default function GetStarted() {
           {step === 2 && (
             <div className="space-y-6 animate-fade-in">
               <div>
-                <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">Step 2 of {TOTAL_STEPS}</p>
-                <h2 className="text-[22px] font-bold text-[#1C2B3A] tracking-tight mb-1">Your email address</h2>
-                <p className="text-sm text-[#6B7280] mt-1">For account recovery and important updates. Optional but recommended.</p>
+                <p className="text-xs font-semibold text-[#9A9A97] uppercase tracking-widest mb-1">Step 2 of {TOTAL_STEPS}</p>
+                <h2 className="text-[22px] font-bold text-[#37352F] tracking-tight mb-1">Your email address</h2>
+                <p className="text-sm text-[#787774] mt-1">For account recovery and important updates. Optional but recommended.</p>
               </div>
               <div>
-                <label className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-widest block mb-1.5">Email Address <span className="text-[#9CA3AF] font-normal normal-case">(optional)</span></label>
+                <label className="text-[11px] font-semibold text-[#9A9A97] uppercase tracking-widest block mb-1.5">Email Address <span className="text-[#9A9A97] font-normal normal-case">(optional)</span></label>
                 <div className="relative">
-                  <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
+                  <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9A9A97]" />
                   <input
                     autoFocus
                     type="email"
@@ -178,11 +178,11 @@ export default function GetStarted() {
                     onChange={e => { setEmail(e.target.value); setErrors({}); }}
                     onKeyDown={e => e.key === 'Enter' && next()}
                     placeholder="Enter your email address"
-                    className="w-full h-12 pl-9 pr-4 bg-white border border-[#D9DCE0] rounded-xl text-sm text-[#1C2B3A] outline-none focus:border-[#3F5263] focus:ring-2 focus:ring-[#3F5263]/10 transition-all placeholder:text-[#9CA3AF]"
+                    className="w-full h-12 pl-9 pr-4 bg-white border border-[#D3D1CB] rounded-xl text-sm text-[#37352F] outline-none focus:border-[#37352F] focus:ring-2 focus:ring-[#37352F]/10 transition-all placeholder:text-[#9A9A97]"
                   />
                 </div>
-                {errors.email && <p className="text-xs text-[#C0392B] mt-1.5">{errors.email}</p>}
-                <p className="text-xs text-[#9CA3AF] mt-2">Your email will be visible in your profile and desktop app. You can update it anytime in Settings.</p>
+                {errors.email && <p className="text-xs text-[#EB5757] mt-1.5">{errors.email}</p>}
+                <p className="text-xs text-[#9A9A97] mt-2">Your email will be visible in your profile and desktop app. You can update it anytime in Settings.</p>
               </div>
             </div>
           )}
@@ -191,9 +191,9 @@ export default function GetStarted() {
           {step === 3 && (
             <div className="space-y-6">
               <div>
-                <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">Step 3 of {TOTAL_STEPS}</p>
-                <h2 className="text-[22px] font-bold text-[#1C2B3A] tracking-tight mb-1">Preferred language?</h2>
-                <p className="text-sm text-[#6B7280] mt-1">Choose the language you're most comfortable with</p>
+                <p className="text-xs font-semibold text-[#9A9A97] uppercase tracking-widest mb-1">Step 3 of {TOTAL_STEPS}</p>
+                <h2 className="text-[22px] font-bold text-[#37352F] tracking-tight mb-1">Preferred language?</h2>
+                <p className="text-sm text-[#787774] mt-1">Choose the language you're most comfortable with</p>
               </div>
               <div className="grid grid-cols-2 gap-2.5">
                 {LANGUAGES.map(l => (
@@ -202,8 +202,8 @@ export default function GetStarted() {
                     onClick={() => setLanguage(l)}
                     className={`py-3 px-4 rounded-xl text-sm font-medium text-left transition-all border ${
                       language === l
-                        ? 'bg-[#1A1A1A] text-white border-[#3F5263] shadow-sm'
-                        : 'bg-white text-[#1C2B3A] border-[#D9DCE0] hover:border-[#3F5263] hover:bg-[#F5F4EF]'
+                        ? 'bg-[#1A1A1A] text-white border-[#37352F] shadow-sm'
+                        : 'bg-white text-[#37352F] border-[#D3D1CB] hover:border-[#37352F] hover:bg-[#F7F7F5]'
                     }`}
                   >
                     {l}
@@ -218,9 +218,9 @@ export default function GetStarted() {
           {step === 4 && (
             <div className="space-y-6">
               <div>
-                <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">Step 3 of {TOTAL_STEPS}</p>
-                <h2 className="text-[22px] font-bold text-[#1C2B3A] tracking-tight mb-1">What's your role?</h2>
-                <p className="text-sm text-[#6B7280] mt-1">Help us customise your experience</p>
+                <p className="text-xs font-semibold text-[#9A9A97] uppercase tracking-widest mb-1">Step 3 of {TOTAL_STEPS}</p>
+                <h2 className="text-[22px] font-bold text-[#37352F] tracking-tight mb-1">What's your role?</h2>
+                <p className="text-sm text-[#787774] mt-1">Help us customise your experience</p>
               </div>
               <div className="space-y-3">
                 {ROLES.map(r => (
@@ -229,14 +229,14 @@ export default function GetStarted() {
                     onClick={() => { setRole(r.id); setErrors({}); }}
                     className={`w-full flex items-center gap-4 p-4 rounded-xl text-left transition-all border ${
                       role === r.id
-                        ? 'bg-[#F5F4EF] border-[#3F5263] ring-1 ring-[#3F5263]'
-                        : 'bg-white border-[#D9DCE0] hover:border-[#3F5263] hover:bg-[#F9F9F7]'
+                        ? 'bg-[#F7F7F5] border-[#37352F] ring-1 ring-[#37352F]'
+                        : 'bg-white border-[#D3D1CB] hover:border-[#37352F] hover:bg-[#F9F9F7]'
                     }`}
                   >
                     <span className="text-2xl flex-shrink-0">{r.icon}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-[#1C2B3A]">{r.label}</p>
-                      <p className="text-xs text-[#6B7280] mt-0.5">{r.desc}</p>
+                      <p className="text-sm font-semibold text-[#37352F]">{r.label}</p>
+                      <p className="text-xs text-[#787774] mt-0.5">{r.desc}</p>
                     </div>
                     {role === r.id && (
                       <div className="w-5 h-5 rounded-full bg-[#1A1A1A] flex items-center justify-center flex-shrink-0">
@@ -245,7 +245,7 @@ export default function GetStarted() {
                     )}
                   </button>
                 ))}
-                {errors.role && <p className="text-xs text-[#C0392B]">{errors.role}</p>}
+                {errors.role && <p className="text-xs text-[#EB5757]">{errors.role}</p>}
               </div>
             </div>
           )}
@@ -254,14 +254,14 @@ export default function GetStarted() {
           {step === 5 && (
             <div className="space-y-6">
               <div>
-                <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">Step 5 of {TOTAL_STEPS}</p>
-                <h2 className="text-[22px] font-bold text-[#1C2B3A] tracking-tight mb-1">Almost there!</h2>
-                <p className="text-sm text-[#6B7280] mt-1">Review and accept to start using TallyDekho</p>
+                <p className="text-xs font-semibold text-[#9A9A97] uppercase tracking-widest mb-1">Step 5 of {TOTAL_STEPS}</p>
+                <h2 className="text-[22px] font-bold text-[#37352F] tracking-tight mb-1">Almost there!</h2>
+                <p className="text-sm text-[#787774] mt-1">Review and accept to start using TallyDekho</p>
               </div>
 
               {/* Summary card */}
-              <div className="bg-[#F5F4EF] rounded-xl p-4 space-y-3 border border-[#E9E8E3]">
-                <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-widest">Your Setup</p>
+              <div className="bg-[#F7F7F5] rounded-xl p-4 space-y-3 border border-[#E9E9E7]">
+                <p className="text-xs font-semibold text-[#9A9A97] uppercase tracking-widest">Your Setup</p>
                 {[
                   { label: 'Name', value: fullName },
                   { label: 'Email', value: email || 'Not provided' },
@@ -269,8 +269,8 @@ export default function GetStarted() {
                   { label: 'Role', value: ROLES.find(r => r.id === role)?.label || 'Not set' },
                 ].map(({ label, value }) => (
                   <div key={label} className="flex justify-between items-center">
-                    <span className="text-xs text-[#6B7280]">{label}</span>
-                    <span className="text-sm font-medium text-[#1C2B3A]">{value}</span>
+                    <span className="text-xs text-[#787774]">{label}</span>
+                    <span className="text-sm font-medium text-[#37352F]">{value}</span>
                   </div>
                 ))}
               </div>
@@ -283,7 +283,7 @@ export default function GetStarted() {
                   '✅ Data entry from web, mobile & desktop',
                   '✅ Your data never leaves your Tally',
                 ].map(f => (
-                  <p key={f} className="text-sm text-[#6B7280]">{f}</p>
+                  <p key={f} className="text-sm text-[#787774]">{f}</p>
                 ))}
               </div>
 
@@ -293,19 +293,19 @@ export default function GetStarted() {
                   <div
                     onClick={() => { setAgreed(p => !p); setErrors({}); }}
                     className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${
-                      agreed ? 'bg-[#1A1A1A] border-[#3F5263]' : 'bg-white border-[#D9DCE0]'
+                      agreed ? 'bg-[#1A1A1A] border-[#37352F]' : 'bg-white border-[#D3D1CB]'
                     }`}
                   >
                     {agreed && <Check size={11} className="text-white" />}
                   </div>
-                  <span className="text-xs text-[#6B7280] leading-relaxed">
+                  <span className="text-xs text-[#787774] leading-relaxed">
                     I agree to the{' '}
-                    <span onClick={() => setShowTerms(true)} className="text-[#3F5263] cursor-pointer hover:underline">Terms of Service</span>
+                    <span onClick={() => setShowTerms(true)} className="text-[#37352F] cursor-pointer hover:underline">Terms of Service</span>
                     {' '}and{' '}
-                    <span onClick={() => setShowPrivacy(true)} className="text-[#3F5263] cursor-pointer hover:underline">Privacy Policy</span>
+                    <span onClick={() => setShowPrivacy(true)} className="text-[#37352F] cursor-pointer hover:underline">Privacy Policy</span>
                   </span>
                 </label>
-                {errors.agreed && <p className="text-xs text-[#C0392B] mt-1.5">{errors.agreed}</p>}
+                {errors.agreed && <p className="text-xs text-[#EB5757] mt-1.5">{errors.agreed}</p>}
               </div>
             </div>
           )}
@@ -315,7 +315,7 @@ export default function GetStarted() {
             {step > 1 && (
               <button
                 onClick={back}
-                className="flex items-center gap-2 px-5 h-11 rounded-xl text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F5F4EF] tracking-tight transition-colors"
+                className="flex items-center gap-2 px-5 h-11 rounded-xl text-sm font-medium border border-[#D3D1CB] text-[#787774] hover:bg-[#F7F7F5] tracking-tight transition-colors"
               >
                 <ArrowLeft size={14} /> Back
               </button>
@@ -337,7 +337,7 @@ export default function GetStarted() {
           {/* Skip for returning users */}
           {step === 1 && user?.name && (
             <p className="text-center mt-4">
-              <button onClick={() => navigate('/')} className="text-xs text-[#9CA3AF] hover:text-[#6B7280] transition-colors">
+              <button onClick={() => navigate('/')} className="text-xs text-[#9A9A97] hover:text-[#787774] transition-colors">
                 Skip setup →
               </button>
             </p>
@@ -349,14 +349,14 @@ export default function GetStarted() {
       {showTerms && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowTerms(false)}>
           <div className="bg-white rounded-2xl max-w-lg w-full max-h-[70vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
-            <h3 className="text-lg font-bold text-[#1C2B3A] mb-4">Terms of Service</h3>
-            <div className="text-sm text-[#6B7280] space-y-3">
+            <h3 className="text-lg font-bold text-[#37352F] mb-4">Terms of Service</h3>
+            <div className="text-sm text-[#787774] space-y-3">
               <p>By using TallyDekho, you agree to the following terms:</p>
-              <p><strong className="text-[#1C2B3A]">1. Data Ownership:</strong> Your Tally data remains on your systems. TallyDekho only syncs data for display and entry purposes.</p>
-              <p><strong className="text-[#1C2B3A]">2. Usage:</strong> TallyDekho is for legitimate business accounting purposes only.</p>
-              <p><strong className="text-[#1C2B3A]">3. Account Security:</strong> You are responsible for maintaining the security of your account credentials.</p>
-              <p><strong className="text-[#1C2B3A]">4. Service Availability:</strong> We strive for 99.9% uptime but cannot guarantee uninterrupted service.</p>
-              <p><strong className="text-[#1C2B3A]">5. Updates:</strong> We may update these terms with notice to users.</p>
+              <p><strong className="text-[#37352F]">1. Data Ownership:</strong> Your Tally data remains on your systems. TallyDekho only syncs data for display and entry purposes.</p>
+              <p><strong className="text-[#37352F]">2. Usage:</strong> TallyDekho is for legitimate business accounting purposes only.</p>
+              <p><strong className="text-[#37352F]">3. Account Security:</strong> You are responsible for maintaining the security of your account credentials.</p>
+              <p><strong className="text-[#37352F]">4. Service Availability:</strong> We strive for 99.9% uptime but cannot guarantee uninterrupted service.</p>
+              <p><strong className="text-[#37352F]">5. Updates:</strong> We may update these terms with notice to users.</p>
             </div>
             <button onClick={() => setShowTerms(false)} className="mt-6 w-full py-2.5 bg-[#1A1A1A] text-white rounded-xl text-sm font-semibold">Got it</button>
           </div>
@@ -367,14 +367,14 @@ export default function GetStarted() {
       {showPrivacy && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowPrivacy(false)}>
           <div className="bg-white rounded-2xl max-w-lg w-full max-h-[70vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
-            <h3 className="text-lg font-bold text-[#1C2B3A] mb-4">Privacy Policy</h3>
-            <div className="text-sm text-[#6B7280] space-y-3">
+            <h3 className="text-lg font-bold text-[#37352F] mb-4">Privacy Policy</h3>
+            <div className="text-sm text-[#787774] space-y-3">
               <p>TallyDekho respects your privacy and is committed to protecting your data.</p>
-              <p><strong className="text-[#1C2B3A]">Data We Collect:</strong> Mobile number (for authentication), name, language preference, and Tally data you sync.</p>
-              <p><strong className="text-[#1C2B3A]">How We Use It:</strong> To provide the TallyDekho service — syncing, displaying, and allowing data entry for your Tally companies.</p>
-              <p><strong className="text-[#1C2B3A]">Data Storage:</strong> Data is stored securely on encrypted servers. Your Tally data is never shared with third parties.</p>
-              <p><strong className="text-[#1C2B3A]">Data Deletion:</strong> You can request deletion of your account and all associated data at any time.</p>
-              <p><strong className="text-[#1C2B3A]">Contact:</strong> privacy@tallydekho.com</p>
+              <p><strong className="text-[#37352F]">Data We Collect:</strong> Mobile number (for authentication), name, language preference, and Tally data you sync.</p>
+              <p><strong className="text-[#37352F]">How We Use It:</strong> To provide the TallyDekho service — syncing, displaying, and allowing data entry for your Tally companies.</p>
+              <p><strong className="text-[#37352F]">Data Storage:</strong> Data is stored securely on encrypted servers. Your Tally data is never shared with third parties.</p>
+              <p><strong className="text-[#37352F]">Data Deletion:</strong> You can request deletion of your account and all associated data at any time.</p>
+              <p><strong className="text-[#37352F]">Contact:</strong> privacy@tallydekho.com</p>
             </div>
             <button onClick={() => setShowPrivacy(false)} className="mt-6 w-full py-2.5 bg-[#1A1A1A] text-white rounded-xl text-sm font-semibold">Got it</button>
           </div>

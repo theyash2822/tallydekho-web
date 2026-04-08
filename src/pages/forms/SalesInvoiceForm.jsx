@@ -157,15 +157,15 @@ export default function SalesInvoiceForm({ onClose }) {
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
         <div className={`w-16 h-16 rounded-full flex items-center justify-center border ${
-          isQueued ? 'bg-amber-50 border-amber-200' : 'bg-[#E8F5ED] border-[#A8D5BC]'
+          isQueued ? 'bg-amber-50 border-amber-200' : 'bg-[#EDF3EC] border-[#B7D4B2]'
         }`}>
-          <CheckCircle size={32} className={isQueued ? 'text-amber-500' : 'text-[#2D7D46]'} />
+          <CheckCircle size={32} className={isQueued ? 'text-amber-500' : 'text-[#0F7B6C]'} />
         </div>
-        <p className="text-base font-semibold text-[#1C2B3A]">
+        <p className="text-base font-semibold text-[#37352F]">
           {isQueued ? 'Entry Saved — Waiting for Desktop' : isOptional ? 'Optional Entry Saved!' : 'Sales Invoice Created in Tally!'}
         </p>
         {createdVoucherNumber ? (
-          <p className="text-sm font-mono font-bold text-[#3F5263] bg-[#ECEEEF] px-3 py-1 rounded-lg">
+          <p className="text-sm font-mono font-bold text-[#37352F] bg-[#EFEFEF] px-3 py-1 rounded-lg">
             {createdVoucherNumber}
           </p>
         ) : isQueued ? (
@@ -173,8 +173,8 @@ export default function SalesInvoiceForm({ onClose }) {
             Desktop app is offline. Entry is queued and will push to Tally automatically when desktop connects.
           </p>
         ) : null}
-        <p className="text-sm text-[#6B7280]">{selectedCompany?.name} · ₹{total.toLocaleString('en-IN')}</p>
-        <p className="text-xs text-[#9CA3AF]">
+        <p className="text-sm text-[#787774]">{selectedCompany?.name} · ₹{total.toLocaleString('en-IN')}</p>
+        <p className="text-xs text-[#9A9A97]">
           {isQueued ? 'Check Audit Trail → My Entries to retry manually' : isOptional ? 'Saved as optional entry — will not affect books until approved' : 'Entry posted to Tally books'}
         </p>
         <div className="flex gap-3 mt-2 flex-wrap justify-center">
@@ -185,11 +185,11 @@ export default function SalesInvoiceForm({ onClose }) {
             </button>
           )}
           <button onClick={() => { setSubmitted(false); setPartyLedger(''); setItems([]); setNarration(''); setReference(''); setCreatedVoucherNumber(''); }}
-            className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]">
+            className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D3D1CB] text-[#787774] hover:bg-[#F7F7F5]">
             Create Another
           </button>
           <button onClick={onClose}
-            className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]">
+            className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D3D1CB] text-[#787774] hover:bg-[#F7F7F5]">
             Close
           </button>
         </div>
@@ -200,22 +200,22 @@ export default function SalesInvoiceForm({ onClose }) {
   return (
     <div className="space-y-5">
       {/* Company + Optional toggle */}
-      <div className="flex items-center justify-between p-3 bg-[#F4F5F6] rounded-xl border border-[#D9DCE0]">
+      <div className="flex items-center justify-between p-3 bg-[#F7F7F5] rounded-xl border border-[#D3D1CB]">
         <div>
-          <p className="text-xs text-[#9CA3AF]">Company</p>
-          <p className="text-sm font-semibold text-[#1C2B3A]">{selectedCompany?.name || 'No company selected'}</p>
+          <p className="text-xs text-[#9A9A97]">Company</p>
+          <p className="text-sm font-semibold text-[#37352F]">{selectedCompany?.name || 'No company selected'}</p>
         </div>
         <button
           onClick={() => setIsOptional(p => !p)}
           className={`px-3 py-1.5 text-xs rounded-lg border font-semibold transition-colors ${
-            isOptional ? 'bg-[#FFFBEB] text-[#B45309] border-[#FDE68A]' : 'bg-[#F0FDF4] text-[#2D7D46] border-[#BBF7D0]'
+            isOptional ? 'bg-[#FFFBEB] text-[#D9730D] border-[#FDE68A]' : 'bg-[#EDF3EC] text-[#0F7B6C] border-[#BBF7D0]'
           }`}
         >
           {isOptional ? 'Optional Entry' : 'Regular Entry'}
         </button>
       </div>
       {isOptional && (
-        <p className="text-xs text-[#B45309] bg-[#FFFBEB] border border-[#FDE68A] rounded-lg px-3 py-2">
+        <p className="text-xs text-[#D9730D] bg-[#FFFBEB] border border-[#FDE68A] rounded-lg px-3 py-2">
           Optional entry — saved in Tally but does NOT affect books until you convert it to regular.
         </p>
       )}
@@ -260,7 +260,7 @@ export default function SalesInvoiceForm({ onClose }) {
         className="notion-input w-full text-sm resize-none" />
 
       {error && (
-        <div className="flex items-center gap-2 p-3 bg-[#FEF2F2] border border-[#FECACA] rounded-xl text-sm text-[#C0392B]">
+        <div className="flex items-center gap-2 p-3 bg-[#FEF2F2] border border-[#FECACA] rounded-xl text-sm text-[#EB5757]">
           <AlertCircle size={14} className="flex-shrink-0" />
           {error}
         </div>

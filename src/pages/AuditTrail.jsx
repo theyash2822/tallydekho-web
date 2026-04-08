@@ -108,7 +108,7 @@ export default function AuditTrail() {
           <button
             onClick={load}
             disabled={loading}
-            className="flex items-center gap-1.5 text-xs text-[#6B7280] hover:text-[#1C2B3A] transition-colors disabled:opacity-40"
+            className="flex items-center gap-1.5 text-xs text-[#787774] hover:text-[#37352F] transition-colors disabled:opacity-40"
           >
             <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
             {loading ? 'Loading…' : 'Refresh'}
@@ -129,13 +129,13 @@ export default function AuditTrail() {
       {stats && (
         <div className="grid grid-cols-4 gap-3">
           {[
-            { label: 'Total Entries', value: stats.total, color: '#3F5263' },
-            { label: 'In Tally', value: stats.success_count, color: '#2D7D46' },
-            { label: 'Pending / Offline', value: parseInt(stats.offline_count||0) + parseInt(stats.pending_count||0), color: '#D97706' },
-            { label: 'Failed', value: stats.failed_count, color: '#DC2626' },
+            { label: 'Total Entries', value: stats.total, color: '#37352F' },
+            { label: 'In Tally', value: stats.success_count, color: '#0F7B6C' },
+            { label: 'Pending / Offline', value: parseInt(stats.offline_count||0) + parseInt(stats.pending_count||0), color: '#D9730D' },
+            { label: 'Failed', value: stats.failed_count, color: '#EB5757' },
           ].map(s => (
-            <div key={s.label} className="bg-white border border-[#D9DCE0] rounded-xl px-4 py-3">
-              <p className="text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-widest mb-1">{s.label}</p>
+            <div key={s.label} className="bg-white border border-[#D3D1CB] rounded-xl px-4 py-3">
+              <p className="text-[10px] font-semibold text-[#9A9A97] uppercase tracking-widest mb-1">{s.label}</p>
               <p className="text-2xl font-bold" style={{ color: s.color }}>{s.value || 0}</p>
             </div>
           ))}
@@ -155,8 +155,8 @@ export default function AuditTrail() {
             onClick={() => setFilter(f.key)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
               filter === f.key
-                ? 'bg-[#1A1A1A] text-white border-[#3F5263]'
-                : 'bg-white text-[#6B7280] border-[#D9DCE0] hover:border-[#3F5263] hover:text-[#3F5263]'
+                ? 'bg-[#1A1A1A] text-white border-[#37352F]'
+                : 'bg-white text-[#787774] border-[#D3D1CB] hover:border-[#37352F] hover:text-[#37352F]'
             }`}
           >
             {f.label}
@@ -168,15 +168,15 @@ export default function AuditTrail() {
       {loading ? (
         <div className="space-y-2">
           {[1,2,3,4,5].map(i => (
-            <div key={i} className="h-16 bg-[#F4F5F6] rounded-xl animate-pulse" />
+            <div key={i} className="h-16 bg-[#F7F7F5] rounded-xl animate-pulse" />
           ))}
         </div>
       ) : entries.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 gap-3">
-          <div className="w-12 h-12 rounded-full bg-[#F4F5F6] flex items-center justify-center">
-            <CheckCircle2 size={20} className="text-[#9CA3AF]" />
+          <div className="w-12 h-12 rounded-full bg-[#F7F7F5] flex items-center justify-center">
+            <CheckCircle2 size={20} className="text-[#9A9A97]" />
           </div>
-          <p className="text-sm text-[#9CA3AF]">No entries yet — create an invoice or voucher to see it here</p>
+          <p className="text-sm text-[#9A9A97]">No entries yet — create an invoice or voucher to see it here</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -185,7 +185,7 @@ export default function AuditTrail() {
             const isExp = expanded[entry.id];
             const amount = fmtAmt(entry.amount);
             return (
-              <div key={entry.id} className="bg-white border border-[#D9DCE0] rounded-xl overflow-hidden hover:border-[#B0B8C1] transition-colors">
+              <div key={entry.id} className="bg-white border border-[#D3D1CB] rounded-xl overflow-hidden hover:border-[#B0B8C1] transition-colors">
                 <div className="flex items-center gap-3 px-4 py-3">
                   {/* Status dot */}
                   <div className={`w-2 h-2 rounded-full flex-shrink-0 ${cfg.dot}`} />
@@ -193,18 +193,18 @@ export default function AuditTrail() {
                   {/* Type + label */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs font-semibold text-[#1C2B3A]">
+                      <span className="text-xs font-semibold text-[#37352F]">
                         {TYPE_LABELS[entry.entry_type] || entry.entry_type}
                       </span>
-                      <span className="text-xs text-[#6B7280] truncate max-w-[200px]">{entry.entry_label}</span>
-                      {amount && <span className="text-xs font-semibold text-[#3F5263]">{amount}</span>}
+                      <span className="text-xs text-[#787774] truncate max-w-[200px]">{entry.entry_label}</span>
+                      {amount && <span className="text-xs font-semibold text-[#37352F]">{amount}</span>}
                       {entry.tally_voucher_number && (
                         <span className="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-semibold">
                           #{entry.tally_voucher_number}
                         </span>
                       )}
                     </div>
-                    <p className="text-[10px] text-[#9CA3AF] mt-0.5">{fmtTime(entry.created_at)} · {entry.source === 'mobile' ? '📱 Mobile' : '🌐 Web'}</p>
+                    <p className="text-[10px] text-[#9A9A97] mt-0.5">{fmtTime(entry.created_at)} · {entry.source === 'mobile' ? '📱 Mobile' : '🌐 Web'}</p>
                   </div>
 
                   {/* Status badge */}
@@ -227,7 +227,7 @@ export default function AuditTrail() {
                   {/* Expand */}
                   <button
                     onClick={() => setExpanded(e => ({ ...e, [entry.id]: !isExp }))}
-                    className="flex-shrink-0 w-6 h-6 flex items-center justify-center text-[#9CA3AF] hover:text-[#3F5263]"
+                    className="flex-shrink-0 w-6 h-6 flex items-center justify-center text-[#9A9A97] hover:text-[#37352F]"
                   >
                     {isExp ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                   </button>
@@ -236,10 +236,10 @@ export default function AuditTrail() {
                 {/* Expanded: error + attempt info */}
                 {isExp && (
                   <div className="px-4 pb-3 border-t border-[#F0F0EE] mt-0 pt-3 space-y-1.5">
-                    <div className="flex gap-6 text-[11px] text-[#9CA3AF]">
-                      <span>Attempts: <strong className="text-[#1C2B3A]">{entry.attempt_count}</strong></span>
-                      <span>Updated: <strong className="text-[#1C2B3A]">{fmtTime(entry.updated_at)}</strong></span>
-                      {entry.tally_id && <span>Tally ID: <strong className="text-[#1C2B3A]">{entry.tally_id}</strong></span>}
+                    <div className="flex gap-6 text-[11px] text-[#9A9A97]">
+                      <span>Attempts: <strong className="text-[#37352F]">{entry.attempt_count}</strong></span>
+                      <span>Updated: <strong className="text-[#37352F]">{fmtTime(entry.updated_at)}</strong></span>
+                      {entry.tally_id && <span>Tally ID: <strong className="text-[#37352F]">{entry.tally_id}</strong></span>}
                     </div>
                     {entry.error_message && (
                       <p className="text-[11px] text-red-600 bg-red-50 rounded-lg px-3 py-2 font-mono">

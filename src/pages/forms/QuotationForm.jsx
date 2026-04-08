@@ -24,17 +24,17 @@ export default function QuotationForm({ onClose }) {
   if (submitted) {
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
-        <div className="w-16 h-16 rounded-full bg-[#F0FDF4] flex items-center justify-center border border-[#BBF7D0]">
+        <div className="w-16 h-16 rounded-full bg-[#EDF3EC] flex items-center justify-center border border-[#BBF7D0]">
           <CheckCircle size={32} className="text-emerald-500" />
         </div>
-        <p className="text-base font-semibold text-[#1C2B3A]">Quotation Created!</p>
-        <p className="text-sm text-[#6B7280]">QT-2025-0056</p>
+        <p className="text-base font-semibold text-[#37352F]">Quotation Created!</p>
+        <p className="text-sm text-[#787774]">QT-2025-0056</p>
         <div className="flex gap-3 mt-2">
-          <button className="px-4 py-2 rounded-lg text-sm font-medium text-white flex items-center gap-2" style={{ background: '#3F5263' }}>
+          <button className="px-4 py-2 rounded-lg text-sm font-medium text-white flex items-center gap-2" style={{ background: '#37352F' }}>
             Convert to Order <ArrowRight size={13} />
           </button>
-          <button className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280]">Share PDF</button>
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280]">Close</button>
+          <button className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D3D1CB] text-[#787774]">Share PDF</button>
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D3D1CB] text-[#787774]">Close</button>
         </div>
       </div>
     );

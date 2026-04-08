@@ -19,7 +19,7 @@ export default function SyncStatus() {
 
   if (syncing) {
     return (
-      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F5F4EF] border border-[#E9E8E3]">
+      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F7F7F5] border border-[#E9E9E7]">
         <RefreshCw size={11} className="animate-spin text-[#787774]" />
         <span className="text-xs font-medium text-[#787774]">Syncing…</span>
       </div>
@@ -29,17 +29,17 @@ export default function SyncStatus() {
   if (pending > 0) {
     return (
       <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#FFFBEB] border border-[#FDE68A]">
-        <Clock size={11} className="text-[#D97706]" />
-        <span className="text-xs font-medium text-[#D97706]">{pending} pending</span>
+        <Clock size={11} className="text-[#D9730D]" />
+        <span className="text-xs font-medium text-[#D9730D]">{pending} pending</span>
       </div>
     );
   }
 
   if (lastSync) {
     return (
-      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F0FDF4] border border-[#BBF7D0]">
-        <CheckCircle size={11} className="text-[#15803D]" />
-        <span className="text-xs font-medium text-[#15803D]">Synced</span>
+      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#EDF3EC] border border-[#BBF7D0]">
+        <CheckCircle size={11} className="text-[#0F7B6C]" />
+        <span className="text-xs font-medium text-[#0F7B6C]">Synced</span>
       </div>
     );
   }

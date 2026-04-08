@@ -14,13 +14,13 @@ const fmtL = n => {
   return fmt(n);
 };
 
-const COLORS = ['#3F5263','#0D9488','#D97706','#E5484D','#798692','#2563EB','#7C3AED','#059669','#DC2626','#9CA3AF'];
+const COLORS = ['#37352F','#0D9488','#D9730D','#E5484D','#798692','#2383E2','#7C3AED','#059669','#EB5757','#9A9A97'];
 
 const cols = [
-  { key: 'ref',      label: 'Reference', render: v => <span className="font-mono text-xs text-[#3F5263]">{v || '—'}</span> },
+  { key: 'ref',      label: 'Reference', render: v => <span className="font-mono text-xs text-[#37352F]">{v || '—'}</span> },
   { key: 'vendor',   label: 'Party' },
-  { key: 'category', label: 'Category', render: v => <span className="text-xs text-[#6B7280]">{v || '—'}</span> },
-  { key: 'date',     label: 'Date',     render: v => <span className="text-[#6B7280]">{v || '—'}</span> },
+  { key: 'category', label: 'Category', render: v => <span className="text-xs text-[#787774]">{v || '—'}</span> },
+  { key: 'date',     label: 'Date',     render: v => <span className="text-[#787774]">{v || '—'}</span> },
   { key: 'amount',   label: 'Amount',   render: v => <span className="font-semibold">{fmt(v)}</span> },
   { key: 'voucher_type', label: 'Type', render: v => <Badge label={v} variant="gray" /> },
 ];
@@ -78,43 +78,43 @@ export default function ExpensesModule() {
           <h1 className="page-title">Expenses</h1>
           <p className="page-subtitle">{selectedCompany?.name || '—'} · {fyLabel}</p>
         </div>
-        <button onClick={load} disabled={loading} className="flex items-center gap-1.5 text-xs text-[#6B7280] hover:text-[#1C2B3A] transition-colors disabled:opacity-40">
+        <button onClick={load} disabled={loading} className="flex items-center gap-1.5 text-xs text-[#787774] hover:text-[#37352F] transition-colors disabled:opacity-40">
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        <KPICard title="Total Expenses" value={loading ? '—' : fmtL(summary.totalExpenses)} icon={Receipt} accent="#C0392B" />
-        <KPICard title="Transactions"   value={loading ? '—' : summary.count || 0}           icon={Receipt} accent="#3F5263" />
-        <KPICard title="Categories"     value={loading ? '—' : categories.length || 0}       icon={Receipt} accent="#D97706" />
+        <KPICard title="Total Expenses" value={loading ? '—' : fmtL(summary.totalExpenses)} icon={Receipt} accent="#EB5757" />
+        <KPICard title="Transactions"   value={loading ? '—' : summary.count || 0}           icon={Receipt} accent="#37352F" />
+        <KPICard title="Categories"     value={loading ? '—' : categories.length || 0}       icon={Receipt} accent="#D9730D" />
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-2 bg-white border border-[#D9DCE0] rounded-xl p-5">
+        <div className="col-span-2 bg-white border border-[#D3D1CB] rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <p className="text-sm font-semibold text-[#1C2B3A]">Expense Transactions</p>
+            <p className="text-sm font-semibold text-[#37352F]">Expense Transactions</p>
             <div className="relative">
-              <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
+              <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#9A9A97]" />
               <input value={search} onChange={e => setSearch(e.target.value)}
                 placeholder="Search..."
-                className="pl-7 pr-3 py-1.5 text-xs bg-[#F4F5F6] border border-[#ECEEEF] rounded-lg outline-none focus:border-[#3F5263]" />
+                className="pl-7 pr-3 py-1.5 text-xs bg-[#F7F7F5] border border-[#EFEFEF] rounded-lg outline-none focus:border-[#37352F]" />
             </div>
           </div>
           {loading ? (
-            <div className="h-40 flex items-center justify-center text-xs text-[#9CA3AF]">Loading…</div>
+            <div className="h-40 flex items-center justify-center text-xs text-[#9A9A97]">Loading…</div>
           ) : filtered.length === 0 ? (
-            <div className="h-40 flex items-center justify-center text-xs text-[#9CA3AF]">{isPaired ? 'No expense data for this period' : 'Pair desktop app to see expenses'}</div>
+            <div className="h-40 flex items-center justify-center text-xs text-[#9A9A97]">{isPaired ? 'No expense data for this period' : 'Pair desktop app to see expenses'}</div>
           ) : (
             <Table columns={cols} data={filtered} />
           )}
         </div>
 
-        <div className="bg-white border border-[#D9DCE0] rounded-xl p-5">
-          <p className="text-sm font-semibold text-[#1C2B3A] mb-4">By Category</p>
+        <div className="bg-white border border-[#D3D1CB] rounded-xl p-5">
+          <p className="text-sm font-semibold text-[#37352F] mb-4">By Category</p>
           {loading ? (
-            <div className="h-40 flex items-center justify-center text-xs text-[#9CA3AF]">Loading…</div>
+            <div className="h-40 flex items-center justify-center text-xs text-[#9A9A97]">Loading…</div>
           ) : categories.length === 0 ? (
-            <div className="h-40 flex items-center justify-center text-xs text-[#9CA3AF]">No data</div>
+            <div className="h-40 flex items-center justify-center text-xs text-[#9A9A97]">No data</div>
           ) : (
             <>
               <ResponsiveContainer width="100%" height={160}>
@@ -130,9 +130,9 @@ export default function ExpensesModule() {
                   <div key={i} className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
-                      <span className="text-[#6B7280] truncate max-w-[100px]">{c.name}</span>
+                      <span className="text-[#787774] truncate max-w-[100px]">{c.name}</span>
                     </div>
-                    <span className="font-semibold text-[#1C2B3A]">{fmtL(c.amount)}</span>
+                    <span className="font-semibold text-[#37352F]">{fmtL(c.amount)}</span>
                   </div>
                 ))}
               </div>

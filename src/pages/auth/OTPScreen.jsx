@@ -92,7 +92,7 @@ export default function OTPScreen() {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#F4F5F6]">
+    <div className="min-h-screen flex bg-[#F7F7F5]">
 
       {/* ── Left panel ──────────────────────────────────────────────────── */}
       <div className="hidden lg:flex lg:w-[44%] flex-col justify-between p-12 primary-gradient">
@@ -125,20 +125,20 @@ export default function OTPScreen() {
         <div className="w-full max-w-sm">
           <button
             onClick={() => navigate('/auth/login')}
-            className="flex items-center gap-2 text-sm text-[#6B7280] hover:text-[#1C2B3A] mb-8 transition-colors"
+            className="flex items-center gap-2 text-sm text-[#787774] hover:text-[#37352F] mb-8 transition-colors"
           >
             <ArrowLeft size={14} /> Back
           </button>
 
-          <h2 className="text-[22px] font-bold text-[#1C2B3A] mb-1 tracking-tight">Enter OTP</h2>
-          <p className="text-sm text-[#6B7280] mb-7">
+          <h2 className="text-[22px] font-bold text-[#37352F] mb-1 tracking-tight">Enter OTP</h2>
+          <p className="text-sm text-[#787774] mb-7">
             Sent via WhatsApp to{' '}
-            <span className="font-semibold text-[#1C2B3A]">{countryFlag} {countryCode} {phone}</span>
+            <span className="font-semibold text-[#37352F]">{countryFlag} {countryCode} {phone}</span>
           </p>
 
           {/* OTP input */}
           <div className="mb-6">
-            <label className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-widest block mb-2">
+            <label className="text-[11px] font-semibold text-[#9A9A97] uppercase tracking-widest block mb-2">
               4-Digit OTP
             </label>
             <input
@@ -150,12 +150,12 @@ export default function OTPScreen() {
               onChange={handleChange}
               onPaste={handlePaste}
               placeholder="· · · ·"
-              className={`w-full h-16 text-center text-4xl font-bold bg-white border-2 rounded-2xl outline-none transition-all placeholder:text-[#D9DCE0] placeholder:text-3xl ${
+              className={`w-full h-16 text-center text-4xl font-bold bg-white border-2 rounded-2xl outline-none transition-all placeholder:text-[#D3D1CB] placeholder:text-3xl ${
                 error
-                  ? 'border-[#C0392B] focus:ring-2 focus:ring-[#C0392B]/10'
+                  ? 'border-[#EB5757] focus:ring-2 focus:ring-[#EB5757]/10'
                   : otp.length === 4
-                  ? 'border-[#3F5263]'
-                  : 'border-[#D9DCE0] focus:border-[#3F5263] focus:ring-2 focus:ring-[#3F5263]/10'
+                  ? 'border-[#37352F]'
+                  : 'border-[#D3D1CB] focus:border-[#37352F] focus:ring-2 focus:ring-[#37352F]/10'
               }`}
               style={{ letterSpacing: otp ? '0.6em' : 'normal' }}
             />
@@ -165,12 +165,12 @@ export default function OTPScreen() {
                 <div
                   key={i}
                   className={`h-1 rounded-full transition-all duration-200 ${
-                    i < otp.length ? 'w-8 bg-[#1A1A1A]' : 'w-4 bg-[#ECEEEF]'
+                    i < otp.length ? 'w-8 bg-[#1A1A1A]' : 'w-4 bg-[#EFEFEF]'
                   }`}
                 />
               ))}
             </div>
-            {error && <p className="text-xs text-[#C0392B] mt-2 text-center">{error}</p>}
+            {error && <p className="text-xs text-[#EB5757] mt-2 text-center">{error}</p>}
           </div>
 
           <button
@@ -189,21 +189,21 @@ export default function OTPScreen() {
           {/* Resend */}
           <div className="text-center mt-5">
             {resendDisabled ? (
-              <p className="text-sm text-[#9CA3AF]">
-                Resend in <span className="font-semibold text-[#3F5263]">{timer}s</span>
+              <p className="text-sm text-[#9A9A97]">
+                Resend in <span className="font-semibold text-[#37352F]">{timer}s</span>
               </p>
             ) : (
               <button
                 onClick={handleResend}
                 disabled={resending}
-                className="text-sm font-semibold text-[#3F5263] hover:underline underline-offset-2 disabled:opacity-50 transition-colors"
+                className="text-sm font-semibold text-[#37352F] hover:underline underline-offset-2 disabled:opacity-50 transition-colors"
               >
                 {resending ? 'Sending...' : '↩ Resend OTP'}
               </button>
             )}
           </div>
 
-          <p className="text-xs text-[#9CA3AF] text-center mt-4">
+          <p className="text-xs text-[#9A9A97] text-center mt-4">
             Didn't receive it? Check your WhatsApp or resend after {timer > 0 ? `${timer}s` : 'now'}
           </p>
         </div>

@@ -15,9 +15,9 @@ const TABS = ['Items List', 'Stock Alerts'];
 const statusVariant = { Normal: 'green', 'Low Stock': 'yellow', 'Out of Stock': 'red' };
 
 const itemCols = [
-  { key: 'name',      label: 'Item Name',  render: v => <span className="font-medium text-[#1C2B3A]">{v}</span> },
-  { key: 'category',  label: 'Category',   render: v => <span className="text-xs text-[#6B7280]">{v}</span> },
-  { key: 'qty',       label: 'Stock Qty',  render: (v, r) => <span className={`font-semibold ${v > 0 ? 'text-[#1C2B3A]' : 'text-[#C0392B]'}`}>{v} {r.unit}</span> },
+  { key: 'name',      label: 'Item Name',  render: v => <span className="font-medium text-[#37352F]">{v}</span> },
+  { key: 'category',  label: 'Category',   render: v => <span className="text-xs text-[#787774]">{v}</span> },
+  { key: 'qty',       label: 'Stock Qty',  render: (v, r) => <span className={`font-semibold ${v > 0 ? 'text-[#37352F]' : 'text-[#EB5757]'}`}>{v} {r.unit}</span> },
   { key: 'rate',      label: 'Rate',       render: v => fmt(v) },
   { key: 'value',     label: 'Value',      render: v => <span className="font-semibold">{fmt(v)}</span> },
   { key: 'status',    label: 'Status',     render: v => <Badge label={v} variant={statusVariant[v] || 'gray'} /> },
@@ -136,61 +136,61 @@ export default function InventoryModule() {
           <h1 className="page-title">Inventory</h1>
           <p className="page-subtitle">{selectedCompany?.name || 'No company'} · {loading ? 'Loading...' : `${total} items`}</p>
         </div>
-        <button onClick={() => loadStocks(page, search, categoryFilter)} className="flex items-center gap-1.5 text-xs text-[#3F5263] font-medium hover:text-[#526373]">
+        <button onClick={() => loadStocks(page, search, categoryFilter)} className="flex items-center gap-1.5 text-xs text-[#37352F] font-medium hover:text-[#787774]">
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
       </div>
 
       {/* KPIs from real data */}
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Items"       value={total}           icon={Package}       accent="#3F5263" />
-        <KPICard title="Total Value"       value={fmt(totalValue)} icon={Package}       accent="#526373" />
-        <KPICard title="Low Stock"         value={lowStock}        icon={AlertTriangle} accent="#B45309" />
-        <KPICard title="Out of Stock"      value={outOfStock}      icon={AlertTriangle} accent="#C0392B" />
+        <KPICard title="Total Items"       value={total}           icon={Package}       accent="#37352F" />
+        <KPICard title="Total Value"       value={fmt(totalValue)} icon={Package}       accent="#37352F" />
+        <KPICard title="Low Stock"         value={lowStock}        icon={AlertTriangle} accent="#D9730D" />
+        <KPICard title="Out of Stock"      value={outOfStock}      icon={AlertTriangle} accent="#EB5757" />
       </div>
 
       {/* Chart + Alerts */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-2 bg-white border border-[#D9DCE0] rounded-xl p-5">
-          <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Value by Category</p>
-          <p className="text-xs text-[#9CA3AF] mb-4">₹K — top categories</p>
+        <div className="col-span-2 bg-white border border-[#D3D1CB] rounded-xl p-5">
+          <p className="text-sm font-semibold text-[#37352F] mb-1">Value by Category</p>
+          <p className="text-xs text-[#9A9A97] mb-4">₹K — top categories</p>
           {categoryValues.length > 0 ? (
             <ResponsiveContainer width="100%" height={170}>
               <BarChart data={categoryValues} barSize={28} layout="vertical" margin={{ left: 80 }}>
-                <CartesianGrid strokeDasharray="2 4" stroke="#ECEEEF" horizontal={false} />
-                <XAxis type="number" tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} tickFormatter={v => v + 'K'} />
-                <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#6B7280' }} axisLine={false} tickLine={false} width={80} />
-                <Tooltip formatter={v => ['₹' + v + 'K']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #D9DCE0' }} />
-                <Bar dataKey="value" fill="#3F5263" radius={[0, 4, 4, 0]} />
+                <CartesianGrid strokeDasharray="2 4" stroke="#EFEFEF" horizontal={false} />
+                <XAxis type="number" tick={{ fontSize: 10, fill: '#9A9A97' }} axisLine={false} tickLine={false} tickFormatter={v => v + 'K'} />
+                <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#787774' }} axisLine={false} tickLine={false} width={80} />
+                <Tooltip formatter={v => ['₹' + v + 'K']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #D3D1CB' }} />
+                <Bar dataKey="value" fill="#37352F" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-40 flex items-center justify-center text-[#9CA3AF] text-sm">Sync to see stock data</div>
+            <div className="h-40 flex items-center justify-center text-[#9A9A97] text-sm">Sync to see stock data</div>
           )}
         </div>
 
         {/* Top 5 Stock Alerts */}
-        <div className="bg-white border border-[#D9DCE0] rounded-xl p-5">
-          <p className="text-sm font-semibold text-[#1C2B3A] mb-4">Stock Alerts <span className="text-xs font-normal text-[#9CA3AF]">top 5</span></p>
+        <div className="bg-white border border-[#D3D1CB] rounded-xl p-5">
+          <p className="text-sm font-semibold text-[#37352F] mb-4">Stock Alerts <span className="text-xs font-normal text-[#9A9A97]">top 5</span></p>
           {alerts.length === 0 ? (
             <div className="py-6 text-center">
-              <Package size={24} className="mx-auto mb-2 text-[#D9DCE0]" />
-              <p className="text-xs text-[#9CA3AF]">All items in stock</p>
+              <Package size={24} className="mx-auto mb-2 text-[#D3D1CB]" />
+              <p className="text-xs text-[#9A9A97]">All items in stock</p>
             </div>
           ) : (
             <div className="space-y-2">
               {alerts.map(s => (
                 <div key={s.id} className={`px-3 py-2.5 rounded-xl text-xs font-medium border cursor-pointer hover:opacity-80 ${
                   s.status === 'Out of Stock'
-                    ? 'bg-[#FDECEA] border-[#EDBBB8] text-[#C0392B]'
-                    : 'bg-[#FEF6E4] border-[#F0D49A] text-[#B45309]'
+                    ? 'bg-[#FDECEA] border-[#EDBBB8] text-[#EB5757]'
+                    : 'bg-[#FEF6E4] border-[#F0D49A] text-[#D9730D]'
                 }`} onClick={() => setDrawer(s)}>
                   <p className="font-semibold truncate">{s.name}</p>
                   <p className="opacity-75 mt-0.5">{s.status} · {s.qty} {s.unit}</p>
                 </div>
               ))}
               {stockItems.filter(s => s.status !== 'Normal').length > 5 && (
-                <p className="text-xs text-[#9CA3AF] text-center pt-1" onClick={() => setTab(1)} style={{ cursor: 'pointer' }}>
+                <p className="text-xs text-[#9A9A97] text-center pt-1" onClick={() => setTab(1)} style={{ cursor: 'pointer' }}>
                   +{stockItems.filter(s => s.status !== 'Normal').length - 5} more → View All Alerts
                 </p>
               )}
@@ -200,12 +200,12 @@ export default function InventoryModule() {
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-[#D9DCE0] rounded-xl overflow-hidden">
-        <div className="flex border-b border-[#ECEEEF] px-1 pt-1">
+      <div className="bg-white border border-[#D3D1CB] rounded-xl overflow-hidden">
+        <div className="flex border-b border-[#EFEFEF] px-1 pt-1">
           {TABS.map((t, i) => (
             <button key={i} onClick={() => setTab(i)}
               className={`px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors rounded-t-lg mr-1 ${
-                tab === i ? 'text-[#3F5263] bg-[#ECEEEF] font-semibold' : 'text-[#6B7280] hover:text-[#1C2B3A] hover:bg-[#F4F5F6]'
+                tab === i ? 'text-[#37352F] bg-[#EFEFEF] font-semibold' : 'text-[#787774] hover:text-[#37352F] hover:bg-[#F7F7F5]'
               }`}>{t}
             </button>
           ))}
@@ -215,36 +215,36 @@ export default function InventoryModule() {
             <>
               <div className="flex gap-3 mb-4">
                 <div className="relative flex-1">
-                  <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
+                  <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9A9A97]" />
                   <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search item name..."
-                    className="w-full pl-8 pr-3 py-2 text-sm bg-[#F4F5F6] border border-[#ECEEEF] rounded-lg outline-none focus:border-[#3F5263] focus:bg-white transition-all placeholder:text-[#9CA3AF]" />
+                    className="w-full pl-8 pr-3 py-2 text-sm bg-[#F7F7F5] border border-[#EFEFEF] rounded-lg outline-none focus:border-[#37352F] focus:bg-white transition-all placeholder:text-[#9A9A97]" />
                 </div>
                 <select value={categoryFilter} onChange={e => { setCategoryFilter(e.target.value); }}
-                  className="py-2 px-3 text-sm bg-white border border-[#D9DCE0] rounded-lg outline-none focus:border-[#3F5263] text-[#1C2B3A]">
+                  className="py-2 px-3 text-sm bg-white border border-[#D3D1CB] rounded-lg outline-none focus:border-[#37352F] text-[#37352F]">
                   {categories.map(c => <option key={c}>{c}</option>)}
                 </select>
               </div>
 
               {loading ? (
-                <div className="space-y-2">{[...Array(5)].map((_, i) => <div key={i} className="h-10 bg-[#F4F5F6] rounded-lg animate-pulse" />)}</div>
+                <div className="space-y-2">{[...Array(5)].map((_, i) => <div key={i} className="h-10 bg-[#F7F7F5] rounded-lg animate-pulse" />)}</div>
               ) : (
                 <Table columns={itemCols} data={stockItems} onRowClick={setDrawer} />
               )}
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-[#ECEEEF]">
-                  <p className="text-xs text-[#9CA3AF]">Showing {((page-1)*pageSize)+1}–{Math.min(page*pageSize, total)} of {total}</p>
+                <div className="flex items-center justify-between mt-4 pt-4 border-t border-[#EFEFEF]">
+                  <p className="text-xs text-[#9A9A97]">Showing {((page-1)*pageSize)+1}–{Math.min(page*pageSize, total)} of {total}</p>
                   <div className="flex gap-1">
                     <button onClick={() => { const pg = page-1; setPage(pg); loadStocks(pg, search, categoryFilter); }} disabled={page === 1}
-                      className="px-3 py-1.5 text-xs border border-[#D9DCE0] rounded-lg disabled:opacity-40 hover:bg-[#F4F5F6]">← Prev</button>
+                      className="px-3 py-1.5 text-xs border border-[#D3D1CB] rounded-lg disabled:opacity-40 hover:bg-[#F7F7F5]">← Prev</button>
                     {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                       const pg = Math.max(1, Math.min(page-2, totalPages-4)) + i;
                       return <button key={pg} onClick={() => { setPage(pg); loadStocks(pg, search, categoryFilter); }}
-                        className={`w-8 h-8 text-xs rounded-lg ${pg === page ? 'bg-[#1A1A1A] text-white' : 'border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6]'}`}>{pg}</button>;
+                        className={`w-8 h-8 text-xs rounded-lg ${pg === page ? 'bg-[#1A1A1A] text-white' : 'border border-[#D3D1CB] text-[#787774] hover:bg-[#F7F7F5]'}`}>{pg}</button>;
                     })}
                     <button onClick={() => { const pg = page+1; setPage(pg); loadStocks(pg, search, categoryFilter); }} disabled={page >= totalPages}
-                      className="px-3 py-1.5 text-xs border border-[#D9DCE0] rounded-lg disabled:opacity-40 hover:bg-[#F4F5F6]">Next →</button>
+                      className="px-3 py-1.5 text-xs border border-[#D3D1CB] rounded-lg disabled:opacity-40 hover:bg-[#F7F7F5]">Next →</button>
                   </div>
                 </div>
               )}
@@ -253,11 +253,11 @@ export default function InventoryModule() {
 
           {tab === 1 && (
             <div className="space-y-2">
-              <p className="text-xs text-[#9CA3AF] mb-3">{stockItems.filter(s => s.status !== 'Normal').length} items need attention</p>
+              <p className="text-xs text-[#9A9A97] mb-3">{stockItems.filter(s => s.status !== 'Normal').length} items need attention</p>
               {stockItems.filter(s => s.status !== 'Normal').length === 0 ? (
                 <div className="py-12 text-center">
-                  <Package size={28} className="mx-auto mb-2 text-[#D9DCE0]" />
-                  <p className="text-sm text-[#9CA3AF]">All items in stock</p>
+                  <Package size={28} className="mx-auto mb-2 text-[#D3D1CB]" />
+                  <p className="text-sm text-[#9A9A97]">All items in stock</p>
                 </div>
               ) : (
                 stockItems.filter(s => s.status !== 'Normal').map(s => (
@@ -267,7 +267,7 @@ export default function InventoryModule() {
                       : 'bg-[#FEF6E4] border-[#F0D49A]'
                   }`} onClick={() => setDrawer(s)}>
                     <div>
-                      <p className={`text-sm font-semibold ${s.status === 'Out of Stock' ? 'text-[#C0392B]' : 'text-[#B45309]'}`}>{s.name}</p>
+                      <p className={`text-sm font-semibold ${s.status === 'Out of Stock' ? 'text-[#EB5757]' : 'text-[#D9730D]'}`}>{s.name}</p>
                       <p className="text-xs opacity-70 mt-0.5">{s.category} · {s.qty} {s.unit}</p>
                     </div>
                     <Badge label={s.status} variant={statusVariant[s.status]} />
@@ -284,8 +284,8 @@ export default function InventoryModule() {
           <div className="space-y-4">
             <div className="flex justify-between items-start">
               <div>
-                <p className="font-semibold text-[#1C2B3A]">{drawer.name}</p>
-                <p className="text-xs text-[#9CA3AF] mt-0.5">{drawer.category} · SKU: {drawer.sku}</p>
+                <p className="font-semibold text-[#37352F]">{drawer.name}</p>
+                <p className="text-xs text-[#9A9A97] mt-0.5">{drawer.category} · SKU: {drawer.sku}</p>
               </div>
               <Badge label={drawer.status} variant={statusVariant[drawer.status] || 'gray'} />
             </div>
@@ -298,15 +298,15 @@ export default function InventoryModule() {
                 ['Category',      drawer.category],
                 ['SKU',           drawer.sku],
               ].map(([l, v]) => (
-                <div key={l} className="p-3 bg-[#F4F5F6] rounded-xl border border-[#D9DCE0]">
-                  <p className="text-xs text-[#9CA3AF] mb-1">{l}</p>
-                  <p className="font-medium text-[#1C2B3A] text-sm">{v}</p>
+                <div key={l} className="p-3 bg-[#F7F7F5] rounded-xl border border-[#D3D1CB]">
+                  <p className="text-xs text-[#9A9A97] mb-1">{l}</p>
+                  <p className="font-medium text-[#37352F] text-sm">{v}</p>
                 </div>
               ))}
             </div>
             <div className="flex gap-2">
               <button className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">Stock Transfer</button>
-              <button className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-[#D9DCE0] text-[#6B7280] hover:bg-[#F4F5F6] transition-colors">Adjust Stock</button>
+              <button className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-[#D3D1CB] text-[#787774] hover:bg-[#F7F7F5] transition-colors">Adjust Stock</button>
             </div>
           </div>
         )}
