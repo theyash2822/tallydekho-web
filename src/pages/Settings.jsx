@@ -50,16 +50,16 @@ function AIChatPanel() {
 
   return (
     <div className="flex flex-col" style={{ height: '520px' }}>
-      <p className="text-base font-semibold text-[#37352F] mb-3">TallyDekho AI Assistant</p>
+      <p className="text-base font-semibold text-[#1C2B3A] mb-3">TallyDekho AI Assistant</p>
       <div ref={scrollRef} className="flex-1 overflow-y-auto space-y-3 mb-3 pr-1" style={{ minHeight: 0 }}>
         {msgs.map((m, i) => (
           <div key={m.id || i} className={`flex gap-2 ${m.from === 'me' ? 'flex-row-reverse' : ''}`}>
             <div className={`w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[9px] font-bold ${
-              m.from === 'bot' ? 'bg-[#1A1A1A] text-white' : 'bg-[#D3D1CB] text-[#37352F]'}`}>{
+              m.from === 'bot' ? 'bg-[#1A1A1A] text-white' : 'bg-[#D4D3CE] text-[#1C2B3A]'}`}>{
               m.from === 'bot' ? 'TD' : 'Me'}</div>
             <div className={`max-w-[78%] px-3 py-2 rounded-xl text-sm leading-relaxed whitespace-pre-wrap ${
-              m.from === 'me' ? 'bg-[#1A1A1A] text-white' : 'bg-[#F7F7F5] border border-[#D3D1CB] text-[#37352F]'}`}>
-              {m.loading ? <span className="text-[#9A9A97] italic">Thinking...</span> : m.text}
+              m.from === 'me' ? 'bg-[#1A1A1A] text-white' : 'bg-[#F5F4EF] border border-[#D4D3CE] text-[#1C2B3A]'}`}>
+              {m.loading ? <span className="text-[#AEACA8] italic">Thinking...</span> : m.text}
             </div>
           </div>
         ))}
@@ -68,7 +68,7 @@ function AIChatPanel() {
         <div className="flex flex-wrap gap-1.5 mb-2">
           {AI_SUGGESTIONS.map((s,i) => (
             <button key={i} onClick={() => sendMessage(s)} disabled={loading}
-              className="text-xs px-2.5 py-1 rounded-full border text-[#37352F] border-[#37352F] hover:bg-[#EFEFEF] transition-colors">
+              className="text-xs px-2.5 py-1 rounded-full border text-[#1C2B3A] border-[#1C2B3A] hover:bg-[#ECEEEF] transition-colors">
               {s}
             </button>
           ))}
@@ -83,7 +83,7 @@ function AIChatPanel() {
         />
         <button onClick={() => sendMessage()} disabled={loading || !input.trim()}
           className="px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors"
-          style={{ background: loading || !input.trim() ? '#9A9A97' : '#37352F' }}>
+          style={{ background: loading || !input.trim() ? '#AEACA8' : '#1C2B3A' }}>
           {loading ? '...' : 'Ask'}
         </button>
       </div>
@@ -176,7 +176,7 @@ function VoucherConfigSettings({ companyGuid }) {
   return (
     <div className="space-y-5">
       <div>
-        <p className="text-base font-semibold text-[#37352F]">Voucher Number Format</p>
+        <p className="text-base font-semibold text-[#1C2B3A]">Voucher Number Format</p>
         <p className="text-xs text-[#787774] mt-1">Choose how voucher numbers are displayed. Tally Prime controls the actual numbering — this affects display format only.</p>
       </div>
       <div className="space-y-3">
@@ -185,24 +185,24 @@ function VoucherConfigSettings({ companyGuid }) {
             key={fmt.id}
             onClick={() => setSelected(fmt.id)}
             className={`cursor-pointer rounded-xl border-2 p-4 transition-all ${
-              selected === fmt.id ? 'border-[#37352F] bg-[#F7F7F5]' : 'border-[#D3D1CB] bg-white hover:border-[#9FA9B1]'
+              selected === fmt.id ? 'border-[#1C2B3A] bg-[#F5F4EF]' : 'border-[#D4D3CE] bg-white hover:border-[#9FA9B1]'
             }`}
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-[#37352F]">{fmt.name}</span>
-                  {fmt.badge && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#37352F] text-white tracking-wide">{fmt.badge}</span>}
+                  <span className="text-sm font-semibold text-[#1C2B3A]">{fmt.name}</span>
+                  {fmt.badge && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#1C2B3A] text-white tracking-wide">{fmt.badge}</span>}
                 </div>
                 <p className="text-xs text-[#787774] mt-1">{fmt.desc}</p>
                 <div className="flex gap-2 mt-2 flex-wrap">
                   {fmt.examples.map(e => (
-                    <span key={e} className="px-2 py-0.5 rounded-md bg-white border border-[#D3D1CB] text-[10px] font-mono text-[#37352F]">{e}</span>
+                    <span key={e} className="px-2 py-0.5 rounded-md bg-white border border-[#D4D3CE] text-[10px] font-mono text-[#1C2B3A]">{e}</span>
                   ))}
                 </div>
               </div>
               {selected === fmt.id && (
-                <div className="w-5 h-5 rounded-full bg-[#37352F] flex items-center justify-center flex-shrink-0 ml-3">
+                <div className="w-5 h-5 rounded-full bg-[#1C2B3A] flex items-center justify-center flex-shrink-0 ml-3">
                   <Check size={12} className="text-white" />
                 </div>
               )}
@@ -236,7 +236,7 @@ function InvoiceTemplateSettings({ companyGuid }) {
   return (
     <div className="space-y-5">
       <div>
-        <p className="text-base font-semibold text-[#37352F]">Invoice PDF Templates</p>
+        <p className="text-base font-semibold text-[#1C2B3A]">Invoice PDF Templates</p>
         <p className="text-xs text-[#787774] mt-1">Choose a default template for all Sales Invoice PDFs. Applied per company.</p>
       </div>
 
@@ -247,26 +247,26 @@ function InvoiceTemplateSettings({ companyGuid }) {
             onClick={() => setSelected(tpl.id)}
             className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all ${
               selected === tpl.id
-                ? 'border-[#37352F] bg-[#F7F7F5]'
-                : 'border-[#D3D1CB] bg-white hover:border-[#B0B8C1]'
+                ? 'border-[#1C2B3A] bg-[#F5F4EF]'
+                : 'border-[#D4D3CE] bg-white hover:border-[#B0B8C1]'
             }`}
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <FileText size={15} className="text-[#37352F] flex-shrink-0" />
-                  <span className="text-sm font-semibold text-[#37352F]">{tpl.name}</span>
+                  <FileText size={15} className="text-[#1C2B3A] flex-shrink-0" />
+                  <span className="text-sm font-semibold text-[#1C2B3A]">{tpl.name}</span>
                   {tpl.badge && (
                     <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#1A1A1A] text-white tracking-wide">{tpl.badge}</span>
                   )}
                 </div>
                 <p className="text-xs text-[#787774] mt-1.5 ml-5">{tpl.desc}</p>
-                <p className="text-[10px] text-[#9A9A97] mt-1 ml-5 font-mono">{tpl.preview}</p>
+                <p className="text-[10px] text-[#AEACA8] mt-1 ml-5 font-mono">{tpl.preview}</p>
               </div>
               <div className="flex items-center gap-2 ml-4">
                 <button
                   onClick={e => { e.stopPropagation(); openPreview(tpl.id); }}
-                  className="px-2.5 py-1 rounded-lg text-[11px] font-medium border border-[#D3D1CB] text-[#787774] hover:border-[#37352F] hover:text-[#37352F] transition-colors"
+                  className="px-2.5 py-1 rounded-lg text-[11px] font-medium border border-[#D4D3CE] text-[#787774] hover:border-[#1C2B3A] hover:text-[#1C2B3A] transition-colors"
                 >Preview</button>
                 {selected === tpl.id && (
                   <div className="w-5 h-5 rounded-full bg-[#1A1A1A] flex items-center justify-center flex-shrink-0">
@@ -314,9 +314,9 @@ const Field = ({label,defaultValue,type='text'}) => (
 const Toggle = ({label,sub,on}) => {
   const [active,setActive] = useState(on);
   return (
-    <div className="flex items-center justify-between p-4 border border-[#D3D1CB] rounded-xl">
-      <div><p className="text-sm font-medium text-[#37352F]">{label}</p>{sub&&<p className="text-xs text-[#787774] mt-0.5">{sub}</p>}</div>
-      <button onClick={()=>setActive(p=>!p)} className={`w-10 h-5 rounded-full transition-colors relative ${active?'bg-[#1A1A1A]':'bg-[#D3D1CB]'}`}>
+    <div className="flex items-center justify-between p-4 border border-[#D4D3CE] rounded-xl">
+      <div><p className="text-sm font-medium text-[#1C2B3A]">{label}</p>{sub&&<p className="text-xs text-[#787774] mt-0.5">{sub}</p>}</div>
+      <button onClick={()=>setActive(p=>!p)} className={`w-10 h-5 rounded-full transition-colors relative ${active?'bg-[#1A1A1A]':'bg-[#D4D3CE]'}`}>
         <div className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-transform ${active?'translate-x-5':'translate-x-0.5'}`}/>
       </button>
     </div>
@@ -365,23 +365,23 @@ export default function Settings() {
 
   return (
     <div className="max-w-5xl">
-      <div className="mb-5"><h1 className="text-xl font-semibold text-[#37352F] tracking-tight">Settings</h1><p className="text-sm text-[#787774] mt-0.5">Manage your account and preferences</p></div>
+      <div className="mb-5"><h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Settings</h1><p className="text-sm text-[#787774] mt-0.5">Manage your account and preferences</p></div>
       <div className="flex gap-5">
         {/* Sidebar */}
         <div className="w-52 flex-shrink-0">
-          <div className="bg-white border border-[#D3D1CB] rounded-xl overflow-hidden">
+          <div className="bg-white border border-[#D4D3CE] rounded-xl overflow-hidden">
             {GROUPS.map(g=>(
               <div key={g.key}>
                 <button onClick={()=>{setActiveGroup(g.key);setActiveSub(g.subs[0]);}}
-                  className={`w-full flex items-center gap-2.5 px-4 py-3 text-sm font-medium transition-colors border-b border-[#EFEFEF] last:border-0 ${activeGroup===g.key?'bg-[#EFEFEF] text-[#37352F]':'text-[#787774] hover:bg-[#F7F7F5] hover:text-[#37352F]'}`}>
+                  className={`w-full flex items-center gap-2.5 px-4 py-3 text-sm font-medium transition-colors border-b border-[#ECEEEF] last:border-0 ${activeGroup===g.key?'bg-[#ECEEEF] text-[#1C2B3A]':'text-[#787774] hover:bg-[#F5F4EF] hover:text-[#1C2B3A]'}`}>
                   <g.icon size={14} className="flex-shrink-0"/><span className="flex-1 text-left">{g.label}</span>
-                  <ChevronRight size={12} className={`transition-transform ${activeGroup===g.key?'rotate-90 text-[#37352F]':'text-[#9A9A97]'}`}/>
+                  <ChevronRight size={12} className={`transition-transform ${activeGroup===g.key?'rotate-90 text-[#1C2B3A]':'text-[#AEACA8]'}`}/>
                 </button>
                 {activeGroup===g.key&&(
-                  <div className="bg-[#F7F7F5]">
+                  <div className="bg-[#F5F4EF]">
                     {g.subs.map(sub=>(
                       <button key={sub} onClick={()=>setActiveSub(sub)}
-                        className={`w-full flex items-center gap-2 pl-9 pr-4 py-2 text-xs transition-colors ${activeSub===sub?'text-[#37352F] font-semibold':'text-[#787774] hover:text-[#37352F]'}`}>
+                        className={`w-full flex items-center gap-2 pl-9 pr-4 py-2 text-xs transition-colors ${activeSub===sub?'text-[#1C2B3A] font-semibold':'text-[#787774] hover:text-[#1C2B3A]'}`}>
                         {activeSub===sub&&<span className="w-1.5 h-1.5 rounded-full bg-[#1A1A1A] flex-shrink-0"/>}{sub}
                       </button>
                     ))}
@@ -393,10 +393,10 @@ export default function Settings() {
         </div>
 
         {/* Content */}
-        <div className="flex-1 bg-white border border-[#D3D1CB] rounded-xl p-6 min-h-96">
+        <div className="flex-1 bg-white border border-[#D4D3CE] rounded-xl p-6 min-h-96">
           {activeGroup==='account'&&activeSub==='Profile'&&(
             <div className="space-y-4">
-              <p className="text-base font-semibold text-[#37352F]">Profile</p>
+              <p className="text-base font-semibold text-[#1C2B3A]">Profile</p>
               <div>
                 <label className="text-xs font-medium text-[#787774] block mb-1.5">Full Name</label>
                 <input value={profileName} onChange={e=>setProfileName(e.target.value)} className="notion-input w-full text-sm" placeholder="Enter your name"/>
@@ -427,7 +427,7 @@ export default function Settings() {
           )}
           {activeGroup==='account'&&activeSub==='Company Info'&&(
             <div className="space-y-4">
-              <p className="text-base font-semibold text-[#37352F]">Company Information</p>
+              <p className="text-base font-semibold text-[#1C2B3A]">Company Information</p>
               <Field label="Company Name" defaultValue={company.name}/>
               <Field label="GSTIN" defaultValue={company.gstin}/>
               <Field label="PAN" defaultValue={company.pan}/>
@@ -439,23 +439,23 @@ export default function Settings() {
           )}
           {activeGroup==='account'&&activeSub==='License'&&(
             <div className="space-y-5">
-              <p className="text-base font-semibold text-[#37352F]">License & Credits</p>
+              <p className="text-base font-semibold text-[#1C2B3A]">License & Credits</p>
               <div className="grid grid-cols-3 gap-4">
                 {[['Plan','Free – 1 User','Upgrade →'],['Notification Credits','172 / 200','Buy Credits →'],['Team Seats','1 Seat','Coming Soon']].map(([l,v,cta])=>(
-                  <div key={l} className="p-4 bg-[#F9F9F9] rounded-xl border border-[#D3D1CB]">
+                  <div key={l} className="p-4 bg-[#F9F9F9] rounded-xl border border-[#D4D3CE]">
                     <p className="text-xs text-[#787774] mb-1">{l}</p>
-                    <p className="font-bold text-[#37352F]">{v}</p>
-                    <button className="mt-2 text-xs text-[#37352F] hover:underline">{cta}</button>
+                    <p className="font-bold text-[#1C2B3A]">{v}</p>
+                    <button className="mt-2 text-xs text-[#1C2B3A] hover:underline">{cta}</button>
                   </div>
                 ))}
               </div>
               <div>
-                <p className="text-sm font-semibold text-[#37352F] mb-3">Purchase History</p>
-                <div className="rounded-xl border border-[#D3D1CB] divide-y divide-[#F7F7F5]">
+                <p className="text-sm font-semibold text-[#1C2B3A] mb-3">Purchase History</p>
+                <div className="rounded-xl border border-[#D4D3CE] divide-y divide-[#F5F4EF]">
                   {[['Credits Invoice','INV-2025-0710-001','100 Credits','₹2,000'],['Subscription','INV-2025-0001','Free Plan','₹0']].map(([t,inv,desc,amt])=>(
                     <div key={inv} className="flex justify-between items-center px-4 py-3 text-sm">
-                      <div><p className="font-medium text-[#37352F]">{t}</p><p className="text-xs text-[#787774]">{inv}</p></div>
-                      <div className="text-right"><p className="text-[#787774]">{desc}</p><p className="font-semibold text-[#37352F]">{amt}</p></div>
+                      <div><p className="font-medium text-[#1C2B3A]">{t}</p><p className="text-xs text-[#787774]">{inv}</p></div>
+                      <div className="text-right"><p className="text-[#787774]">{desc}</p><p className="font-semibold text-[#1C2B3A]">{amt}</p></div>
                     </div>
                   ))}
                 </div>
@@ -464,11 +464,11 @@ export default function Settings() {
           )}
           {activeGroup==='preferences'&&activeSub==='Language & Region'&&(
             <div className="space-y-4">
-              <p className="text-base font-semibold text-[#37352F]">Language & Region</p>
+              <p className="text-base font-semibold text-[#1C2B3A]">Language & Region</p>
               {[['Language',['English','Hindi','Marathi','Gujarati']],['Timezone',['Asia/Kolkata','UTC']],['Date Format',['DD MMM YYYY','MM/DD/YYYY','YYYY-MM-DD']]].map(([l,opts])=>(
                 <div key={l}>
                   <label className="text-xs font-medium text-[#787774] block mb-1.5">{l}</label>
-                  <select className="notion-input w-full text-sm text-[#37352F]">{opts.map(o=><option key={o}>{o}</option>)}</select>
+                  <select className="notion-input w-full text-sm text-[#1C2B3A]">{opts.map(o=><option key={o}>{o}</option>)}</select>
                 </div>
               ))}
               <button className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">Save</button>
@@ -479,11 +479,11 @@ export default function Settings() {
           )}
           {activeGroup==='notifications'&&activeSub==='Channels & Quiet Hours'&&(
             <div className="space-y-4">
-              <p className="text-base font-semibold text-[#37352F]">Channels & Quiet Hours</p>
+              <p className="text-base font-semibold text-[#1C2B3A]">Channels & Quiet Hours</p>
               <Toggle label="Email Notifications" sub="rajesh@maaruji.in" on={true}/>
               <Toggle label="SMS Notifications" sub="+91 98200 12345" on={true}/>
               <Toggle label="WhatsApp Notifications" sub="+91 98200 12345" on={false}/>
-              <div className="pt-2"><p className="text-sm font-semibold text-[#37352F] mb-3">Quiet Hours</p>
+              <div className="pt-2"><p className="text-sm font-semibold text-[#1C2B3A] mb-3">Quiet Hours</p>
                 <div className="grid grid-cols-2 gap-4">
                   <div><label className="text-xs text-[#787774] block mb-1.5">From</label><input type="time" defaultValue="23:00" className="notion-input w-full text-sm"/></div>
                   <div><label className="text-xs text-[#787774] block mb-1.5">To</label><input type="time" defaultValue="08:00" className="notion-input w-full text-sm"/></div>
@@ -494,11 +494,11 @@ export default function Settings() {
           )}
           {activeGroup==='integrations'&&activeSub==='Tally ERP Sync'&&(
             <div className="space-y-4">
-              <p className="text-base font-semibold text-[#37352F]">Tally ERP Sync</p>
+              <p className="text-base font-semibold text-[#1C2B3A]">Tally ERP Sync</p>
               {pairingState==='idle'&&(
                 <div className="space-y-4">
-                  <div className="p-4 bg-[#EFEFEF] rounded-xl border border-[#C5CBD0]">
-                    <p className="text-sm font-semibold text-[#37352F] mb-1">How to pair</p>
+                  <div className="p-4 bg-[#ECEEEF] rounded-xl border border-[#C5CBD0]">
+                    <p className="text-sm font-semibold text-[#1C2B3A] mb-1">How to pair</p>
                     <ol className="text-xs text-[#787774] space-y-1 list-decimal list-inside">
                       <li>Open TallyDekho Desktop on your Windows PC</li>
                       <li>Click "Generate Code" in the Pairing section</li>
@@ -514,7 +514,7 @@ export default function Settings() {
                       placeholder="000000"
                       className="notion-input w-full text-center text-2xl font-bold tracking-[0.4em] py-3"
                     />
-                    {pairingError && <p className="text-xs text-[#EB5757] mt-1">{pairingError}</p>}
+                    {pairingError && <p className="text-xs text-[#C0392B] mt-1">{pairingError}</p>}
                   </div>
                   <button onClick={handlePair} className="px-5 py-2 rounded-lg text-sm font-medium text-white w-full bg-[#1A1A1A] hover:bg-[#333] transition-colors">Connect to Tally</button>
                 </div>
@@ -528,17 +528,17 @@ export default function Settings() {
               )}
               {(pairingState==='paired' || isPaired)&&(
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 p-3 bg-[#EDF3EC] border border-[#B7D4B2] rounded-xl text-[#0F7B6C] text-sm">
+                  <div className="flex items-center gap-2 p-3 bg-[#E8F5ED] border border-[#A8D5BC] rounded-xl text-[#2D7D46] text-sm">
                     <Check size={14}/> Paired · Tally Prime connected
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-[#37352F] mb-2">Synced Companies</p>
+                    <p className="text-sm font-semibold text-[#1C2B3A] mb-2">Synced Companies</p>
                     {companies.length > 0 ? companies.map(c=>(
-                      <div key={c.guid||c.name} className="flex items-center gap-2 py-2 border-b border-[#EFEFEF] text-sm">
-                        <Check size={12} className="text-[#0F7B6C]"/>{c.name}
+                      <div key={c.guid||c.name} className="flex items-center gap-2 py-2 border-b border-[#ECEEEF] text-sm">
+                        <Check size={12} className="text-[#2D7D46]"/>{c.name}
                       </div>
                     )) : (
-                      <p className="text-xs text-[#9A9A97]">No companies synced yet. Run a sync from the Desktop App.</p>
+                      <p className="text-xs text-[#AEACA8]">No companies synced yet. Run a sync from the Desktop App.</p>
                     )}
                   </div>
                   <button onClick={async()=>{
@@ -551,7 +551,7 @@ export default function Settings() {
                     localStorage.removeItem('isPaired');
                     setPairingState('idle');
                     window.location.reload();
-                  }} className="px-4 py-2 text-sm text-[#EB5757] bg-[#FEF2F2] border border-[#FECACA] rounded-lg hover:bg-rose-100">Unpair</button>
+                  }} className="px-4 py-2 text-sm text-[#C0392B] bg-[#FEF2F2] border border-[#FECACA] rounded-lg hover:bg-rose-100">Unpair</button>
                 </div>
               )}
             </div>
@@ -559,15 +559,15 @@ export default function Settings() {
           {activeGroup==='integrations'&&activeSub==='Bank Feeds'&&(
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <p className="text-base font-semibold text-[#37352F]">Bank Feeds</p>
+                <p className="text-base font-semibold text-[#1C2B3A]">Bank Feeds</p>
                 <button className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">+ Add Bank</button>
               </div>
               {[['HDFC Bank','A/c XXXX 0259','Mumbai Branch'],['ICICI Bank','A/c XXXX 1147','BKC Branch']].map(([bank,acc,branch])=>(
-                <div key={bank} className="flex items-center justify-between p-4 border border-[#D3D1CB] rounded-xl">
-                  <div><p className="font-medium text-[#37352F] text-sm">{bank} · {acc}</p><p className="text-xs text-[#787774]">{branch}</p></div>
+                <div key={bank} className="flex items-center justify-between p-4 border border-[#D4D3CE] rounded-xl">
+                  <div><p className="font-medium text-[#1C2B3A] text-sm">{bank} · {acc}</p><p className="text-xs text-[#787774]">{branch}</p></div>
                   <div className="flex items-center gap-3">
-                    <span className="text-xs text-[#0F7B6C] bg-[#EDF3EC] px-2 py-1 rounded-full font-medium">Active</span>
-                    <button className="text-xs text-[#EB5757] hover:underline">Remove</button>
+                    <span className="text-xs text-[#2D7D46] bg-[#E8F5ED] px-2 py-1 rounded-full font-medium">Active</span>
+                    <button className="text-xs text-[#C0392B] hover:underline">Remove</button>
                   </div>
                 </div>
               ))}
@@ -575,13 +575,13 @@ export default function Settings() {
           )}
           {activeGroup==='contact'&&activeSub==='About & Versions'&&(
             <div className="space-y-5">
-              <p className="text-base font-semibold text-[#37352F]">About & Versions</p>
-              <div className="bg-[#F9F9F9] rounded-xl p-4 border border-[#D3D1CB] space-y-2 text-sm">
+              <p className="text-base font-semibold text-[#1C2B3A]">About & Versions</p>
+              <div className="bg-[#F9F9F9] rounded-xl p-4 border border-[#D4D3CE] space-y-2 text-sm">
                 {[['Product','TallyDekho Web'],['Version','3.7.2 (build 257)'],['Release Date','05 Jul 2025']].map(([l,v])=>(
-                  <div key={l} className="flex justify-between"><span className="text-[#787774]">{l}</span><span className="font-medium text-[#37352F]">{v}</span></div>
+                  <div key={l} className="flex justify-between"><span className="text-[#787774]">{l}</span><span className="font-medium text-[#1C2B3A]">{v}</span></div>
                 ))}
               </div>
-              <div className="space-y-2">{['Terms of Service','Privacy Policy','OSS Licences'].map(l=><button key={l} className="block text-sm text-[#37352F] hover:underline">{l}</button>)}</div>
+              <div className="space-y-2">{['Terms of Service','Privacy Policy','OSS Licences'].map(l=><button key={l} className="block text-sm text-[#1C2B3A] hover:underline">{l}</button>)}</div>
             </div>
           )}
           {activeGroup==='contact'&&activeSub==='Help Center'&&(
@@ -592,7 +592,7 @@ export default function Settings() {
             <VoucherConfigSettings companyGuid={selectedCompany?.guid} />
           )}
           {!['Profile','Company Info','License','Language & Region','Channels & Quiet Hours','Tally ERP Sync','Bank Feeds','About & Versions','Help Center','Invoice Templates','Voucher Config'].includes(activeSub)&&(
-            <div className="flex flex-col items-center justify-center h-48 text-[#9A9A97]">
+            <div className="flex flex-col items-center justify-center h-48 text-[#AEACA8]">
               <div className="text-4xl mb-3">⚙️</div>
               <p className="text-sm font-medium text-[#787774]">{activeSub}</p>
               <p className="text-xs mt-1">Configuration panel coming soon</p>
@@ -600,7 +600,7 @@ export default function Settings() {
           )}
         </div>
       </div>
-      <p className="text-center text-xs text-[#9A9A97] py-5">Made in India with Love 🇮🇳</p>
+      <p className="text-center text-xs text-[#AEACA8] py-5">Made in India with Love 🇮🇳</p>
     </div>
   );
 }

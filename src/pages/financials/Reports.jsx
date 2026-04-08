@@ -9,13 +9,13 @@ import KPICard from '../../components/KPICard';
 const fmt = n => '₹' + n.toLocaleString('en-IN');
 const fmtL = n => '₹' + (n / 100000).toFixed(1) + 'L';
 const TABS = ['Profit & Loss', 'Balance Sheet', 'Trial Balance'];
-const COLORS = ['#37352F','#37352F','#798692','#9FA9B1','#B2BAC1'];
+const COLORS = ['#1C2B3A','#1C2B3A','#798692','#9FA9B1','#B2BAC1'];
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white border border-[#D3D1CB] rounded-xl p-3 shadow-notion-md text-xs">
-      <p className="font-semibold text-[#37352F] mb-1">{label}</p>
+    <div className="bg-white border border-[#D4D3CE] rounded-xl p-3 shadow-notion-md text-xs">
+      <p className="font-semibold text-[#1C2B3A] mb-1">{label}</p>
       {payload.map((p, i) => <div key={i} className="flex items-center gap-2"><div className="w-2 h-2 rounded-full" style={{ background: p.color }} /><span className="text-[#787774]">{p.name}:</span><span className="font-medium">{fmtL(p.value)}</span></div>)}
     </div>
   );
@@ -25,14 +25,14 @@ function ExpandRow({ label, amount, children, highlight }) {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <tr className={`border-b border-[#F7F7F5] cursor-pointer hover:bg-[#F7F7F5] ${highlight ? 'bg-[#EFEFEF]' : ''}`} onClick={() => setOpen(p => !p)}>
+      <tr className={`border-b border-[#F5F4EF] cursor-pointer hover:bg-[#F5F4EF] ${highlight ? 'bg-[#ECEEEF]' : ''}`} onClick={() => setOpen(p => !p)}>
         <td className="px-4 py-3">
-          <span className="flex items-center gap-2 font-medium text-[#37352F]">
+          <span className="flex items-center gap-2 font-medium text-[#1C2B3A]">
             {children ? (open ? <ChevronDown size={13} className="text-[#787774]" /> : <ChevronRight size={13} className="text-[#787774]" />) : <span className="w-3.5" />}
             {label}
           </span>
         </td>
-        <td className={`px-4 py-3 text-right font-semibold ${highlight ? 'text-[#0F7B6C]' : 'text-[#37352F]'}`}>{fmt(amount)}</td>
+        <td className={`px-4 py-3 text-right font-semibold ${highlight ? 'text-[#2D7D46]' : 'text-[#1C2B3A]'}`}>{fmt(amount)}</td>
       </tr>
       {open && children}
     </>
@@ -92,80 +92,80 @@ export default function Reports() {
         </div>
       )}
       <div>
-        <h1 className="text-xl font-semibold text-[#37352F] tracking-tight">Financial Reports</h1>
+        <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Financial Reports</h1>
         <p className="text-sm text-[#787774] mt-0.5">{selectedFY?.name ? `FY ${selectedFY.name}` : "FY 2025-26"}</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Revenue"  value={loading ? '—' : fmtL(totalIncome)}   icon={TrendingUp} accent="#37352F" />
-        <KPICard title="Total Expenses" value={loading ? '—' : fmtL(totalExpenses)} icon={TrendingUp} accent="#EB5757" />
-        <KPICard title="Net Profit"     value={loading ? '—' : fmtL(netProfit)}     icon={TrendingUp} accent="#0F7B6C" />
-        <KPICard title="Total Assets"   value={loading ? '—' : fmtL(totalAssets)}   icon={TrendingUp} accent="#D9730D" />
+        <KPICard title="Total Revenue"  value={loading ? '—' : fmtL(totalIncome)}   icon={TrendingUp} accent="#1C2B3A" />
+        <KPICard title="Total Expenses" value={loading ? '—' : fmtL(totalExpenses)} icon={TrendingUp} accent="#C0392B" />
+        <KPICard title="Net Profit"     value={loading ? '—' : fmtL(netProfit)}     icon={TrendingUp} accent="#2D7D46" />
+        <KPICard title="Total Assets"   value={loading ? '—' : fmtL(totalAssets)}   icon={TrendingUp} accent="#D97706" />
       </div>
 
       {/* Charts */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white border border-[#D3D1CB] rounded-xl p-5">
-          <p className="text-sm font-semibold text-[#37352F] mb-1">Profit Trend</p>
+        <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
+          <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Profit Trend</p>
           <p className="text-xs text-[#787774] mb-4">6-month net profit</p>
           <ResponsiveContainer width="100%" height={150}>
             <AreaChart data={profitTrend}>
               <defs>
                 <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#37352F" stopOpacity={0.18} />
-                  <stop offset="95%" stopColor="#37352F" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#1C2B3A" stopOpacity={0.18} />
+                  <stop offset="95%" stopColor="#1C2B3A" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F7F7F5" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#F5F4EF" vertical={false} />
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} />
               <YAxis hide />
-              <Tooltip formatter={v => fmt(v)} contentStyle={{ fontSize: 11, border: '1px solid #D3D1CB', borderRadius: 8 }} />
-              <Area type="monotone" dataKey="profit" stroke="#37352F" strokeWidth={2} fill="url(#pg)" dot={{ r: 3, fill: '#37352F', strokeWidth: 0 }} />
+              <Tooltip formatter={v => fmt(v)} contentStyle={{ fontSize: 11, border: '1px solid #D4D3CE', borderRadius: 8 }} />
+              <Area type="monotone" dataKey="profit" stroke="#1C2B3A" strokeWidth={2} fill="url(#pg)" dot={{ r: 3, fill: '#1C2B3A', strokeWidth: 0 }} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white border border-[#D3D1CB] rounded-xl p-5">
-          <p className="text-sm font-semibold text-[#37352F] mb-1">Expense Breakdown</p>
+        <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
+          <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Expense Breakdown</p>
           <p className="text-xs text-[#787774] mb-4">By category</p>
           <ResponsiveContainer width="100%" height={150}>
             <PieChart>
               <Pie data={expBreakdown} cx="50%" cy="50%" innerRadius={40} outerRadius={65} dataKey="value" paddingAngle={2}>
                 {expBreakdown.map((_, i) => <Cell key={i} fill={COLORS[i]} />)}
               </Pie>
-              <Tooltip formatter={v => fmt(v)} contentStyle={{ fontSize: 11, border: '1px solid #D3D1CB', borderRadius: 8 }} />
+              <Tooltip formatter={v => fmt(v)} contentStyle={{ fontSize: 11, border: '1px solid #D4D3CE', borderRadius: 8 }} />
             </PieChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white border border-[#D3D1CB] rounded-xl p-5">
-          <p className="text-sm font-semibold text-[#37352F] mb-1">Sales vs Purchase</p>
+        <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
+          <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Sales vs Purchase</p>
           <p className="text-xs text-[#787774] mb-4">Last 6 months</p>
           <ResponsiveContainer width="100%" height={150}>
             <BarChart data={(plReport?.monthlySales || [])} barSize={10}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F7F7F5" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#F5F4EF" vertical={false} />
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} />
               <YAxis hide />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="sales" fill="#37352F" radius={[3,3,0,0]} />
+              <Bar dataKey="sales" fill="#1C2B3A" radius={[3,3,0,0]} />
               <Bar dataKey="purchase" fill="#C5CBD0" radius={[3,3,0,0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      <div className="bg-white border border-[#D3D1CB] rounded-xl">
-        <div className="flex border-b border-[#D3D1CB] px-1 pt-1">
+      <div className="bg-white border border-[#D4D3CE] rounded-xl">
+        <div className="flex border-b border-[#D4D3CE] px-1 pt-1">
           {TABS.map((t, i) => (
             <button key={i} onClick={() => setTab(i)}
-              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#37352F] bg-[#EFEFEF] font-semibold' : 'text-[#787774] hover:text-[#37352F] hover:bg-[#F7F7F5]'}`}>{t}</button>
+              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#1C2B3A] bg-[#ECEEEF] font-semibold' : 'text-[#787774] hover:text-[#1C2B3A] hover:bg-[#F5F4EF]'}`}>{t}</button>
           ))}
         </div>
         <div className="p-5">
           {tab === 0 && (
-            <div className="overflow-x-auto rounded-xl border border-[#D3D1CB]">
+            <div className="overflow-x-auto rounded-xl border border-[#D4D3CE]">
               <table className="w-full text-sm">
-                <thead className="bg-[#F9F9F9] border-b border-[#D3D1CB]">
+                <thead className="bg-[#F9F9F9] border-b border-[#D4D3CE]">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-[#787774] uppercase">Particulars</th>
                     <th className="px-4 py-3 text-right text-xs font-semibold text-[#787774] uppercase">Amount (₹)</th>
@@ -173,19 +173,19 @@ export default function Reports() {
                 </thead>
                 <tbody>
                   <ExpandRow label="Direct Income" amount={totalDI}>
-                    {plData.income.directIncome.map(i => <tr key={i.ledger} className="border-b border-[#F7F7F5] bg-[#F9F9F9]"><td className="px-4 py-2 text-[#787774] pl-10">{i.ledger}</td><td className="px-4 py-2 text-right text-[#787774]">{fmt(i.amount)}</td></tr>)}
+                    {plData.income.directIncome.map(i => <tr key={i.ledger} className="border-b border-[#F5F4EF] bg-[#F9F9F9]"><td className="px-4 py-2 text-[#787774] pl-10">{i.ledger}</td><td className="px-4 py-2 text-right text-[#787774]">{fmt(i.amount)}</td></tr>)}
                   </ExpandRow>
                   <ExpandRow label="Indirect Income" amount={totalII}>
-                    {plData.income.indirectIncome.map(i => <tr key={i.ledger} className="border-b border-[#F7F7F5] bg-[#F9F9F9]"><td className="px-4 py-2 text-[#787774] pl-10">{i.ledger}</td><td className="px-4 py-2 text-right text-[#787774]">{fmt(i.amount)}</td></tr>)}
+                    {plData.income.indirectIncome.map(i => <tr key={i.ledger} className="border-b border-[#F5F4EF] bg-[#F9F9F9]"><td className="px-4 py-2 text-[#787774] pl-10">{i.ledger}</td><td className="px-4 py-2 text-right text-[#787774]">{fmt(i.amount)}</td></tr>)}
                   </ExpandRow>
-                  <tr className="bg-[#EDF3EC] border-b border-[#B7D4B2]"><td className="px-4 py-3 font-bold text-[#0F7B6C]">Gross Profit</td><td className="px-4 py-3 text-right font-bold text-[#0F7B6C]">{fmt(grossProfit)}</td></tr>
+                  <tr className="bg-[#E8F5ED] border-b border-[#A8D5BC]"><td className="px-4 py-3 font-bold text-[#2D7D46]">Gross Profit</td><td className="px-4 py-3 text-right font-bold text-[#2D7D46]">{fmt(grossProfit)}</td></tr>
                   <ExpandRow label="Direct Expense" amount={totalDE}>
-                    {plData.expenses.directExpense.map(i => <tr key={i.ledger} className="border-b border-[#F7F7F5] bg-[#F9F9F9]"><td className="px-4 py-2 text-[#787774] pl-10">{i.ledger}</td><td className="px-4 py-2 text-right text-[#787774]">{fmt(i.amount)}</td></tr>)}
+                    {plData.expenses.directExpense.map(i => <tr key={i.ledger} className="border-b border-[#F5F4EF] bg-[#F9F9F9]"><td className="px-4 py-2 text-[#787774] pl-10">{i.ledger}</td><td className="px-4 py-2 text-right text-[#787774]">{fmt(i.amount)}</td></tr>)}
                   </ExpandRow>
                   <ExpandRow label="Indirect Expense" amount={totalIE}>
-                    {plData.expenses.indirectExpense.map(i => <tr key={i.ledger} className="border-b border-[#F7F7F5] bg-[#F9F9F9]"><td className="px-4 py-2 text-[#787774] pl-10">{i.ledger}</td><td className="px-4 py-2 text-right text-[#787774]">{fmt(i.amount)}</td></tr>)}
+                    {plData.expenses.indirectExpense.map(i => <tr key={i.ledger} className="border-b border-[#F5F4EF] bg-[#F9F9F9]"><td className="px-4 py-2 text-[#787774] pl-10">{i.ledger}</td><td className="px-4 py-2 text-right text-[#787774]">{fmt(i.amount)}</td></tr>)}
                   </ExpandRow>
-                  <tr className="bg-[#EDF3EC]"><td className="px-4 py-3 font-bold text-[#0F7B6C] text-base">Net Profit</td><td className="px-4 py-3 text-right font-bold text-[#0F7B6C] text-base">{fmt(netProfit)}</td></tr>
+                  <tr className="bg-[#E8F5ED]"><td className="px-4 py-3 font-bold text-[#2D7D46] text-base">Net Profit</td><td className="px-4 py-3 text-right font-bold text-[#2D7D46] text-base">{fmt(netProfit)}</td></tr>
                 </tbody>
               </table>
             </div>
@@ -193,19 +193,19 @@ export default function Reports() {
           {tab === 1 && (
             <div className="grid grid-cols-2 gap-8">
               {bsAssets.length === 0 && bsLiabilities.length === 0 ? (
-                <div className="col-span-2 py-10 text-center text-xs text-[#9A9A97]">{isPaired ? 'No balance sheet data for this period' : 'Pair desktop app to see balance sheet'}</div>
+                <div className="col-span-2 py-10 text-center text-xs text-[#AEACA8]">{isPaired ? 'No balance sheet data for this period' : 'Pair desktop app to see balance sheet'}</div>
               ) : (
                 [['ASSETS', bsAssets, totalAssets], ['LIABILITIES', bsLiabilities, totalLiab]].map(([title, rows, total]) => (
                   <div key={title}>
-                    <h3 className="text-xs font-bold text-[#9A9A97] uppercase tracking-widest mb-4 pb-2 border-b border-[#D3D1CB]">{title}</h3>
+                    <h3 className="text-xs font-bold text-[#AEACA8] uppercase tracking-widest mb-4 pb-2 border-b border-[#D4D3CE]">{title}</h3>
                     <div className="space-y-1 text-sm">
                       {rows.slice(0, 30).map((a, i) => (
-                        <div key={i} className="flex justify-between py-1.5 pl-3 border-b border-[#F7F7F5] last:border-0">
+                        <div key={i} className="flex justify-between py-1.5 pl-3 border-b border-[#F5F4EF] last:border-0">
                           <span className="text-[#787774] truncate max-w-[200px]">{a.name}</span>
-                          <span className="font-medium text-[#37352F] ml-2">{fmt(parseFloat(a.closing_balance || 0))}</span>
+                          <span className="font-medium text-[#1C2B3A] ml-2">{fmt(parseFloat(a.closing_balance || 0))}</span>
                         </div>
                       ))}
-                      <div className="flex justify-between py-2.5 mt-2 border-t-2 border-[#37352F] font-bold text-[#37352F]">
+                      <div className="flex justify-between py-2.5 mt-2 border-t-2 border-[#1C2B3A] font-bold text-[#1C2B3A]">
                         <span>Total {title}</span><span>{fmt(total)}</span>
                       </div>
                     </div>
@@ -215,29 +215,29 @@ export default function Reports() {
             </div>
           )}
           {tab === 2 && (
-            <div className="overflow-x-auto rounded-xl border border-[#D3D1CB]">
+            <div className="overflow-x-auto rounded-xl border border-[#D4D3CE]">
               <table className="w-full text-sm">
-                <thead className="bg-[#F9F9F9] border-b border-[#D3D1CB]">
+                <thead className="bg-[#F9F9F9] border-b border-[#D4D3CE]">
                   <tr>{['Ledger','Group','Opening Dr','Opening Cr','Period Dr','Period Cr','Closing Dr','Closing Cr'].map(h => (
                     <th key={h} className="px-3 py-3 text-left text-xs font-semibold text-[#787774] uppercase whitespace-nowrap">{h}</th>
                   ))}</tr>
                 </thead>
                 <tbody>
                   {[...bsAssets, ...bsLiabilities].length === 0 ? (
-                    <tr><td colSpan={8} className="px-3 py-10 text-center text-xs text-[#9A9A97]">{isPaired ? 'No ledger data available' : 'Pair desktop app to see trial balance'}</td></tr>
+                    <tr><td colSpan={8} className="px-3 py-10 text-center text-xs text-[#AEACA8]">{isPaired ? 'No ledger data available' : 'Pair desktop app to see trial balance'}</td></tr>
                   ) : [
                     ...bsAssets.map(l => ({ ...l, side: 'Dr' })),
                     ...bsLiabilities.map(l => ({ ...l, side: 'Cr' }))
                   ].map((row, i) => (
-                    <tr key={i} className="border-b border-[#F7F7F5] hover:bg-[#F7F7F5]">
-                      <td className="px-3 py-2.5 font-medium text-[#37352F]">{row.name}</td>
+                    <tr key={i} className="border-b border-[#F5F4EF] hover:bg-[#F5F4EF]">
+                      <td className="px-3 py-2.5 font-medium text-[#1C2B3A]">{row.name}</td>
                       <td className="px-3 py-2.5 text-[#787774]">{row.parent || '—'}</td>
-                      <td className="px-3 py-2.5 text-right">{row.side === 'Dr' ? fmt(parseFloat(row.opening_balance || 0)) : <span className="text-[#9A9A97]">—</span>}</td>
-                      <td className="px-3 py-2.5 text-right">{row.side === 'Cr' ? fmt(parseFloat(row.opening_balance || 0)) : <span className="text-[#9A9A97]">—</span>}</td>
-                      <td className="px-3 py-2.5 text-right text-[#9A9A97]">—</td>
-                      <td className="px-3 py-2.5 text-right text-[#9A9A97]">—</td>
-                      <td className="px-3 py-2.5 text-right">{row.side === 'Dr' ? fmt(parseFloat(row.closing_balance || 0)) : <span className="text-[#9A9A97]">—</span>}</td>
-                      <td className="px-3 py-2.5 text-right">{row.side === 'Cr' ? fmt(parseFloat(row.closing_balance || 0)) : <span className="text-[#9A9A97]">—</span>}</td>
+                      <td className="px-3 py-2.5 text-right">{row.side === 'Dr' ? fmt(parseFloat(row.opening_balance || 0)) : <span className="text-[#AEACA8]">—</span>}</td>
+                      <td className="px-3 py-2.5 text-right">{row.side === 'Cr' ? fmt(parseFloat(row.opening_balance || 0)) : <span className="text-[#AEACA8]">—</span>}</td>
+                      <td className="px-3 py-2.5 text-right text-[#AEACA8]">—</td>
+                      <td className="px-3 py-2.5 text-right text-[#AEACA8]">—</td>
+                      <td className="px-3 py-2.5 text-right">{row.side === 'Dr' ? fmt(parseFloat(row.closing_balance || 0)) : <span className="text-[#AEACA8]">—</span>}</td>
+                      <td className="px-3 py-2.5 text-right">{row.side === 'Cr' ? fmt(parseFloat(row.closing_balance || 0)) : <span className="text-[#AEACA8]">—</span>}</td>
                     </tr>
                   ))}
                 </tbody>

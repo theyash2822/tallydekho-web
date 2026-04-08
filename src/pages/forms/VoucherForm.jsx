@@ -96,20 +96,20 @@ export default function VoucherForm({ onClose }) {
   if (submitted) {
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
-        <div className="w-16 h-16 rounded-full bg-[#EDF3EC] flex items-center justify-center border border-[#B7D4B2]">
-          <CheckCircle size={32} className="text-[#0F7B6C]" />
+        <div className="w-16 h-16 rounded-full bg-[#E8F5ED] flex items-center justify-center border border-[#A8D5BC]">
+          <CheckCircle size={32} className="text-[#2D7D46]" />
         </div>
-        <p className="text-base font-semibold text-[#37352F]">{type} Voucher Created in Tally!</p>
+        <p className="text-base font-semibold text-[#1C2B3A]">{type} Voucher Created in Tally!</p>
         {createdNumber && (
-          <p className="text-sm font-mono font-bold text-[#37352F] bg-[#EFEFEF] px-3 py-1 rounded-lg">
+          <p className="text-sm font-mono font-bold text-[#1C2B3A] bg-[#ECEEEF] px-3 py-1 rounded-lg">
             {createdNumber}
           </p>
         )}
         <p className="text-sm text-[#787774]">{selectedCompany?.name} · ₹{numAmount.toLocaleString('en-IN')}</p>
-        <p className="text-xs text-[#9A9A97]">{isOptional ? 'Saved as optional entry' : 'Posted to Tally books'}</p>
+        <p className="text-xs text-[#AEACA8]">{isOptional ? 'Saved as optional entry' : 'Posted to Tally books'}</p>
         <div className="flex gap-3 mt-2">
           <button onClick={() => { setSubmitted(false); setAmount(''); setPartyLedger(''); setBankLedger(''); }}
-            className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D3D1CB] text-[#787774] hover:bg-[#F7F7F5]">
+            className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D4D3CE] text-[#787774] hover:bg-[#F5F4EF]">
             New Voucher
           </button>
           <button onClick={onClose}
@@ -124,14 +124,14 @@ export default function VoucherForm({ onClose }) {
   return (
     <div className="space-y-5">
       {/* Company + Optional */}
-      <div className="flex items-center justify-between p-3 bg-[#F7F7F5] rounded-xl border border-[#D3D1CB]">
+      <div className="flex items-center justify-between p-3 bg-[#F5F4EF] rounded-xl border border-[#D4D3CE]">
         <div>
-          <p className="text-xs text-[#9A9A97]">Company</p>
-          <p className="text-sm font-semibold text-[#37352F]">{selectedCompany?.name || 'No company selected'}</p>
+          <p className="text-xs text-[#AEACA8]">Company</p>
+          <p className="text-sm font-semibold text-[#1C2B3A]">{selectedCompany?.name || 'No company selected'}</p>
         </div>
         <button onClick={() => setIsOptional(p => !p)}
           className={`px-3 py-1.5 text-xs rounded-lg border font-semibold transition-colors ${
-            isOptional ? 'bg-[#FFFBEB] text-[#D9730D] border-[#FDE68A]' : 'bg-[#EDF3EC] text-[#0F7B6C] border-[#BBF7D0]'
+            isOptional ? 'bg-[#FFFBEB] text-[#D97706] border-[#FDE68A]' : 'bg-[#E8F5ED] text-[#2D7D46] border-[#BBF7D0]'
           }`}>
           {isOptional ? 'Optional Entry' : 'Regular Entry'}
         </button>
@@ -143,7 +143,7 @@ export default function VoucherForm({ onClose }) {
           {VOUCHER_TYPES.map(t => (
             <button key={t} onClick={() => setType(t)}
               className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-colors ${
-                type === t ? 'bg-[#1A1A1A] text-white border-transparent' : 'border-[#D3D1CB] text-[#787774] hover:border-[#37352F]'
+                type === t ? 'bg-[#1A1A1A] text-white border-transparent' : 'border-[#D4D3CE] text-[#787774] hover:border-[#1C2B3A]'
               }`}>
               {t}
             </button>
@@ -206,7 +206,7 @@ export default function VoucherForm({ onClose }) {
       </FormField>
 
       {error && (
-        <div className="flex items-center gap-2 p-3 bg-[#FEF2F2] border border-[#FECACA] rounded-xl text-sm text-[#EB5757]">
+        <div className="flex items-center gap-2 p-3 bg-[#FEF2F2] border border-[#FECACA] rounded-xl text-sm text-[#C0392B]">
           <AlertCircle size={14} className="flex-shrink-0" />
           {error}
         </div>

@@ -34,30 +34,30 @@ function buildTallyClassicHTML(inv) {
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:Arial,sans-serif;font-size:11px;color:#1A1A1A;background:#fff}
     .wrap{max-width:800px;margin:0 auto;padding:28px 32px}
-    .top-bar{background:#37352F;color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;margin:-28px -32px 24px}
+    .top-bar{background:#1C2B3A;color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;margin:-28px -32px 24px}
     .top-bar .co{font-size:16px;font-weight:700;letter-spacing:.5px}
     .top-bar .title{font-size:13px;font-weight:600;opacity:.8;letter-spacing:2px}
     .inv-meta{display:flex;justify-content:space-between;margin-bottom:20px}
     .inv-meta .box{border:1px solid #D0D5DD;padding:12px 16px;border-radius:4px;min-width:200px}
     .inv-meta .box .lbl{font-size:9px;text-transform:uppercase;color:#787774;letter-spacing:.8px;margin-bottom:3px}
-    .inv-meta .box .val{font-size:13px;font-weight:700;color:#37352F}
+    .inv-meta .box .val{font-size:13px;font-weight:700;color:#1C2B3A}
     .parties{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;padding:14px 16px;border:1px solid #D0D5DD;border-radius:4px;background:#F9FAFB}
     .party-lbl{font-size:9px;text-transform:uppercase;color:#787774;letter-spacing:.8px;margin-bottom:5px}
-    .party-name{font-size:13px;font-weight:700;color:#37352F;margin-bottom:3px}
+    .party-name{font-size:13px;font-weight:700;color:#1C2B3A;margin-bottom:3px}
     .party-sub{font-size:10px;color:#787774;line-height:1.5}
     table{width:100%;border-collapse:collapse;margin-bottom:16px}
-    thead tr{background:#37352F;color:#fff}
+    thead tr{background:#1C2B3A;color:#fff}
     th{padding:8px 10px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.6px;font-weight:600}
     td{padding:8px 10px;border-bottom:1px solid #F0F0F0;font-size:11px;vertical-align:middle}
     tbody tr:nth-child(even){background:#F9FAFB}
     .totals-wrap{display:flex;justify-content:flex-end;margin-bottom:20px}
     .totals{width:260px}
     .t-row{display:flex;justify-content:space-between;padding:5px 0;font-size:11px;border-bottom:1px solid #F0F0F0}
-    .t-row.grand{font-size:14px;font-weight:700;color:#37352F;border-top:2px solid #37352F;border-bottom:none;padding-top:8px;margin-top:4px}
+    .t-row.grand{font-size:14px;font-weight:700;color:#1C2B3A;border-top:2px solid #1C2B3A;border-bottom:none;padding-top:8px;margin-top:4px}
     .footer-bar{background:#F9FAFB;border:1px solid #D0D5DD;border-radius:4px;padding:12px 16px;display:flex;justify-content:space-between;font-size:10px;color:#787774}
     .sign-box{text-align:right}
-    .sign-line{border-top:1px solid #37352F;width:160px;margin:28px 0 4px auto}
-    .stamp{text-align:center;margin-top:16px;font-size:9px;color:#9A9A97;padding-top:10px;border-top:1px solid #E8E7E3}
+    .sign-line{border-top:1px solid #1C2B3A;width:160px;margin:28px 0 4px auto}
+    .stamp{text-align:center;margin-top:16px;font-size:9px;color:#AEACA8;padding-top:10px;border-top:1px solid #E8E7E3}
     @media print{@page{size:A4;margin:10mm}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
   </style></head><body>
   <div class="wrap">
@@ -97,7 +97,7 @@ function buildTallyClassicHTML(inv) {
     </table>
     <div class="totals-wrap"><div class="totals">
       <div class="t-row"><span>Subtotal</span><span>${fmt(inv.subtotal)}</span></div>
-      ${inv.discount > 0 ? `<div class="t-row"><span>Discount</span><span style="color:#EB5757">– ${fmt(inv.discount)}</span></div>` : ''}
+      ${inv.discount > 0 ? `<div class="t-row"><span>Discount</span><span style="color:#C0392B">– ${fmt(inv.discount)}</span></div>` : ''}
       ${inv.cgst > 0 ? `<div class="t-row"><span>CGST</span><span>${fmt(inv.cgst)}</span></div>` : ''}
       ${inv.sgst > 0 ? `<div class="t-row"><span>SGST</span><span>${fmt(inv.sgst)}</span></div>` : ''}
       ${inv.igst > 0 ? `<div class="t-row"><span>IGST</span><span>${fmt(inv.igst)}</span></div>` : ''}
@@ -109,7 +109,7 @@ function buildTallyClassicHTML(inv) {
       <div class="sign-box">
         <div class="sign-line"></div>
         <div><strong>${inv.companyName || 'Authorised Signatory'}</strong></div>
-        <div style="font-size:9px;color:#9A9A97">Authorised Signatory</div>
+        <div style="font-size:9px;color:#AEACA8">Authorised Signatory</div>
       </div>
     </div>
     <div class="stamp">Computer generated invoice · TallyDekho · ${inv.companyName || ''}</div>
@@ -143,7 +143,7 @@ function buildModernHTML(inv) {
     .inv-title h1{font-size:32px;font-weight:800;color:#0D9488;letter-spacing:-1px}
     .inv-title .inv-num{font-size:13px;font-weight:600;color:#1A1A1A;margin-top:4px}
     .inv-title .inv-date{font-size:11px;color:#787774;margin-top:2px}
-    .divider{height:3px;background:linear-gradient(90deg,#0D9488,#2383E2);border-radius:2px;margin-bottom:28px}
+    .divider{height:3px;background:linear-gradient(90deg,#0D9488,#2563EB);border-radius:2px;margin-bottom:28px}
     .parties{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px}
     .party-card{padding:16px;border-radius:8px;background:#F9FAFB;border:1px solid #E5E7EB}
     .party-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#0D9488;font-weight:700;margin-bottom:6px}
@@ -160,7 +160,7 @@ function buildModernHTML(inv) {
     .footer{display:grid;grid-template-columns:1fr auto;gap:24px;padding-top:20px;border-top:1px solid #E5E7EB;margin-top:8px}
     .sign-area{text-align:right}
     .sign-line{height:1px;background:#1A1A1A;width:140px;margin:24px 0 4px auto}
-    .stamp{text-align:center;font-size:9px;color:#9A9A97;margin-top:16px}
+    .stamp{text-align:center;font-size:9px;color:#AEACA8;margin-top:16px}
     @media print{@page{size:A4;margin:8mm}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
   </style></head><body>
   <div class="wrap">
@@ -202,13 +202,13 @@ function buildModernHTML(inv) {
     </table>
     <div class="totals-wrap"><div class="totals">
       <div class="t-row"><span>Subtotal</span><span>${fmt(inv.subtotal)}</span></div>
-      ${inv.discount > 0 ? `<div class="t-row"><span>Discount</span><span style="color:#EB5757">– ${fmt(inv.discount)}</span></div>` : ''}
+      ${inv.discount > 0 ? `<div class="t-row"><span>Discount</span><span style="color:#C0392B">– ${fmt(inv.discount)}</span></div>` : ''}
       ${inv.cgst > 0 ? `<div class="t-row"><span>CGST</span><span>${fmt(inv.cgst)}</span></div>` : ''}
       ${inv.sgst > 0 ? `<div class="t-row"><span>SGST</span><span>${fmt(inv.sgst)}</span></div>` : ''}
       ${inv.igst > 0 ? `<div class="t-row"><span>IGST</span><span>${fmt(inv.igst)}</span></div>` : ''}
       <div class="t-grand"><span>Grand Total</span><span>${fmt(inv.total)}</span></div>
     </div></div>
-    ${inv.narration ? `<div style="margin-bottom:20px;padding:10px 14px;background:#EDF3EC;border-left:3px solid #0D9488;font-size:10px;color:#065F46"><strong>Note:</strong> ${inv.narration}</div>` : ''}
+    ${inv.narration ? `<div style="margin-bottom:20px;padding:10px 14px;background:#E8F5ED;border-left:3px solid #0D9488;font-size:10px;color:#065F46"><strong>Note:</strong> ${inv.narration}</div>` : ''}
     <div class="footer">
       <div style="font-size:10px;color:#787774"><strong style="color:#1A1A1A">Terms:</strong><br>${inv.terms || 'Payment due within 30 days.'}</div>
       <div class="sign-area">
@@ -227,7 +227,7 @@ function buildMinimalHTML(inv) {
   const rows = items.map((item, i) => `
     <tr>
       <td style="color:#787774">${i + 1}</td>
-      <td>${item.name || '—'}${item.hsn ? `<span style="font-size:9px;color:#9A9A97;margin-left:8px">HSN ${item.hsn}</span>` : ''}</td>
+      <td>${item.name || '—'}${item.hsn ? `<span style="font-size:9px;color:#AEACA8;margin-left:8px">HSN ${item.hsn}</span>` : ''}</td>
       <td style="text-align:center;color:#787774">${fmtQ(item.qty, item.unit)}</td>
       <td style="text-align:right;color:#787774">${fmt(item.rate)}</td>
       <td style="text-align:center;color:#787774">${item.tax || '0'}%</td>
@@ -360,14 +360,14 @@ export default function InvoicePDF({ open, onClose, invoice, companyGuid }) {
             <p className="text-sm font-semibold text-[#1A1A1A]">Invoice Preview</p>
             <p className="text-xs text-[#787774] mt-0.5">
               {inv.ref && inv.ref !== 'Pending' ? inv.ref + ' · ' : ''}{inv.date}
-              <span className="ml-2 px-1.5 py-0.5 rounded bg-[#F7F7F5] text-[#787774] text-[10px]">
+              <span className="ml-2 px-1.5 py-0.5 rounded bg-[#F5F4EF] text-[#787774] text-[10px]">
                 {template === 'modern' ? 'Modern' : template === 'minimal' ? 'Minimal' : 'Tally Classic'}
               </span>
             </p>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={handlePrint}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium text-white bg-[#37352F] hover:bg-[#37352F] transition-colors">
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium text-white bg-[#1C2B3A] hover:bg-[#1C2B3A] transition-colors">
               <Printer size={14} /> Print / Download PDF
             </button>
             <button onClick={onClose}

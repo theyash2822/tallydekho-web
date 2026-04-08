@@ -29,35 +29,35 @@ export default function AIInsights() {
     {
       text: dashData ? `Sales: ${fmtL(dashData.totalSales)} this FY` : 'Sales data loading...',
       sub: selectedCompany?.name || 'Select a company',
-      color: '#0F7B6C', bg: '#EDF3EC', border: '#BBF7D0', icon: TrendingUp
+      color: '#2D7D46', bg: '#E8F5ED', border: '#BBF7D0', icon: TrendingUp
     },
     {
       text: dashData ? `Purchase: ${fmtL(dashData.totalPurchase)} this FY` : 'Purchase data loading...',
       sub: 'Total procurement spend',
-      color: '#D9730D', bg: '#FFFBEB', border: '#FDE68A', icon: TrendingDown
+      color: '#D97706', bg: '#FFFBEB', border: '#FDE68A', icon: TrendingDown
     },
     {
       text: dashData ? `Receivables: ${fmtL(dashData.receivables)} outstanding` : 'Receivables loading...',
       sub: 'Sundry debtors balance',
-      color: '#EB5757', bg: '#FEF2F2', border: '#FECACA', icon: AlertTriangle
+      color: '#C0392B', bg: '#FEF2F2', border: '#FECACA', icon: AlertTriangle
     },
     {
       text: dashData ? `Cash & Bank: ${fmtL((dashData.cashBalance||0)+(dashData.bankBalance||0))}` : 'Cash loading...',
       sub: 'Available balance',
-      color: '#37352F', bg: '#EFEFEF', border: '#C5CBD0', icon: Info
+      color: '#1C2B3A', bg: '#ECEEEF', border: '#C5CBD0', icon: Info
     },
     {
       text: dashData ? `Net Profit: ${fmtL(dashData.netProfit)}` : 'Net profit loading...',
       sub: 'Sales minus purchases',
-      color: (dashData?.netProfit || 0) >= 0 ? '#0F7B6C' : '#EB5757',
-      bg: (dashData?.netProfit || 0) >= 0 ? '#EDF3EC' : '#FEF2F2',
+      color: (dashData?.netProfit || 0) >= 0 ? '#2D7D46' : '#C0392B',
+      bg: (dashData?.netProfit || 0) >= 0 ? '#E8F5ED' : '#FEF2F2',
       border: (dashData?.netProfit || 0) >= 0 ? '#BBF7D0' : '#FECACA',
       icon: (dashData?.netProfit || 0) >= 0 ? TrendingUp : TrendingDown
     },
     {
       text: dashData ? `Payables: ${fmtL(dashData.payables)} owed` : 'Payables loading...',
       sub: 'Sundry creditors balance',
-      color: '#D9730D', bg: '#FFFBEB', border: '#FDE68A', icon: AlertTriangle
+      color: '#D97706', bg: '#FFFBEB', border: '#FDE68A', icon: AlertTriangle
     },
   ];
 
@@ -69,9 +69,9 @@ export default function AIInsights() {
   ];
 
   const urgencyStyles = {
-    high:   { dot: '#EB5757', bg: '#FEF2F2', border: '#FECACA', label: 'High', labelColor: '#EB5757' },
-    medium: { dot: '#D9730D', bg: '#FFFBEB', border: '#FDE68A', label: 'Medium', labelColor: '#D9730D' },
-    low:    { dot: '#37352F', bg: '#EFEFEF', border: '#C5CBD0', label: 'Low', labelColor: '#37352F' },
+    high:   { dot: '#C0392B', bg: '#FEF2F2', border: '#FECACA', label: 'High', labelColor: '#C0392B' },
+    medium: { dot: '#D97706', bg: '#FFFBEB', border: '#FDE68A', label: 'Medium', labelColor: '#D97706' },
+    low:    { dot: '#1C2B3A', bg: '#ECEEEF', border: '#C5CBD0', label: 'Low', labelColor: '#1C2B3A' },
   };
 
   return (
@@ -87,12 +87,12 @@ export default function AIInsights() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title flex items-center gap-2">
-            <Sparkles size={20} className="text-[#37352F]" /> AI Insights
+            <Sparkles size={20} className="text-[#1C2B3A]" /> AI Insights
           </h1>
           <p className="page-subtitle">{selectedCompany?.name || 'Select a company'} · Powered by Tally data</p>
         </div>
         <button onClick={() => { setLoading(true); api.fetchDashboard({ companyGuid: selectedCompany?.guid }).then(r => { if(r?.data) setDashData(r.data); }).catch(err => setError(err?.message || 'Failed to load')).finally(()=>setLoading(false)); }}
-          className="flex items-center gap-1.5 text-xs text-[#37352F] font-medium hover:text-[#787774]">
+          className="flex items-center gap-1.5 text-xs text-[#1C2B3A] font-medium hover:text-[#787774]">
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
       </div>
@@ -117,9 +117,9 @@ export default function AIInsights() {
       </div>
 
       {/* Recommended actions */}
-      <div className="bg-white border border-[#D3D1CB] rounded-xl p-5">
-        <p className="text-sm font-semibold text-[#37352F] mb-4 flex items-center gap-2">
-          <Sparkles size={14} className="text-[#37352F]" /> Recommended Actions
+      <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
+        <p className="text-sm font-semibold text-[#1C2B3A] mb-4 flex items-center gap-2">
+          <Sparkles size={14} className="text-[#1C2B3A]" /> Recommended Actions
         </p>
         <div className="space-y-2">
           {actions.map((a, i) => {
@@ -133,7 +133,7 @@ export default function AIInsights() {
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: s.dot }} />
                   <div>
-                    <p className="text-sm font-medium text-[#37352F]">{a.action}</p>
+                    <p className="text-sm font-medium text-[#1C2B3A]">{a.action}</p>
                     <p className="text-xs text-[#787774] mt-0.5">{a.reason}</p>
                   </div>
                 </div>
@@ -152,26 +152,26 @@ export default function AIInsights() {
       {/* Key metrics summary */}
       {dashData && (
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white border border-[#D3D1CB] rounded-xl p-5">
-            <p className="text-sm font-semibold text-[#37352F] mb-4">Financial Summary</p>
+          <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
+            <p className="text-sm font-semibold text-[#1C2B3A] mb-4">Financial Summary</p>
             <div className="space-y-3">
               {[
-                ['Total Sales',    fmt(dashData.totalSales),    '#0F7B6C'],
-                ['Total Purchase', fmt(dashData.totalPurchase), '#D9730D'],
-                ['Net Profit',     fmt(dashData.netProfit),     dashData.netProfit >= 0 ? '#0F7B6C' : '#EB5757'],
-                ['Receivables',    fmt(dashData.receivables),   '#EB5757'],
-                ['Payables',       fmt(dashData.payables),      '#D9730D'],
-                ['Cash & Bank',    fmt((dashData.cashBalance||0)+(dashData.bankBalance||0)), '#37352F'],
+                ['Total Sales',    fmt(dashData.totalSales),    '#2D7D46'],
+                ['Total Purchase', fmt(dashData.totalPurchase), '#D97706'],
+                ['Net Profit',     fmt(dashData.netProfit),     dashData.netProfit >= 0 ? '#2D7D46' : '#C0392B'],
+                ['Receivables',    fmt(dashData.receivables),   '#C0392B'],
+                ['Payables',       fmt(dashData.payables),      '#D97706'],
+                ['Cash & Bank',    fmt((dashData.cashBalance||0)+(dashData.bankBalance||0)), '#1C2B3A'],
               ].map(([l, v, c]) => (
-                <div key={l} className="flex justify-between items-center py-1.5 border-b border-[#F7F7F5] last:border-0">
+                <div key={l} className="flex justify-between items-center py-1.5 border-b border-[#F5F4EF] last:border-0">
                   <span className="text-xs text-[#787774]">{l}</span>
                   <span className="text-sm font-semibold" style={{ color: c }}>{v}</span>
                 </div>
               ))}
             </div>
           </div>
-          <div className="bg-white border border-[#D3D1CB] rounded-xl p-5">
-            <p className="text-sm font-semibold text-[#37352F] mb-4">Quick Navigate</p>
+          <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
+            <p className="text-sm font-semibold text-[#1C2B3A] mb-4">Quick Navigate</p>
             <div className="space-y-2">
               {[
                 ['Sales Register',         '/sales'],
@@ -182,9 +182,9 @@ export default function AIInsights() {
                 ['GST Compliance',         '/compliance/gst'],
               ].map(([l, p]) => (
                 <button key={l} onClick={() => navigate(p)}
-                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-[#F7F7F5] transition-colors text-left">
-                  <span className="text-sm text-[#37352F]">{l}</span>
-                  <ArrowRight size={13} className="text-[#9A9A97]" />
+                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-[#F5F4EF] transition-colors text-left">
+                  <span className="text-sm text-[#1C2B3A]">{l}</span>
+                  <ArrowRight size={13} className="text-[#AEACA8]" />
                 </button>
               ))}
             </div>
@@ -192,7 +192,7 @@ export default function AIInsights() {
         </div>
       )}
 
-      <p className="text-xs text-[#9A9A97] text-center pb-2">
+      <p className="text-xs text-[#AEACA8] text-center pb-2">
         Insights are generated from your synced Tally data · Last updated on sync
       </p>
     </div>

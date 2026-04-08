@@ -17,7 +17,7 @@ const statusVariant = { Paid: 'green', Unpaid: 'red', Partial: 'yellow', Open: '
 const receivedVariant = { Complete: 'green', Partial: 'yellow', Pending: 'red' };
 
 const invoiceCols = [
-  { key: 'ref', label: 'Invoice No', render: v => <span className="font-mono text-xs text-[#37352F] font-semibold">{v}</span> },
+  { key: 'ref', label: 'Invoice No', render: v => <span className="font-mono text-xs text-[#1C2B3A] font-semibold">{v}</span> },
   { key: 'vendor', label: 'Vendor' },
   { key: 'gstin', label: 'GSTIN', render: v => <span className="font-mono text-xs text-[#787774]">{v}</span> },
   { key: 'date', label: 'Date', render: v => <span className="text-[#787774]">{v}</span> },
@@ -28,7 +28,7 @@ const invoiceCols = [
 ];
 
 const orderCols = [
-  { key: 'ref', label: 'PO No', render: v => <span className="font-mono text-xs text-[#37352F] font-semibold">{v}</span> },
+  { key: 'ref', label: 'PO No', render: v => <span className="font-mono text-xs text-[#1C2B3A] font-semibold">{v}</span> },
   { key: 'vendor', label: 'Vendor' },
   { key: 'date', label: 'Date', render: v => <span className="text-[#787774]">{v}</span> },
   { key: 'amount', label: 'Amount', render: v => fmt(v) },
@@ -120,48 +120,48 @@ export default function PurchaseModule() {
         </div>
       )}
       <div>
-        <h1 className="text-xl font-semibold text-[#37352F] tracking-tight">Purchase</h1>
+        <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Purchase</h1>
         <p className="text-sm text-[#787774] mt-0.5">July 2025 · {selectedFY?.name ? `FY ${selectedFY.name}` : "FY 2025-26"}</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Purchase" value={loading ? '—' : fmt(displayInvoices.reduce((s,i)=>s+(i.amount||0),0))} icon={ShoppingCart} accent="#37352F" />
-        <KPICard title="Total Bills"    value={loading ? '—' : displayInvoices.length} icon={FileText} accent="#37352F" />
-        <KPICard title="Paid"           value={loading ? '—' : displayInvoices.filter(i=>i.status==='Paid').length} icon={Package} accent="#0F7B6C" />
-        <KPICard title="Unpaid"         value={loading ? '—' : displayInvoices.filter(i=>i.status==='Unpaid').length} icon={FileText} accent="#EB5757" />
+        <KPICard title="Total Purchase" value={loading ? '—' : fmt(displayInvoices.reduce((s,i)=>s+(i.amount||0),0))} icon={ShoppingCart} accent="#1C2B3A" />
+        <KPICard title="Total Bills"    value={loading ? '—' : displayInvoices.length} icon={FileText} accent="#1C2B3A" />
+        <KPICard title="Paid"           value={loading ? '—' : displayInvoices.filter(i=>i.status==='Paid').length} icon={Package} accent="#2D7D46" />
+        <KPICard title="Unpaid"         value={loading ? '—' : displayInvoices.filter(i=>i.status==='Unpaid').length} icon={FileText} accent="#C0392B" />
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-2 bg-white border border-[#D3D1CB] rounded-2xl p-5">
-          <p className="text-sm font-semibold text-[#37352F] mb-1">Purchase Trend</p>
+        <div className="col-span-2 bg-white border border-[#D4D3CE] rounded-2xl p-5">
+          <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Purchase Trend</p>
           <p className="text-xs text-[#787774] mb-4">Monthly · {selectedFY?.name ? `FY ${selectedFY.name}` : "FY 2025-26"}</p>
           <ResponsiveContainer width="100%" height={180}>
             <AreaChart data={monthlyChart} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="pg2" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#37352F" stopOpacity={0.25} />
-                  <stop offset="95%" stopColor="#37352F" stopOpacity={0.02} />
+                  <stop offset="5%" stopColor="#1C2B3A" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="#1C2B3A" stopOpacity={0.02} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="2 4" stroke="#F7F7F5" vertical={false} />
+              <CartesianGrid strokeDasharray="2 4" stroke="#F5F4EF" vertical={false} />
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} tickFormatter={v => v / 100 + 'L'} />
-              <Tooltip formatter={v => ['₹' + (v / 100).toFixed(1) + 'L', 'Purchase']} contentStyle={{ fontSize: 11, borderRadius: 10, border: '1px solid #D3D1CB' }} />
-              <Area type="monotone" dataKey="purchase" stroke="#37352F" strokeWidth={2.5} fill="url(#pg2)" dot={false} activeDot={{ r: 4, fill: '#37352F' }} />
+              <Tooltip formatter={v => ['₹' + (v / 100).toFixed(1) + 'L', 'Purchase']} contentStyle={{ fontSize: 11, borderRadius: 10, border: '1px solid #D4D3CE' }} />
+              <Area type="monotone" dataKey="purchase" stroke="#1C2B3A" strokeWidth={2.5} fill="url(#pg2)" dot={false} activeDot={{ r: 4, fill: '#1C2B3A' }} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
-        <div className="bg-white border border-[#D3D1CB] rounded-2xl p-5">
-          <p className="text-sm font-semibold text-[#37352F] mb-4">Payment Status</p>
+        <div className="bg-white border border-[#D4D3CE] rounded-2xl p-5">
+          <p className="text-sm font-semibold text-[#1C2B3A] mb-4">Payment Status</p>
           <div className="space-y-3">
-            {[['Paid', displayInvoices.filter(i=>i.status==='Paid').length, '#0F7B6C'], ['Unpaid', displayInvoices.filter(i=>i.status==='Unpaid').length, '#EB5757']].map(([l, v, c]) => (
+            {[['Paid', displayInvoices.filter(i=>i.status==='Paid').length, '#2D7D46'], ['Unpaid', displayInvoices.filter(i=>i.status==='Unpaid').length, '#C0392B']].map(([l, v, c]) => (
               <div key={l} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full" style={{ background: c }} />
                   <span className="text-sm text-[#787774]">{l}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-24 bg-[#F7F7F5] rounded-full h-1.5">
+                  <div className="w-24 bg-[#F5F4EF] rounded-full h-1.5">
                     <div className="h-1.5 rounded-full" style={{ width: `${displayInvoices.length > 0 ? (v / displayInvoices.length) * 100 : 0}%`, background: c }} />
                   </div>
                   <span className="text-sm font-semibold w-4">{v}</span>
@@ -169,18 +169,18 @@ export default function PurchaseModule() {
               </div>
             ))}
           </div>
-          <div className="mt-4 pt-4 border-t border-[#F7F7F5]">
+          <div className="mt-4 pt-4 border-t border-[#F5F4EF]">
             <p className="text-xs text-[#787774] mb-2">Alerts</p>
             <div className="text-xs text-amber-700 bg-amber-50 px-3 py-2 rounded-lg border border-amber-200">⚠️ 3 bills missing GSTIN · Review</div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white border border-[#D3D1CB] rounded-2xl">
-        <div className="flex border-b border-[#D3D1CB] px-1 pt-1">
+      <div className="bg-white border border-[#D4D3CE] rounded-2xl">
+        <div className="flex border-b border-[#D4D3CE] px-1 pt-1">
           {TABS.map((t, i) => (
             <button key={i} onClick={() => setTab(i)}
-              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#37352F] bg-[#EFEFEF] font-semibold' : 'text-[#787774] hover:text-[#37352F] hover:bg-[#F7F7F5]'}`}>{t}
+              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#1C2B3A] bg-[#ECEEEF] font-semibold' : 'text-[#787774] hover:text-[#1C2B3A] hover:bg-[#F5F4EF]'}`}>{t}
             </button>
           ))}
         </div>
@@ -188,14 +188,14 @@ export default function PurchaseModule() {
           {tab === 0 && (
             <div className="flex gap-3 mb-4">
               <div className="relative flex-1">
-                <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9A9A97]" />
+                <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#AEACA8]" />
                 <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search vendor or invoice..."
                   className="notion-input pl-8 w-full text-sm" />
               </div>
               <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="notion-input text-sm text-[#787774]">
                 {['All', 'Paid', 'Unpaid', 'Partial'].map(s => <option key={s}>{s}</option>)}
               </select>
-              <button className="flex items-center gap-1.5 px-3 py-2 border border-[#D3D1CB] rounded-lg text-xs text-[#787774] hover:bg-[#F7F7F5]">
+              <button className="flex items-center gap-1.5 px-3 py-2 border border-[#D4D3CE] rounded-lg text-xs text-[#787774] hover:bg-[#F5F4EF]">
                 <Download size={12} /> Export
               </button>
             </div>
@@ -205,11 +205,11 @@ export default function PurchaseModule() {
               <Table columns={invoiceCols} data={filtered.slice((page-1)*25, page*25)} onRowClick={setDrawer} />
               {/* Pagination */}
               {filtered.length > 25 && (
-                <div className="flex items-center justify-between pt-3 border-t border-[#EFEFEF] mt-2">
-                  <span className="text-xs text-[#9A9A97]">{filtered.length} total · showing {(page-1)*25+1}–{Math.min(page*25, filtered.length)}</span>
+                <div className="flex items-center justify-between pt-3 border-t border-[#ECEEEF] mt-2">
+                  <span className="text-xs text-[#AEACA8]">{filtered.length} total · showing {(page-1)*25+1}–{Math.min(page*25, filtered.length)}</span>
                   <div className="flex gap-1">
-                    <button onClick={() => setPage(p=>p-1)} disabled={page===1} className="px-3 py-1.5 text-xs border border-[#D3D1CB] rounded-lg disabled:opacity-40 hover:bg-[#F7F7F5]">← Prev</button>
-                    <button onClick={() => setPage(p=>p+1)} disabled={page*25>=filtered.length} className="px-3 py-1.5 text-xs border border-[#D3D1CB] rounded-lg disabled:opacity-40 hover:bg-[#F7F7F5]">Next →</button>
+                    <button onClick={() => setPage(p=>p-1)} disabled={page===1} className="px-3 py-1.5 text-xs border border-[#D4D3CE] rounded-lg disabled:opacity-40 hover:bg-[#F5F4EF]">← Prev</button>
+                    <button onClick={() => setPage(p=>p+1)} disabled={page*25>=filtered.length} className="px-3 py-1.5 text-xs border border-[#D4D3CE] rounded-lg disabled:opacity-40 hover:bg-[#F5F4EF]">Next →</button>
                   </div>
                 </div>
               )}
@@ -228,7 +228,7 @@ export default function PurchaseModule() {
             onBack={() => setDrawer(null)}
           />
         ) : drawer ? (
-          <div className="p-4 text-sm text-[#9A9A97] text-center">Loading voucher details...</div>
+          <div className="p-4 text-sm text-[#AEACA8] text-center">Loading voucher details...</div>
         ) : null}
       </Drawer>
     </div>

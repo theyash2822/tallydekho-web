@@ -7,8 +7,8 @@ import api from '../services/api';
 const fmt = n => n ? '₹' + n.toLocaleString('en-IN') : '';
 
 const QUICK_NAV = [
-  { label: 'Sales',      path: '/sales',     icon: TrendingUp,  color: '#37352F' },
-  { label: 'Purchase',   path: '/purchase',  icon: ShoppingCart,color: '#37352F' },
+  { label: 'Sales',      path: '/sales',     icon: TrendingUp,  color: '#1C2B3A' },
+  { label: 'Purchase',   path: '/purchase',  icon: ShoppingCart,color: '#1C2B3A' },
   { label: 'Inventory',  path: '/inventory', icon: Package,     color: '#798692' },
   { label: 'Ledgers',    path: '/ledgers',   icon: BookOpen,    color: '#9FA9B1' },
 ];
@@ -58,7 +58,7 @@ export default function GlobalSearch() {
             sub:    v.party_name || '—',
             path:   (v.voucher_type || '').toLowerCase().includes('purchase') ? '/purchase' : '/sales',
             icon:   (v.voucher_type || '').toLowerCase().includes('purchase') ? ShoppingCart : TrendingUp,
-            color:  (v.voucher_type || '').toLowerCase().includes('purchase') ? '#37352F' : '#37352F',
+            color:  (v.voucher_type || '').toLowerCase().includes('purchase') ? '#1C2B3A' : '#1C2B3A',
             amount: parseFloat(v.amount) || 0,
           })));
         })
@@ -80,7 +80,7 @@ export default function GlobalSearch() {
   return (
     <div className="relative flex-1 max-w-sm" ref={ref}>
       <div className="relative">
-        <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9A9A97] pointer-events-none" />
+        <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#AEACA8] pointer-events-none" />
         <input
           ref={inputRef}
           value={query}
@@ -88,10 +88,10 @@ export default function GlobalSearch() {
           onFocus={() => setOpen(true)}
           onKeyDown={handleKey}
           placeholder="Search invoices, ledgers... (⌘K)"
-          className="w-full pl-8 pr-8 py-1.5 text-xs bg-[#F7F7F5] border border-[#E9E9E7] rounded-lg outline-none focus:border-[#1A1A1A] focus:ring-2 focus:bg-white transition-all placeholder:text-[#9A9A97]"
+          className="w-full pl-8 pr-8 py-1.5 text-xs bg-[#F5F4EF] border border-[#E9E8E3] rounded-lg outline-none focus:border-[#1A1A1A] focus:ring-2 focus:bg-white transition-all placeholder:text-[#AEACA8]"
         />
         {query && (
-          <button onClick={() => { setQuery(''); setResults([]); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9A9A97] hover:text-[#787774]">
+          <button onClick={() => { setQuery(''); setResults([]); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#AEACA8] hover:text-[#787774]">
             <X size={12} />
           </button>
         )}
@@ -101,18 +101,18 @@ export default function GlobalSearch() {
         <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-[#E8E7E3] rounded-xl shadow-lg z-[100] overflow-hidden">
           {/* Loading */}
           {loading && (
-            <div className="px-4 py-4 text-center text-xs text-[#9A9A97]">Searching…</div>
+            <div className="px-4 py-4 text-center text-xs text-[#AEACA8]">Searching…</div>
           )}
 
           {/* No results */}
           {!loading && query.trim() && results.length === 0 && (
-            <div className="px-4 py-6 text-center text-xs text-[#9A9A97]">No results for "{query}"</div>
+            <div className="px-4 py-6 text-center text-xs text-[#AEACA8]">No results for "{query}"</div>
           )}
 
           {/* Quick nav (no query) */}
           {!loading && !query.trim() && (
             <div className="px-4 py-3">
-              <p className="text-[10px] font-semibold text-[#9A9A97] uppercase tracking-widest mb-2">Quick navigate</p>
+              <p className="text-[10px] font-semibold text-[#AEACA8] uppercase tracking-widest mb-2">Quick navigate</p>
               {QUICK_NAV.map(({ label, path, icon: Icon, color }) => (
                 <button key={label} onClick={() => { navigate(path); setOpen(false); }}
                   className="flex items-center gap-2.5 w-full px-2 py-2 rounded-lg hover:bg-[#F7F6F3] text-left transition-colors">
@@ -128,12 +128,12 @@ export default function GlobalSearch() {
           {/* Results */}
           {!loading && results.length > 0 && (
             <div className="py-1">
-              <p className="px-4 pt-2 pb-1 text-[10px] font-semibold text-[#9A9A97] uppercase tracking-widest">{results.length} results</p>
+              <p className="px-4 pt-2 pb-1 text-[10px] font-semibold text-[#AEACA8] uppercase tracking-widest">{results.length} results</p>
               {results.map((item, i) => {
                 const Icon = item.icon;
                 return (
                   <button key={i} onClick={() => go(item)}
-                    className={`flex items-center gap-3 w-full px-4 py-2.5 text-left transition-colors ${selected === i ? 'bg-[#F7F7F5]' : 'hover:bg-[#F7F7F5]'}`}>
+                    className={`flex items-center gap-3 w-full px-4 py-2.5 text-left transition-colors ${selected === i ? 'bg-[#F5F4EF]' : 'hover:bg-[#F5F4EF]'}`}>
                     <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: item.color + '20' }}>
                       <Icon size={13} style={{ color: item.color }} />
                     </div>
@@ -142,7 +142,7 @@ export default function GlobalSearch() {
                       <p className="text-xs text-[#787774] truncate">{item.type} · {item.sub}</p>
                     </div>
                     {item.amount > 0 && <span className="text-xs font-semibold text-[#1A1A1A] flex-shrink-0">{fmt(item.amount)}</span>}
-                    <ArrowRight size={12} className="text-[#9A9A97] flex-shrink-0" />
+                    <ArrowRight size={12} className="text-[#AEACA8] flex-shrink-0" />
                   </button>
                 );
               })}

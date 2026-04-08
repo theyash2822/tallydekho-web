@@ -34,27 +34,27 @@ function CountryPicker({ selected, onSelect }) {
       <button
         type="button"
         onClick={() => setOpen(p => !p)}
-        className="flex items-center gap-2 px-3 h-12 bg-white border border-[#D3D1CB] rounded-xl text-sm text-[#37352F] hover:border-[#9FA9B1] transition-colors whitespace-nowrap"
+        className="flex items-center gap-2 px-3 h-12 bg-white border border-[#D4D3CE] rounded-xl text-sm text-[#1C2B3A] hover:border-[#9FA9B1] transition-colors whitespace-nowrap"
       >
         <span className="text-base leading-none">{selected.flag}</span>
         <span className="text-[#787774]">{selected.code}</span>
-        <ChevronDown size={12} className={`text-[#9A9A97] transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown size={12} className={`text-[#AEACA8] transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-1.5 bg-white border border-[#D3D1CB] rounded-2xl shadow-notion-lg z-50 overflow-hidden" style={{ width: 300, maxHeight: 400 }}>
-          <div className="p-2.5 border-b border-[#EFEFEF]">
+        <div className="absolute top-full left-0 mt-1.5 bg-white border border-[#D4D3CE] rounded-2xl shadow-notion-lg z-50 overflow-hidden" style={{ width: 300, maxHeight: 400 }}>
+          <div className="p-2.5 border-b border-[#ECEEEF]">
             <div className="relative">
-              <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9A9A97]" />
+              <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#AEACA8]" />
               <input
                 ref={searchRef}
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search country..."
-                className="w-full pl-8 pr-3 py-2 text-sm bg-[#F7F7F5] rounded-lg border border-[#EFEFEF] outline-none focus:border-[#37352F] transition-colors"
+                className="w-full pl-8 pr-3 py-2 text-sm bg-[#F5F4EF] rounded-lg border border-[#ECEEEF] outline-none focus:border-[#1C2B3A] transition-colors"
               />
               {search && (
-                <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9A9A97] hover:text-[#787774]">
+                <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#AEACA8] hover:text-[#787774]">
                   <X size={12} />
                 </button>
               )}
@@ -63,12 +63,12 @@ function CountryPicker({ selected, onSelect }) {
           <div className="overflow-y-auto" style={{ maxHeight: 320 }}>
             {filtered ? (
               filtered.length === 0
-                ? <div className="text-center py-8 text-sm text-[#9A9A97]">No results for "{search}"</div>
+                ? <div className="text-center py-8 text-sm text-[#AEACA8]">No results for "{search}"</div>
                 : <div className="py-1">{filtered.map(c => <CountryRow key={c.iso + c.code} country={c} selected={selected} onSelect={() => { onSelect(c); setOpen(false); setSearch(''); }} />)}</div>
             ) : (
               COUNTRY_GROUPS.map(group => (
                 <div key={group.label}>
-                  <div className="px-4 pt-3 pb-1.5 text-[10px] font-semibold text-[#9A9A97] uppercase tracking-widest">{group.label}</div>
+                  <div className="px-4 pt-3 pb-1.5 text-[10px] font-semibold text-[#AEACA8] uppercase tracking-widest">{group.label}</div>
                   {group.countries.map(c => <CountryRow key={c.iso + c.code} country={c} selected={selected} onSelect={() => { onSelect(c); setOpen(false); }} />)}
                 </div>
               ))
@@ -86,13 +86,13 @@ function CountryRow({ country, selected, onSelect }) {
     <button
       onClick={onSelect}
       className={`w-full flex items-center gap-3 px-4 py-2 text-sm text-left transition-colors ${
-        isSelected ? 'bg-[#EFEFEF] text-[#37352F] font-medium' : 'hover:bg-[#F7F7F5] text-[#37352F]'
+        isSelected ? 'bg-[#ECEEEF] text-[#1C2B3A] font-medium' : 'hover:bg-[#F5F4EF] text-[#1C2B3A]'
       }`}
     >
       <span className="text-base leading-none w-6 flex-shrink-0">{country.flag}</span>
       <span className="flex-1">{country.name}</span>
-      <span className={`text-xs ${isSelected ? 'text-[#37352F] font-semibold' : 'text-[#9A9A97]'}`}>{country.code}</span>
-      {isSelected && <Check size={12} className="text-[#37352F] flex-shrink-0" />}
+      <span className={`text-xs ${isSelected ? 'text-[#1C2B3A] font-semibold' : 'text-[#AEACA8]'}`}>{country.code}</span>
+      {isSelected && <Check size={12} className="text-[#1C2B3A] flex-shrink-0" />}
     </button>
   );
 }
@@ -132,7 +132,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex" style={{ background: '#F7F7F5' }}>
+    <div className="min-h-screen flex" style={{ background: '#F5F4EF' }}>
 
       {/* ── Left — brand panel ─────────────────────────────────────────── */}
       <div className="hidden lg:flex lg:w-[44%] flex-col justify-between p-12 brand-gradient">
@@ -179,20 +179,20 @@ export default function Login() {
           {/* Mobile logo */}
           <div className="flex items-center gap-3 mb-10 lg:hidden">
             <div className="w-8 h-8 rounded-xl bg-[#1A1A1A] flex items-center justify-center font-bold text-white text-sm">T</div>
-            <span className="font-semibold text-[#37352F] tracking-tight">TallyDekho</span>
+            <span className="font-semibold text-[#1C2B3A] tracking-tight">TallyDekho</span>
           </div>
 
-          <h2 className="text-[26px] font-bold text-[#37352F] mb-2 tracking-tight">
+          <h2 className="text-[26px] font-bold text-[#1C2B3A] mb-2 tracking-tight">
             Get started
           </h2>
           <p className="text-sm text-[#787774] mb-8 leading-relaxed">
             Enter your mobile number — we'll send an OTP.<br />
-            <span className="text-[#9A9A97]">New here? We'll set up your account automatically.</span>
+            <span className="text-[#AEACA8]">New here? We'll set up your account automatically.</span>
           </p>
 
           <div className="space-y-4">
             <div>
-              <label className="text-[11px] font-semibold text-[#9A9A97] uppercase tracking-widest block mb-1.5">
+              <label className="text-[11px] font-semibold text-[#AEACA8] uppercase tracking-widest block mb-1.5">
                 Mobile Number
               </label>
               <div className="flex gap-2">
@@ -205,16 +205,16 @@ export default function Login() {
                   placeholder={`${country.digits}-digit number`}
                   maxLength={country.digits}
                   autoFocus
-                  className="flex-1 h-12 px-4 bg-white border border-[#D3D1CB] rounded-xl text-sm text-[#37352F] outline-none focus:border-[#37352F] focus:ring-2 focus:ring-[#37352F]/10 transition-all placeholder:text-[#9A9A97]"
+                  className="flex-1 h-12 px-4 bg-white border border-[#D4D3CE] rounded-xl text-sm text-[#1C2B3A] outline-none focus:border-[#1C2B3A] focus:ring-2 focus:ring-[#1C2B3A]/10 transition-all placeholder:text-[#AEACA8]"
                 />
               </div>
-              {error && <p className="text-xs text-[#EB5757] mt-1.5">{error}</p>}
+              {error && <p className="text-xs text-[#C0392B] mt-1.5">{error}</p>}
             </div>
 
             <button
               onClick={handleContinue}
               disabled={loading}
-              className="w-full h-12 rounded-xl text-sm font-semibold bg-[#37352F] text-white hover:bg-[#37352F] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
+              className="w-full h-12 rounded-xl text-sm font-semibold bg-[#1C2B3A] text-white hover:bg-[#1C2B3A] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
             >
               {loading
                 ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -223,11 +223,11 @@ export default function Login() {
             </button>
           </div>
 
-          <p className="text-xs text-[#9A9A97] text-center mt-8 leading-relaxed">
+          <p className="text-xs text-[#AEACA8] text-center mt-8 leading-relaxed">
             By continuing, you agree to our{' '}
-            <span className="text-[#37352F] cursor-pointer hover:underline underline-offset-2">Terms</span>
+            <span className="text-[#1C2B3A] cursor-pointer hover:underline underline-offset-2">Terms</span>
             {' '}and{' '}
-            <span className="text-[#37352F] cursor-pointer hover:underline underline-offset-2">Privacy Policy</span>
+            <span className="text-[#1C2B3A] cursor-pointer hover:underline underline-offset-2">Privacy Policy</span>
           </p>
         </div>
       </div>

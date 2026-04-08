@@ -17,17 +17,17 @@ const TABS = ['Cash Register', 'Bank Accounts'];
 
 const txnCols = [
   { key: 'date',        label: 'Date' },
-  { key: 'ref',         label: 'Reference', render: v => <span className="font-mono text-xs text-[#9A9A97]">{v || '—'}</span> },
+  { key: 'ref',         label: 'Reference', render: v => <span className="font-mono text-xs text-[#AEACA8]">{v || '—'}</span> },
   { key: 'description', label: 'Party / Description' },
-  { key: 'dr',   label: 'Receipt (₹)',  render: v => v > 0 ? <span className="text-[#0F7B6C] font-medium">{fmt(v)}</span> : <span className="text-[#C5CBD0]">—</span> },
-  { key: 'cr',   label: 'Payment (₹)', render: v => v > 0 ? <span className="text-[#EB5757] font-medium">{fmt(v)}</span> : <span className="text-[#C5CBD0]">—</span> },
+  { key: 'dr',   label: 'Receipt (₹)',  render: v => v > 0 ? <span className="text-[#2D7D46] font-medium">{fmt(v)}</span> : <span className="text-[#C5CBD0]">—</span> },
+  { key: 'cr',   label: 'Payment (₹)', render: v => v > 0 ? <span className="text-[#C0392B] font-medium">{fmt(v)}</span> : <span className="text-[#C5CBD0]">—</span> },
   { key: 'voucher_type', label: 'Type', render: v => <Badge label={v} variant={statusVariant[v] || 'gray'} /> },
 ];
 
 const bankCols = [
   { key: 'name',    label: 'Bank / Account' },
   { key: 'balance', label: 'Balance', render: (v, row) => (
-    <span className={`font-semibold ${v >= 0 ? 'text-[#0F7B6C]' : 'text-[#EB5757]'}`}>{fmt(v)}</span>
+    <span className={`font-semibold ${v >= 0 ? 'text-[#2D7D46]' : 'text-[#C0392B]'}`}>{fmt(v)}</span>
   )},
   { key: 'type', label: 'Type', render: v => <Badge label={v === 'Dr' ? 'Debit' : 'Credit'} variant={v === 'Dr' ? 'blue' : 'green'} /> },
 ];
@@ -81,37 +81,37 @@ export default function CashBank() {
           <h1 className="page-title">Cash & Bank</h1>
           <p className="page-subtitle">{selectedCompany?.name || '—'} · {fyLabel}</p>
         </div>
-        <button onClick={load} disabled={loading} className="flex items-center gap-1.5 text-xs text-[#787774] hover:text-[#37352F] transition-colors disabled:opacity-40">
+        <button onClick={load} disabled={loading} className="flex items-center gap-1.5 text-xs text-[#787774] hover:text-[#1C2B3A] transition-colors disabled:opacity-40">
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Receipts"  value={loading ? '—' : fmtL(summary.totalReceipts)}  icon={TrendingUp}   accent="#0F7B6C" />
-        <KPICard title="Total Payments"  value={loading ? '—' : fmtL(summary.totalPayments)}  icon={TrendingDown} accent="#EB5757" />
-        <KPICard title="Bank Balance"    value={loading ? '—' : fmtL(summary.bankBalance)}    icon={Landmark}     accent="#2383E2" />
-        <KPICard title="Net Cash Flow"   value={loading ? '—' : fmtL(summary.netCash)}        icon={RefreshCw}    accent="#37352F" />
+        <KPICard title="Total Receipts"  value={loading ? '—' : fmtL(summary.totalReceipts)}  icon={TrendingUp}   accent="#2D7D46" />
+        <KPICard title="Total Payments"  value={loading ? '—' : fmtL(summary.totalPayments)}  icon={TrendingDown} accent="#C0392B" />
+        <KPICard title="Bank Balance"    value={loading ? '—' : fmtL(summary.bankBalance)}    icon={Landmark}     accent="#2563EB" />
+        <KPICard title="Net Cash Flow"   value={loading ? '—' : fmtL(summary.netCash)}        icon={RefreshCw}    accent="#1C2B3A" />
       </div>
 
-      <div className="bg-white border border-[#D3D1CB] rounded-xl">
-        <div className="flex gap-1 p-1 border-b border-[#D3D1CB]">
+      <div className="bg-white border border-[#D4D3CE] rounded-xl">
+        <div className="flex gap-1 p-1 border-b border-[#D4D3CE]">
           {TABS.map((t, i) => (
             <button key={t} onClick={() => setTab(i)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === i ? 'bg-[#F7F7F5] text-[#37352F]' : 'text-[#787774] hover:text-[#37352F]'}`}>
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === i ? 'bg-[#F5F4EF] text-[#1C2B3A]' : 'text-[#787774] hover:text-[#1C2B3A]'}`}>
               {t}
             </button>
           ))}
         </div>
         <div className="p-4">
           {loading ? (
-            <div className="h-40 flex items-center justify-center text-xs text-[#9A9A97]">Loading…</div>
+            <div className="h-40 flex items-center justify-center text-xs text-[#AEACA8]">Loading…</div>
           ) : tab === 0 ? (
             txns.length === 0
-              ? <div className="h-40 flex items-center justify-center text-xs text-[#9A9A97]">{isPaired ? 'No transactions found for this period' : 'Pair desktop app to see transactions'}</div>
+              ? <div className="h-40 flex items-center justify-center text-xs text-[#AEACA8]">{isPaired ? 'No transactions found for this period' : 'Pair desktop app to see transactions'}</div>
               : <Table columns={txnCols} data={txns} />
           ) : (
             banks.length === 0
-              ? <div className="h-40 flex items-center justify-center text-xs text-[#9A9A97]">{isPaired ? 'No bank accounts found' : 'Pair desktop app to see bank accounts'}</div>
+              ? <div className="h-40 flex items-center justify-center text-xs text-[#AEACA8]">{isPaired ? 'No bank accounts found' : 'Pair desktop app to see bank accounts'}</div>
               : <Table columns={bankCols} data={banks} />
           )}
         </div>

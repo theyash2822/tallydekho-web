@@ -5,7 +5,7 @@ export function FormField({ label, required, children, hint }) {
         {label} {required && <span className="text-rose-500">*</span>}
       </label>
       {children}
-      {hint && <p className="text-[10px] text-[#9A9A97] mt-1">{hint}</p>}
+      {hint && <p className="text-[10px] text-[#AEACA8] mt-1">{hint}</p>}
     </div>
   );
 }
@@ -67,7 +67,7 @@ export function Toggle({ label, checked, onChange }) {
     <label className="flex items-center gap-3 cursor-pointer">
       <div
         onClick={() => onChange && onChange(!checked)}
-        className={`w-9 h-5 rounded-full transition-colors relative cursor-pointer ${checked ? 'bg-[#1A1A1A]' : 'bg-[#D3D1CB]'}`}
+        className={`w-9 h-5 rounded-full transition-colors relative cursor-pointer ${checked ? 'bg-[#1A1A1A]' : 'bg-[#D4D3CE]'}`}
       >
         <div className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-transform shadow-sm ${checked ? 'translate-x-4' : 'translate-x-0.5'}`} />
       </div>

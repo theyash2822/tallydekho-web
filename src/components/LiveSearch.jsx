@@ -30,20 +30,20 @@ function Dropdown({ anchorRef, results, loading, query, onSelect, onUseRaw }) {
         width: pos.width,
         zIndex: 99999,
       }}
-      className="bg-white border border-[#D3D1CB] rounded-xl shadow-2xl overflow-hidden max-h-56 overflow-y-auto"
+      className="bg-white border border-[#D4D3CE] rounded-xl shadow-2xl overflow-hidden max-h-56 overflow-y-auto"
     >
       {loading && (
-        <div className="px-3 py-2.5 text-xs text-[#9A9A97] flex items-center gap-2">
-          <div className="w-3 h-3 border border-[#9A9A97] border-t-transparent rounded-full animate-spin flex-shrink-0" />
+        <div className="px-3 py-2.5 text-xs text-[#AEACA8] flex items-center gap-2">
+          <div className="w-3 h-3 border border-[#AEACA8] border-t-transparent rounded-full animate-spin flex-shrink-0" />
           Searching...
         </div>
       )}
       {!loading && results.length === 0 && query.length === 0 && (
-        <div className="px-3 py-2.5 text-xs text-[#9A9A97]">Start typing to search...</div>
+        <div className="px-3 py-2.5 text-xs text-[#AEACA8]">Start typing to search...</div>
       )}
       {!loading && results.length === 0 && query.length > 0 && (
         <div className="px-3 py-2 text-center">
-          <p className="text-xs text-[#9A9A97]">No results for "{query}"</p>
+          <p className="text-xs text-[#AEACA8]">No results for "{query}"</p>
         </div>
       )}
       {results.map((item, i) => (
@@ -51,14 +51,14 @@ function Dropdown({ anchorRef, results, loading, query, onSelect, onUseRaw }) {
           key={i}
           type="button"
           onMouseDown={e => { e.preventDefault(); onSelect(item); }}
-          className="w-full flex items-center gap-2 px-3 py-2.5 hover:bg-[#F7F7F5] text-left border-b border-[#F7F7F5] last:border-0 transition-colors"
+          className="w-full flex items-center gap-2 px-3 py-2.5 hover:bg-[#F5F4EF] text-left border-b border-[#F5F4EF] last:border-0 transition-colors"
         >
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-[#37352F] truncate">{item.label}</p>
-            {item.sub && <p className="text-xs text-[#9A9A97] truncate">{item.sub}</p>}
+            <p className="text-sm font-medium text-[#1C2B3A] truncate">{item.label}</p>
+            {item.sub && <p className="text-xs text-[#AEACA8] truncate">{item.sub}</p>}
           </div>
           {item.badge && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#EFEFEF] text-[#787774] flex-shrink-0">{item.badge}</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#ECEEEF] text-[#787774] flex-shrink-0">{item.badge}</span>
           )}
         </button>
       ))}
@@ -66,9 +66,9 @@ function Dropdown({ anchorRef, results, loading, query, onSelect, onUseRaw }) {
         <button
           type="button"
           onMouseDown={e => { e.preventDefault(); onUseRaw(query); }}
-          className="w-full flex items-center gap-2 px-3 py-2 hover:bg-[#EEF1F3] text-left border-t border-[#F7F7F5]"
+          className="w-full flex items-center gap-2 px-3 py-2 hover:bg-[#EEF1F3] text-left border-t border-[#F5F4EF]"
         >
-          <span className="text-xs text-[#37352F] font-medium">Use "{query}"</span>
+          <span className="text-xs text-[#1C2B3A] font-medium">Use "{query}"</span>
         </button>
       )}
     </div>,
@@ -147,7 +147,7 @@ export default function LiveSearch({
   return (
     <div className={`relative ${className}`} ref={anchorRef}>
       <div className="relative">
-        <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9A9A97] pointer-events-none" />
+        <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#AEACA8] pointer-events-none" />
         <input
           value={query}
           onChange={e => handleInput(e.target.value)}
@@ -158,17 +158,17 @@ export default function LiveSearch({
           required={required}
           autoComplete="off"
           className={`w-full pl-8 pr-7 py-2 text-sm border rounded-lg outline-none transition-all
-            ${query ? 'border-[#37352F] bg-white' : 'border-[#D3D1CB] bg-white focus:border-[#37352F]'}
-            ${disabled ? 'bg-[#F7F7F5] cursor-not-allowed' : ''}
+            ${query ? 'border-[#1C2B3A] bg-white' : 'border-[#D4D3CE] bg-white focus:border-[#1C2B3A]'}
+            ${disabled ? 'bg-[#F5F4EF] cursor-not-allowed' : ''}
           `}
         />
         {query ? (
           <button type="button" onMouseDown={e => { e.preventDefault(); handleClear(); }}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-[#9A9A97] hover:text-[#787774]">
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-[#AEACA8] hover:text-[#787774]">
             <X size={13} />
           </button>
         ) : (
-          <ChevronDown size={13} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#9A9A97] pointer-events-none" />
+          <ChevronDown size={13} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#AEACA8] pointer-events-none" />
         )}
       </div>
 

@@ -27,7 +27,7 @@ function UserMenu({ user, onLogout }) {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(p => !p)}
-        className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F7F7F5] transition-colors"
+        className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F5F4EF] transition-colors"
       >
         <div className="w-6 h-6 rounded-full bg-[#1A1A1A] flex items-center justify-center text-white text-[10px] font-semibold flex-shrink-0">
           {initials}
@@ -35,21 +35,21 @@ function UserMenu({ user, onLogout }) {
         <span className="text-xs font-medium text-[#1A1A1A] max-w-[80px] truncate hidden sm:block">
           {displayName.split(' ')[0]}
         </span>
-        <ChevronDown size={11} className="text-[#9A9A97]" />
+        <ChevronDown size={11} className="text-[#AEACA8]" />
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 mt-1.5 w-52 bg-white border border-[#E9E9E7] rounded-xl shadow-lg z-50 py-1 overflow-hidden">
-          <div className="px-4 py-3 border-b border-[#F7F7F5]">
+        <div className="absolute top-full right-0 mt-1.5 w-52 bg-white border border-[#E9E8E3] rounded-xl shadow-lg z-50 py-1 overflow-hidden">
+          <div className="px-4 py-3 border-b border-[#F5F4EF]">
             <p className="text-sm font-semibold text-[#1A1A1A] truncate">{displayName}</p>
-            <p className="text-xs text-[#9A9A97] mt-0.5 truncate">{user?.mobile || user?.email || ''}</p>
+            <p className="text-xs text-[#AEACA8] mt-0.5 truncate">{user?.mobile || user?.email || ''}</p>
           </div>
-          <button className="w-full text-left px-4 py-2.5 text-sm text-[#787774] hover:bg-[#F7F7F5] hover:text-[#1A1A1A] transition-colors">Profile</button>
-          <button className="w-full text-left px-4 py-2.5 text-sm text-[#787774] hover:bg-[#F7F7F5] hover:text-[#1A1A1A] transition-colors">Settings</button>
-          <div className="border-t border-[#F7F7F5] mt-1 pt-1">
+          <button className="w-full text-left px-4 py-2.5 text-sm text-[#787774] hover:bg-[#F5F4EF] hover:text-[#1A1A1A] transition-colors">Profile</button>
+          <button className="w-full text-left px-4 py-2.5 text-sm text-[#787774] hover:bg-[#F5F4EF] hover:text-[#1A1A1A] transition-colors">Settings</button>
+          <div className="border-t border-[#F5F4EF] mt-1 pt-1">
             <button
               onClick={() => { setOpen(false); onLogout(); }}
-              className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[#EB5757] hover:bg-[#FEF2F2] transition-colors"
+              className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[#C0392B] hover:bg-[#FEF2F2] transition-colors"
             >
               <LogOut size={13} /> Sign out
             </button>
@@ -81,27 +81,27 @@ function FYSelector() {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(p => !p)}
-        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#E9E9E7] hover:bg-[#F7F7F5] transition-colors text-xs font-medium text-[#37352F]"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#E9E8E3] hover:bg-[#F5F4EF] transition-colors text-xs font-medium text-[#1C2B3A]"
       >
-        <span className="text-[10px] text-[#9A9A97] font-normal">FY</span>
+        <span className="text-[10px] text-[#AEACA8] font-normal">FY</span>
         <span className="font-semibold">{currentFY?.name || '2025-26'}</span>
-        <ChevronDown size={11} className={`text-[#9A9A97] transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown size={11} className={`text-[#AEACA8] transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 mt-1.5 w-44 bg-white border border-[#E9E9E7] rounded-xl shadow-lg z-50 py-1 overflow-hidden">
-          <p className="px-3 pt-2 pb-1 text-[10px] font-semibold text-[#9A9A97] uppercase tracking-widest">Financial Year</p>
+        <div className="absolute top-full right-0 mt-1.5 w-44 bg-white border border-[#E9E8E3] rounded-xl shadow-lg z-50 py-1 overflow-hidden">
+          <p className="px-3 pt-2 pb-1 text-[10px] font-semibold text-[#AEACA8] uppercase tracking-widest">Financial Year</p>
           {years.length === 0 && (
-            <p className="px-3 py-2 text-xs text-[#9A9A97]">Sync desktop to load years</p>
+            <p className="px-3 py-2 text-xs text-[#AEACA8]">Sync desktop to load years</p>
           )}
           {[...years].reverse().map(y => (
             <button
               key={y.uniqueId}
               onClick={() => { selectFY(y); setOpen(false); }}
-              className="w-full flex items-center justify-between px-3 py-2 hover:bg-[#F7F7F5] transition-colors text-left"
+              className="w-full flex items-center justify-between px-3 py-2 hover:bg-[#F5F4EF] transition-colors text-left"
             >
               <span className="text-sm text-[#1A1A1A]">FY {y.name}</span>
-              {currentFY?.uniqueId === y.uniqueId && <Check size={12} className="text-[#37352F]" />}
+              {currentFY?.uniqueId === y.uniqueId && <Check size={12} className="text-[#1C2B3A]" />}
             </button>
           ))}
         </div>
@@ -129,7 +129,7 @@ function CompanySwitcher() {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(p => !p)}
-        className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-[#F7F7F5] transition-colors"
+        className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-[#F5F4EF] transition-colors"
       >
         <div className="w-5 h-5 rounded-md bg-[#1A1A1A] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
           {displayName[0]}
@@ -137,18 +137,18 @@ function CompanySwitcher() {
         <span className="text-xs font-medium text-[#1A1A1A] max-w-[120px] truncate">
           {displayName.split(' ').slice(0, 2).join(' ')}
         </span>
-        <ChevronDown size={11} className={`text-[#9A9A97] transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown size={11} className={`text-[#AEACA8] transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 mt-1.5 w-64 bg-white border border-[#E9E9E7] rounded-xl shadow-lg z-50 py-1 overflow-hidden">
+        <div className="absolute top-full right-0 mt-1.5 w-64 bg-white border border-[#E9E8E3] rounded-xl shadow-lg z-50 py-1 overflow-hidden">
           {/* Company list */}
-          <p className="px-3 pt-2 pb-1.5 text-[10px] font-semibold text-[#9A9A97] uppercase tracking-widest">Company</p>
+          <p className="px-3 pt-2 pb-1.5 text-[10px] font-semibold text-[#AEACA8] uppercase tracking-widest">Company</p>
           {list.map(c => (
             <button
               key={c.guid || c.name}
               onClick={() => { selectCompany(c); setOpen(false); }}
-              className="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-[#F7F7F5] transition-colors text-left"
+              className="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-[#F5F4EF] transition-colors text-left"
             >
               <div className="w-6 h-6 rounded-md bg-[#1A1A1A] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
                 {c.name?.[0]}
@@ -241,13 +241,13 @@ export default function AppShell() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: '#F7F7F5' }}>
+    <div className="flex h-screen overflow-hidden" style={{ background: '#F5F4EF' }}>
 
       {/* ── Sidebar ──────────────────────────────────────────────────────── */}
-      <aside className={`${sidebarOpen ? 'w-56' : 'w-14'} bg-white border-r border-[#E9E9E7] flex flex-col transition-all duration-200 flex-shrink-0`}>
+      <aside className={`${sidebarOpen ? 'w-56' : 'w-14'} bg-white border-r border-[#E9E8E3] flex flex-col transition-all duration-200 flex-shrink-0`}>
 
         {/* Logo */}
-        <div className="flex items-center gap-2.5 px-4 py-3.5 border-b border-[#F7F7F5]">
+        <div className="flex items-center gap-2.5 px-4 py-3.5 border-b border-[#F5F4EF]">
           <div className="w-7 h-7 rounded-lg bg-[#1A1A1A] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">T</div>
           {sidebarOpen && <span className="text-sm font-semibold text-[#1A1A1A] tracking-tight">TallyDekho</span>}
         </div>
@@ -255,10 +255,10 @@ export default function AppShell() {
         {/* Search */}
         {sidebarOpen && (
           <div className="px-3 pt-3 pb-2">
-            <div className="flex items-center gap-2 px-2.5 py-2 rounded-lg bg-[#F7F7F5] border border-[#E9E9E7] text-[#9A9A97] text-xs cursor-pointer hover:border-[#D3D1CB] transition-colors">
+            <div className="flex items-center gap-2 px-2.5 py-2 rounded-lg bg-[#F5F4EF] border border-[#E9E8E3] text-[#AEACA8] text-xs cursor-pointer hover:border-[#D4D3CE] transition-colors">
               <Search size={12} />
               <span>Search...</span>
-              <span className="ml-auto text-[10px] bg-white px-1.5 py-0.5 rounded border border-[#E9E9E7] font-medium">⌘K</span>
+              <span className="ml-auto text-[10px] bg-white px-1.5 py-0.5 rounded border border-[#E9E8E3] font-medium">⌘K</span>
             </div>
           </div>
         )}
@@ -270,7 +270,7 @@ export default function AppShell() {
               {group.label && sidebarOpen && (
                 <button
                   onClick={() => setCollapsed(p => ({ ...p, [group.label]: !p[group.label] }))}
-                  className="flex items-center justify-between w-full px-2 py-1 text-[10px] font-semibold text-[#9A9A97] uppercase tracking-widest hover:text-[#787774] mt-2 transition-colors"
+                  className="flex items-center justify-between w-full px-2 py-1 text-[10px] font-semibold text-[#AEACA8] uppercase tracking-widest hover:text-[#787774] mt-2 transition-colors"
                 >
                   {group.label}
                   {collapsed[group.label] ? <ChevronRight size={10} /> : <ChevronDown size={10} />}
@@ -285,7 +285,7 @@ export default function AppShell() {
                     `flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-sm transition-colors ${
                       isActive
                         ? 'bg-[#1A1A1A] text-white font-medium'
-                        : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F7F7F5]'
+                        : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F5F4EF]'
                     }`
                   }
                   title={!sidebarOpen ? item.label : undefined}
@@ -300,9 +300,9 @@ export default function AppShell() {
 
         {/* Footer */}
         {sidebarOpen && (
-          <div className="px-3 py-3 border-t border-[#F7F7F5]">
-            <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F7F7F5] cursor-pointer transition-colors">
-              <Building2 size={12} className="text-[#9A9A97] flex-shrink-0" />
+          <div className="px-3 py-3 border-t border-[#F5F4EF]">
+            <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F5F4EF] cursor-pointer transition-colors">
+              <Building2 size={12} className="text-[#AEACA8] flex-shrink-0" />
               <span className="text-xs text-[#787774] truncate">Company</span>
             </div>
           </div>
@@ -313,10 +313,10 @@ export default function AppShell() {
       <div className="flex-1 flex flex-col overflow-hidden">
 
         {/* Topbar */}
-        <header className="h-12 bg-white border-b border-[#E9E9E7] flex items-center px-5 gap-3 flex-shrink-0">
+        <header className="h-12 bg-white border-b border-[#E9E8E3] flex items-center px-5 gap-3 flex-shrink-0">
           <button
             onClick={() => setSidebarOpen(p => !p)}
-            className="text-[#9A9A97] hover:text-[#1A1A1A] transition-colors p-1 rounded-lg hover:bg-[#F7F7F5]"
+            className="text-[#AEACA8] hover:text-[#1A1A1A] transition-colors p-1 rounded-lg hover:bg-[#F5F4EF]"
           >
             <Menu size={16} />
           </button>
@@ -340,8 +340,8 @@ export default function AppShell() {
             </button>
 
             {showCreate && (
-              <div className="absolute top-full right-0 mt-2 z-50 flex bg-white rounded-xl border border-[#E9E9E7] shadow-lg overflow-hidden" style={{ minWidth: 360 }}>
-                <div className="w-36 border-r border-[#F7F7F5] py-1 bg-[#F7F7F5]">
+              <div className="absolute top-full right-0 mt-2 z-50 flex bg-white rounded-xl border border-[#E9E8E3] shadow-lg overflow-hidden" style={{ minWidth: 360 }}>
+                <div className="w-36 border-r border-[#F5F4EF] py-1 bg-[#F5F4EF]">
                   {createMenu.map(g => (
                     <button
                       key={g.label}
@@ -357,12 +357,12 @@ export default function AppShell() {
                   ))}
                 </div>
                 <div className="w-52 py-1">
-                  <p className="px-4 py-2 text-[10px] font-semibold text-[#9A9A97] uppercase tracking-widest">{hoveredGroup}</p>
+                  <p className="px-4 py-2 text-[10px] font-semibold text-[#AEACA8] uppercase tracking-widest">{hoveredGroup}</p>
                   {createMenu.find(g => g.label === hoveredGroup)?.items.map(item => (
                     <button
                       key={item}
                       onClick={() => { setActiveForm(item); setShowCreate(false); }}
-                      className="w-full text-left px-4 py-2 text-sm text-[#1A1A1A] hover:bg-[#F7F7F5] transition-colors"
+                      className="w-full text-left px-4 py-2 text-sm text-[#1A1A1A] hover:bg-[#F5F4EF] transition-colors"
                     >
                       {item}
                     </button>
@@ -373,12 +373,12 @@ export default function AppShell() {
           </div>
 
           <SyncStatus />
-          <div className="h-5 w-px bg-[#E9E9E7]" />
+          <div className="h-5 w-px bg-[#E9E8E3]" />
           <CompanySwitcher />
 
           <button
             onClick={() => navigate('/notifications')}
-            className="relative text-[#9A9A97] hover:text-[#1A1A1A] transition-colors p-1 rounded-lg hover:bg-[#F7F7F5]"
+            className="relative text-[#AEACA8] hover:text-[#1A1A1A] transition-colors p-1 rounded-lg hover:bg-[#F5F4EF]"
           >
             <Bell size={16} />
             {(() => {
@@ -387,7 +387,7 @@ export default function AppShell() {
                 const items = stored ? JSON.parse(stored) : null;
                 const count = Array.isArray(items) ? items.filter(n => !n.read).length : 0;
                 return count > 0 ? (
-                  <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#EB5757] text-white text-[9px] flex items-center justify-center font-bold">
+                  <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#C0392B] text-white text-[9px] flex items-center justify-center font-bold">
                     {count > 9 ? '9+' : count}
                   </span>
                 ) : null;
@@ -399,7 +399,7 @@ export default function AppShell() {
         </header>
 
         {/* Content */}
-        <main className="flex-1 overflow-y-auto" style={{ background: '#F7F7F5' }}>
+        <main className="flex-1 overflow-y-auto" style={{ background: '#F5F4EF' }}>
           <div className="px-8 py-6 w-full max-w-screen-2xl mx-auto">
             <Outlet />
           </div>

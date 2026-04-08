@@ -15,14 +15,14 @@ const fmt = n => '₹' + (n || 0).toLocaleString('en-IN');
 
 const recCols = [
   { key: 'name',          label: 'Party Name' },
-  { key: 'total_amount',  label: 'Amount',   render: v => <span className="font-semibold text-[#0F7B6C]">{fmt(v)}</span> },
+  { key: 'total_amount',  label: 'Amount',   render: v => <span className="font-semibold text-[#2D7D46]">{fmt(v)}</span> },
   { key: 'invoice_count', label: 'Invoices', render: v => <span className="text-[#787774]">{v}</span> },
   { key: 'last_date',     label: 'Last Invoice', render: v => <span className="text-[#787774]">{v || '—'}</span> },
 ];
 
 const payCols = [
   { key: 'name',          label: 'Vendor Name' },
-  { key: 'total_amount',  label: 'Amount',   render: v => <span className="font-semibold text-[#EB5757]">{fmt(v)}</span> },
+  { key: 'total_amount',  label: 'Amount',   render: v => <span className="font-semibold text-[#C0392B]">{fmt(v)}</span> },
   { key: 'invoice_count', label: 'Invoices', render: v => <span className="text-[#787774]">{v}</span> },
   { key: 'last_date',     label: 'Last Invoice', render: v => <span className="text-[#787774]">{v || '—'}</span> },
 ];
@@ -78,36 +78,36 @@ export default function ReceivablesPayables() {
           <h1 className="page-title">Receivables & Payables</h1>
           <p className="page-subtitle">{selectedCompany?.name || '—'} · {fyLabel}</p>
         </div>
-        <button onClick={load} disabled={loading} className="flex items-center gap-1.5 text-xs text-[#787774] hover:text-[#37352F] transition-colors disabled:opacity-40">
+        <button onClick={load} disabled={loading} className="flex items-center gap-1.5 text-xs text-[#787774] hover:text-[#1C2B3A] transition-colors disabled:opacity-40">
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        <KPICard title="Total Receivables" value={loading ? '—' : fmtL(summary.totalReceivables)} icon={TrendingUp}   accent="#0F7B6C" />
-        <KPICard title="Total Payables"    value={loading ? '—' : fmtL(summary.totalPayables)}    icon={TrendingDown} accent="#EB5757" />
-        <KPICard title="Net Position"      value={loading ? '—' : fmtL(summary.net)}              icon={Scale}        accent="#37352F" />
+        <KPICard title="Total Receivables" value={loading ? '—' : fmtL(summary.totalReceivables)} icon={TrendingUp}   accent="#2D7D46" />
+        <KPICard title="Total Payables"    value={loading ? '—' : fmtL(summary.totalPayables)}    icon={TrendingDown} accent="#C0392B" />
+        <KPICard title="Net Position"      value={loading ? '—' : fmtL(summary.net)}              icon={Scale}        accent="#1C2B3A" />
       </div>
 
-      <div className="bg-white border border-[#D3D1CB] rounded-xl">
-        <div className="flex gap-1 p-1 border-b border-[#D3D1CB]">
+      <div className="bg-white border border-[#D4D3CE] rounded-xl">
+        <div className="flex gap-1 p-1 border-b border-[#D4D3CE]">
           {TABS.map((t, i) => (
             <button key={t} onClick={() => setTab(i)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === i ? 'bg-[#F7F7F5] text-[#37352F]' : 'text-[#787774] hover:text-[#37352F]'}`}>
-              {t} {!loading && <span className="text-xs text-[#9A9A97] ml-1">({i === 0 ? receivables.length : payables.length})</span>}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === i ? 'bg-[#F5F4EF] text-[#1C2B3A]' : 'text-[#787774] hover:text-[#1C2B3A]'}`}>
+              {t} {!loading && <span className="text-xs text-[#AEACA8] ml-1">({i === 0 ? receivables.length : payables.length})</span>}
             </button>
           ))}
         </div>
         <div className="p-4">
           {loading ? (
-            <div className="h-40 flex items-center justify-center text-xs text-[#9A9A97]">Loading…</div>
+            <div className="h-40 flex items-center justify-center text-xs text-[#AEACA8]">Loading…</div>
           ) : tab === 0 ? (
             receivables.length === 0
-              ? <div className="h-40 flex items-center justify-center text-xs text-[#9A9A97]">{isPaired ? 'No receivables for this period' : 'Pair desktop app to see data'}</div>
+              ? <div className="h-40 flex items-center justify-center text-xs text-[#AEACA8]">{isPaired ? 'No receivables for this period' : 'Pair desktop app to see data'}</div>
               : <Table columns={recCols} data={receivables} />
           ) : (
             payables.length === 0
-              ? <div className="h-40 flex items-center justify-center text-xs text-[#9A9A97]">{isPaired ? 'No payables for this period' : 'Pair desktop app to see data'}</div>
+              ? <div className="h-40 flex items-center justify-center text-xs text-[#AEACA8]">{isPaired ? 'No payables for this period' : 'Pair desktop app to see data'}</div>
               : <Table columns={payCols} data={payables} />
           )}
         </div>

@@ -18,62 +18,62 @@ const recent = [
 export default function EInvoice() {
   return (
     <div className="space-y-5">
-      <div><h1 className="text-xl font-semibold text-[#37352F] tracking-tight">E-Invoice</h1><p className="text-sm text-[#787774] mt-0.5">FY 2025-26 · July 2025 — Dashboard Only</p></div>
-      <div className="p-3 bg-[#EFEFEF] border border-[#C5CBD0] rounded-xl text-xs text-[#37352F] font-medium">
+      <div><h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">E-Invoice</h1><p className="text-sm text-[#787774] mt-0.5">FY 2025-26 · July 2025 — Dashboard Only</p></div>
+      <div className="p-3 bg-[#ECEEEF] border border-[#C5CBD0] rounded-xl text-xs text-[#1C2B3A] font-medium">
         ℹ️ IRN generation, cancellation and retry are managed from <strong>Sales Register → IRN column</strong>.
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <KPICard title="IRNs Generated" value="46" sub="July 2025" icon={FileText}    accent="#37352F" />
-        <KPICard title="IRN Errors"      value="9"  sub="this month" icon={AlertTriangle} accent="#EB5757" />
-        <KPICard title="IRNs Pending"    value="3"                   icon={Clock}         accent="#D9730D" />
-        <KPICard title="Success Rate"    value="80.4%"               icon={CheckCircle}   accent="#0F7B6C" />
+        <KPICard title="IRNs Generated" value="46" sub="July 2025" icon={FileText}    accent="#1C2B3A" />
+        <KPICard title="IRN Errors"      value="9"  sub="this month" icon={AlertTriangle} accent="#C0392B" />
+        <KPICard title="IRNs Pending"    value="3"                   icon={Clock}         accent="#D97706" />
+        <KPICard title="Success Rate"    value="80.4%"               icon={CheckCircle}   accent="#2D7D46" />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-white border border-[#D3D1CB] rounded-xl p-5">
-          <p className="text-sm font-semibold text-[#37352F] mb-1">Daily IRN Trend</p>
+        <div className="lg:col-span-2 bg-white border border-[#D4D3CE] rounded-xl p-5">
+          <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Daily IRN Trend</p>
           <p className="text-xs text-[#787774] mb-4">July 2025</p>
           <div className="flex items-end gap-2 overflow-x-auto pb-2">
             {daily.map(d => (
               <div key={d.day} className="flex flex-col items-center gap-1 flex-shrink-0">
                 <div className="flex flex-col-reverse items-center gap-0.5">
-                  <div className="w-7 rounded-t-md" style={{ height: d.count * 10, background: '#37352F' }} />
-                  {d.errors > 0 && <div className="w-7 rounded-t-md" style={{ height: d.errors * 10, background: '#EB5757' }} />}
+                  <div className="w-7 rounded-t-md" style={{ height: d.count * 10, background: '#1C2B3A' }} />
+                  {d.errors > 0 && <div className="w-7 rounded-t-md" style={{ height: d.errors * 10, background: '#C0392B' }} />}
                 </div>
                 <span className="text-[10px] text-[#787774]">{d.day}</span>
               </div>
             ))}
           </div>
           <div className="flex gap-4 mt-3 text-xs">
-            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-[#1A1A1A]" /><span className="text-[#9A9A97]">Generated</span></div>
-            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-[#EB5757]" /><span className="text-[#9A9A97]">Errors</span></div>
+            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-[#1A1A1A]" /><span className="text-[#AEACA8]">Generated</span></div>
+            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-[#C0392B]" /><span className="text-[#AEACA8]">Errors</span></div>
           </div>
         </div>
-        <div className="bg-white border border-[#D3D1CB] rounded-xl p-5">
-          <p className="text-sm font-semibold text-[#37352F] mb-4">Top Error Types</p>
+        <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
+          <p className="text-sm font-semibold text-[#1C2B3A] mb-4">Top Error Types</p>
           <div className="space-y-4">
             {errors.map(e => (
               <div key={e.rank}>
                 <div className="flex justify-between text-xs mb-1.5">
-                  <span className="text-[#37352F] font-medium">#{e.rank} {e.error}</span>
+                  <span className="text-[#1C2B3A] font-medium">#{e.rank} {e.error}</span>
                   <span className="text-[#787774]">{e.count}x</span>
                 </div>
-                <div className="w-full bg-[#F7F7F5] rounded-full h-1.5">
-                  <div className="h-1.5 rounded-full bg-[#EB5757]" style={{ width: `${e.pct}%` }} />
+                <div className="w-full bg-[#F5F4EF] rounded-full h-1.5">
+                  <div className="h-1.5 rounded-full bg-[#C0392B]" style={{ width: `${e.pct}%` }} />
                 </div>
               </div>
             ))}
           </div>
         </div>
       </div>
-      <div className="bg-white border border-[#D3D1CB] rounded-xl p-5">
-        <p className="text-sm font-semibold text-[#37352F] mb-4">Recent Activity</p>
+      <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
+        <p className="text-sm font-semibold text-[#1C2B3A] mb-4">Recent Activity</p>
         <div className="space-y-3">
           {recent.map((a,i) => (
-            <div key={i} className="flex items-center gap-4 text-sm py-2.5 border-b border-[#F7F7F5] last:border-0">
+            <div key={i} className="flex items-center gap-4 text-sm py-2.5 border-b border-[#F5F4EF] last:border-0">
               <span className="text-[#787774] text-xs w-16 flex-shrink-0">{a.time}</span>
-              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${a.status==='success'?'bg-[#0F7B6C]':a.status==='error'?'bg-[#EB5757]':'bg-[#D9730D]'}`} />
-              <span className="text-[#37352F] flex-1">{a.event}</span>
-              <span className="font-mono text-xs text-[#37352F] font-semibold">{a.ref}</span>
+              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${a.status==='success'?'bg-[#2D7D46]':a.status==='error'?'bg-[#C0392B]':'bg-[#D97706]'}`} />
+              <span className="text-[#1C2B3A] flex-1">{a.event}</span>
+              <span className="font-mono text-xs text-[#1C2B3A] font-semibold">{a.ref}</span>
             </div>
           ))}
         </div>

@@ -15,23 +15,23 @@ const statusVariant = { Cleared: 'green', Pending: 'yellow', Reversed: 'red' };
 
 const paymentCols = [
   { key: 'date', label: 'Date', render: v => <span className="text-[#787774]">{v}</span> },
-  { key: 'voucher', label: 'Voucher', render: v => <span className="font-mono text-xs text-[#37352F] font-semibold">{v}</span> },
+  { key: 'voucher', label: 'Voucher', render: v => <span className="font-mono text-xs text-[#1C2B3A] font-semibold">{v}</span> },
   { key: 'party', label: 'Party' },
   { key: 'ledger', label: 'Bank / Cash', render: v => <span className="text-xs text-[#787774]">{v}</span> },
-  { key: 'amount', label: 'Amount', render: v => <span className="font-semibold text-[#EB5757]">{fmt(v)}</span> },
+  { key: 'amount', label: 'Amount', render: v => <span className="font-semibold text-[#C0392B]">{fmt(v)}</span> },
   { key: 'mode', label: 'Mode', render: v => <span className="text-xs text-[#787774]">{v}</span> },
-  { key: 'ref', label: 'Reference', render: v => v ? <span className="font-mono text-xs text-[#787774] truncate max-w-28 block">{v}</span> : <span className="text-[#9A9A97]">—</span> },
+  { key: 'ref', label: 'Reference', render: v => v ? <span className="font-mono text-xs text-[#787774] truncate max-w-28 block">{v}</span> : <span className="text-[#AEACA8]">—</span> },
   { key: 'status', label: 'Status', render: v => <Badge label={v} variant={statusVariant[v]} /> },
 ];
 
 const receiptCols = [
   { key: 'date', label: 'Date', render: v => <span className="text-[#787774]">{v}</span> },
-  { key: 'voucher', label: 'Voucher', render: v => <span className="font-mono text-xs text-[#37352F] font-semibold">{v}</span> },
+  { key: 'voucher', label: 'Voucher', render: v => <span className="font-mono text-xs text-[#1C2B3A] font-semibold">{v}</span> },
   { key: 'party', label: 'Party' },
   { key: 'ledger', label: 'Bank / Cash', render: v => <span className="text-xs text-[#787774]">{v}</span> },
-  { key: 'amount', label: 'Amount', render: v => <span className="font-semibold text-[#0F7B6C]">{fmt(v)}</span> },
+  { key: 'amount', label: 'Amount', render: v => <span className="font-semibold text-[#2D7D46]">{fmt(v)}</span> },
   { key: 'mode', label: 'Mode', render: v => <span className="text-xs text-[#787774]">{v}</span> },
-  { key: 'ref', label: 'Reference', render: v => v ? <span className="font-mono text-xs text-[#787774]">{v.slice(0,16)}...</span> : <span className="text-[#9A9A97]">—</span> },
+  { key: 'ref', label: 'Reference', render: v => v ? <span className="font-mono text-xs text-[#787774]">{v.slice(0,16)}...</span> : <span className="text-[#AEACA8]">—</span> },
   { key: 'status', label: 'Status', render: v => <Badge label={v} variant={statusVariant[v]} /> },
 ];
 
@@ -85,55 +85,55 @@ export default function PaymentsModule() {
         </div>
       )}
       <div>
-        <h1 className="text-xl font-semibold text-[#37352F] tracking-tight">Payments & Receipts</h1>
+        <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Payments & Receipts</h1>
         <p className="text-sm text-[#787774] mt-0.5">{selectedFY?.name ? "FY " + selectedFY.name : "Current FY"}</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Payments"  value={loading ? '—' : fmt(displayPayments.reduce((s,p)=>s+(p.amount||0),0))} icon={ArrowUpRight}  accent="#EB5757" />
-        <KPICard title="Total Receipts"  value={loading ? '—' : fmt(displayReceipts.reduce((s,r)=>s+(r.amount||0),0))} icon={ArrowDownLeft} accent="#0F7B6C" />
-        <KPICard title="Net Cash Flow"   value={loading ? '—' : fmt(displayReceipts.reduce((s,r)=>s+(r.amount||0),0) - displayPayments.reduce((s,p)=>s+(p.amount||0),0))} icon={CreditCard} accent="#37352F" />
-        <KPICard title="Vouchers"        value={loading ? '—' : displayPayments.length + displayReceipts.length} icon={CreditCard} accent="#D9730D" />
+        <KPICard title="Total Payments"  value={loading ? '—' : fmt(displayPayments.reduce((s,p)=>s+(p.amount||0),0))} icon={ArrowUpRight}  accent="#C0392B" />
+        <KPICard title="Total Receipts"  value={loading ? '—' : fmt(displayReceipts.reduce((s,r)=>s+(r.amount||0),0))} icon={ArrowDownLeft} accent="#2D7D46" />
+        <KPICard title="Net Cash Flow"   value={loading ? '—' : fmt(displayReceipts.reduce((s,r)=>s+(r.amount||0),0) - displayPayments.reduce((s,p)=>s+(p.amount||0),0))} icon={CreditCard} accent="#1C2B3A" />
+        <KPICard title="Vouchers"        value={loading ? '—' : displayPayments.length + displayReceipts.length} icon={CreditCard} accent="#D97706" />
       </div>
 
       {/* Top parties */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white border border-[#D3D1CB] rounded-2xl p-5">
-          <p className="text-sm font-semibold text-[#37352F] mb-3">Top Payment Parties</p>
+        <div className="bg-white border border-[#D4D3CE] rounded-2xl p-5">
+          <p className="text-sm font-semibold text-[#1C2B3A] mb-3">Top Payment Parties</p>
           <div className="space-y-2.5">
             {displayPayments.slice(0,4).map((p,i) => (
               <div key={i} className="flex justify-between items-center">
-                <span className="text-sm text-[#37352F]">{p.party}</span>
-                <span className="text-sm font-semibold text-[#EB5757]">{fmt(p.amount)}</span>
+                <span className="text-sm text-[#1C2B3A]">{p.party}</span>
+                <span className="text-sm font-semibold text-[#C0392B]">{fmt(p.amount)}</span>
               </div>
             ))}
           </div>
         </div>
-        <div className="bg-white border border-[#D3D1CB] rounded-2xl p-5">
-          <p className="text-sm font-semibold text-[#37352F] mb-3">Top Receipt Parties</p>
+        <div className="bg-white border border-[#D4D3CE] rounded-2xl p-5">
+          <p className="text-sm font-semibold text-[#1C2B3A] mb-3">Top Receipt Parties</p>
           <div className="space-y-2.5">
             {displayReceipts.slice(0,4).map((r,i) => (
               <div key={i} className="flex justify-between items-center">
-                <span className="text-sm text-[#37352F]">{r.party}</span>
-                <span className="text-sm font-semibold text-[#0F7B6C]">{fmt(r.amount)}</span>
+                <span className="text-sm text-[#1C2B3A]">{r.party}</span>
+                <span className="text-sm font-semibold text-[#2D7D46]">{fmt(r.amount)}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="bg-white border border-[#D3D1CB] rounded-2xl">
-        <div className="flex border-b border-[#D3D1CB] px-1 pt-1">
+      <div className="bg-white border border-[#D4D3CE] rounded-2xl">
+        <div className="flex border-b border-[#D4D3CE] px-1 pt-1">
           {TABS.map((t, i) => (
             <button key={i} onClick={() => setTab(i)}
-              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#37352F] bg-[#EFEFEF] font-semibold' : 'text-[#787774] hover:text-[#37352F] hover:bg-[#F7F7F5]'}`}>{t}
+              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#1C2B3A] bg-[#ECEEEF] font-semibold' : 'text-[#787774] hover:text-[#1C2B3A] hover:bg-[#F5F4EF]'}`}>{t}
             </button>
           ))}
         </div>
         <div className="p-5">
           <div className="flex gap-3 mb-4">
             <div className="relative flex-1">
-              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9A9A97]" />
+              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#AEACA8]" />
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search party or voucher..."
                 className="notion-input pl-8 w-full text-sm" />
             </div>
@@ -142,11 +142,11 @@ export default function PaymentsModule() {
             <>
               <Table columns={paymentCols} data={filteredPayments.slice((page-1)*25,page*25)} onRowClick={setDrawer} />
               {filteredPayments.length > 25 && (
-                <div className="flex items-center justify-between pt-3 border-t border-[#EFEFEF] mt-2">
-                  <span className="text-xs text-[#9A9A97]">{filteredPayments.length} total</span>
+                <div className="flex items-center justify-between pt-3 border-t border-[#ECEEEF] mt-2">
+                  <span className="text-xs text-[#AEACA8]">{filteredPayments.length} total</span>
                   <div className="flex gap-1">
-                    <button onClick={()=>setPage(p=>p-1)} disabled={page===1} className="px-3 py-1.5 text-xs border border-[#D3D1CB] rounded-lg disabled:opacity-40 hover:bg-[#F7F7F5]">← Prev</button>
-                    <button onClick={()=>setPage(p=>p+1)} disabled={page*25>=filteredPayments.length} className="px-3 py-1.5 text-xs border border-[#D3D1CB] rounded-lg disabled:opacity-40 hover:bg-[#F7F7F5]">Next →</button>
+                    <button onClick={()=>setPage(p=>p-1)} disabled={page===1} className="px-3 py-1.5 text-xs border border-[#D4D3CE] rounded-lg disabled:opacity-40 hover:bg-[#F5F4EF]">← Prev</button>
+                    <button onClick={()=>setPage(p=>p+1)} disabled={page*25>=filteredPayments.length} className="px-3 py-1.5 text-xs border border-[#D4D3CE] rounded-lg disabled:opacity-40 hover:bg-[#F5F4EF]">Next →</button>
                   </div>
                 </div>
               )}
@@ -156,11 +156,11 @@ export default function PaymentsModule() {
             <>
               <Table columns={receiptCols} data={filteredReceipts.slice((page-1)*25,page*25)} onRowClick={setDrawer} />
               {filteredReceipts.length > 25 && (
-                <div className="flex items-center justify-between pt-3 border-t border-[#EFEFEF] mt-2">
-                  <span className="text-xs text-[#9A9A97]">{filteredReceipts.length} total</span>
+                <div className="flex items-center justify-between pt-3 border-t border-[#ECEEEF] mt-2">
+                  <span className="text-xs text-[#AEACA8]">{filteredReceipts.length} total</span>
                   <div className="flex gap-1">
-                    <button onClick={()=>setPage(p=>p-1)} disabled={page===1} className="px-3 py-1.5 text-xs border border-[#D3D1CB] rounded-lg disabled:opacity-40 hover:bg-[#F7F7F5]">← Prev</button>
-                    <button onClick={()=>setPage(p=>p+1)} disabled={page*25>=filteredReceipts.length} className="px-3 py-1.5 text-xs border border-[#D3D1CB] rounded-lg disabled:opacity-40 hover:bg-[#F7F7F5]">Next →</button>
+                    <button onClick={()=>setPage(p=>p-1)} disabled={page===1} className="px-3 py-1.5 text-xs border border-[#D4D3CE] rounded-lg disabled:opacity-40 hover:bg-[#F5F4EF]">← Prev</button>
+                    <button onClick={()=>setPage(p=>p+1)} disabled={page*25>=filteredReceipts.length} className="px-3 py-1.5 text-xs border border-[#D4D3CE] rounded-lg disabled:opacity-40 hover:bg-[#F5F4EF]">Next →</button>
                   </div>
                 </div>
               )}
