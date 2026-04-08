@@ -54,15 +54,15 @@ export default function Reports() {
     setLoading(true);
     setError(null);
     Promise.all([
-      api.fetchReportsPL({ companyGuid: selectedCompany.guid }).catch(() => null),
-      api.fetchReportsBS({ companyGuid: selectedCompany.guid }).catch(() => null),
+      api.fetchReportsPL({ companyGuid: selectedCompany.guid, fromDate: selectedFY?.startDate, toDate: selectedFY?.endDate }).catch(() => null),
+      api.fetchReportsBS({ companyGuid: selectedCompany.guid, fromDate: selectedFY?.startDate, toDate: selectedFY?.endDate }).catch(() => null),
     ]).then(([pl, bs]) => {
       if (pl?.data) setPlReport(pl.data);
       if (bs?.data) setBsReport(bs.data);
     }).catch(err => {
       setError(err?.response?.data?.message || err?.message || 'Failed to load reports data');
     }).finally(() => setLoading(false));
-  }, [selectedCompany?.guid]);
+  }, [selectedCompany?.guid, selectedFY?.uniqueId]);
 
   // Derive totals from real data or fall back to mock
   const incomeRows = plReport?.income || [];

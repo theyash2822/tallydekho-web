@@ -35,7 +35,7 @@ export default function InventoryModule() {
   const [total, setTotal] = useState(0);
   const [categories, setCategories] = useState(['All']);
   const pageSize = 50;
-  const { selectedCompany } = useAuth();
+  const { selectedCompany, selectedFY } = useAuth();
 
   const loadStocks = useCallback(async (pg = 1, searchText = '', cat = categoryFilter) => {
     if (!selectedCompany?.guid) return;
@@ -94,7 +94,7 @@ export default function InventoryModule() {
     setSearch('');
     setCategoryFilter('All');
     if (selectedCompany?.guid) loadStocks(1, '', 'All');
-  }, [selectedCompany?.guid]); // eslint-disable-line
+  }, [selectedCompany?.guid, selectedFY?.uniqueId]); // eslint-disable-line
 
   useEffect(() => {
     const unsub = wsService.on('synced', () => { if (selectedCompany?.guid) loadStocks(1, search, categoryFilter); });

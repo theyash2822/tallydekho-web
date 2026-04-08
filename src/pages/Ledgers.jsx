@@ -194,7 +194,7 @@ const getBalType = l => {
 };
 
 export default function Ledgers() {
-  const { selectedCompany, token } = useAuth();
+  const { selectedCompany, token, selectedFY } = useAuth();
   const [ledgers, setLedgers]         = useState([]);
   const [loading, setLoading]         = useState(true);
   const [error,   setError]           = useState(null);
@@ -236,7 +236,7 @@ export default function Ledgers() {
     setGroupFilter('All');
     setTypeFilter('All');
     if (companyGuid) load('', 1);
-  }, [companyGuid]); // eslint-disable-line
+  }, [companyGuid, selectedFY?.uniqueId]); // eslint-disable-line
 
   // Debounced search
   useEffect(() => {
