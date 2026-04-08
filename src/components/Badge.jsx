@@ -1,12 +1,12 @@
-// Notion-style calm badges — purposeful color, never harsh
+// TallyDekho badge — matches design spec color system
 const variants = {
-  green:   'bg-[#F0FDF4] text-[#15803D] border border-[#BBF7D0]',
-  red:     'bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA]',
-  yellow:  'bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A]',
-  blue:    'bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]',
-  gray:    'bg-[#F5F4EF] text-[#787774] border border-[#E9E8E3]',
-  orange:  'bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A]',
-  purple:  'bg-[#F5F4EF] text-[#787774] border border-[#E9E8E3]',
+  green:   'bg-[#EDF3EC] text-[#0F7B6C] border border-[#B7D4B2]',   // Paid / OK
+  red:     'bg-[#FDEBEC] text-[#EB5757] border border-[#F5C0C0]',   // Overdue / Critical
+  yellow:  'bg-[#FAEBDD] text-[#D9730D] border border-[#F5C98A]',   // Pending / Warning
+  orange:  'bg-[#FAEBDD] text-[#D9730D] border border-[#F5C98A]',   // Pending / Warning
+  blue:    'bg-[#E7F3F8] text-[#2383E2] border border-[#A8D4EF]',   // Syncing / Info
+  gray:    'bg-[#F1F1EF] text-[#787774] border border-[#E9E9E7]',   // Draft / Cancelled
+  purple:  'bg-[#F1F1EF] text-[#787774] border border-[#E9E9E7]',
 };
 
 export default function Badge({ label, variant = 'gray' }) {

@@ -1,6 +1,6 @@
 /**
  * TallyDekho — Global Styles
- * Base: Warm cream #F5F4EF, white cards, black active states
+ * Base: Warm cream #F7F7F5, white cards, dark charcoal active states
  * Semantic: Notion-style calm muted colors
  * Font: Inter
  */
@@ -13,43 +13,56 @@
 /* ── Design Tokens ─────────────────────────────────────────────────────────── */
 :root {
   /* Surface */
-  --bg:           #F5F4EF;   /* warm cream */
+  --bg:           #F7F7F5;   /* warm cream */
+  --bg-secondary: #EFEFEF;   /* light grey */
   --bg-card:      #FFFFFF;
-  --bg-hover:     #F0EFE9;
-  --bg-active:    #E8E7E1;
-  --bg-inverse:   #1A1A1A;
+  --bg-hover:     #EFEFEF;
+  --bg-active:    #E9E9E7;
+  --bg-inverse:   #37352F;
 
   /* Text */
-  --text-primary:   #1A1A1A;
+  --text-primary:   #37352F;
   --text-secondary: #787774;
-  --text-tertiary:  #AEACA8;
+  --text-tertiary:  #9A9A97;
   --text-inverse:   #FFFFFF;
 
   /* Border */
-  --border:         #E9E8E3;
-  --border-strong:  #D4D3CE;
-  --border-subtle:  #F0EFE9;
+  --border:         #E9E9E7;
+  --border-strong:  #D3D1CB;
+  --border-subtle:  #EFEFEF;
 
-  /* Brand — black CTA */
-  --brand:          #1A1A1A;
-  --brand-hover:    #333333;
+  /* Brand — dark charcoal CTA */
+  --brand:          #37352F;
+  --brand-hover:    #1A1A1A;
 
-  /* Semantic — calm Notion-style */
-  --positive:        #15803D;
-  --positive-bg:     #F0FDF4;
-  --positive-border: #BBF7D0;
+  /* Semantic */
+  --positive:        #0F7B6C;
+  --positive-bg:     #EDF3EC;
+  --positive-border: #B7D4B2;
 
-  --negative:        #DC2626;
-  --negative-bg:     #FEF2F2;
-  --negative-border: #FECACA;
+  --negative:        #EB5757;
+  --negative-bg:     #FDEBEC;
+  --negative-border: #F5C0C0;
 
-  --caution:         #D97706;
-  --caution-bg:      #FFFBEB;
-  --caution-border:  #FDE68A;
+  --caution:         #D9730D;
+  --caution-bg:      #FAEBDD;
+  --caution-border:  #F5C98A;
 
-  --info:            #2563EB;
-  --info-bg:         #EFF6FF;
-  --info-border:     #BFDBFE;
+  --info:            #2383E2;
+  --info-bg:         #E7F3F8;
+  --info-border:     #A8D4EF;
+
+  /* Tag colors */
+  --tag-paid-bg:      #EDF3EC;
+  --tag-paid-text:    #0F7B6C;
+  --tag-pending-bg:   #FAEBDD;
+  --tag-pending-text: #D9730D;
+  --tag-overdue-bg:   #FDEBEC;
+  --tag-overdue-text: #EB5757;
+  --tag-draft-bg:     #F1F1EF;
+  --tag-draft-text:   #787774;
+  --tag-info-bg:      #E7F3F8;
+  --tag-info-text:    #2383E2;
 }
 
 /* ── Reset ─────────────────────────────────────────────────────────────────── */
@@ -72,8 +85,8 @@ body {
 /* ── Scrollbar ─────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar          { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track    { background: transparent; }
-::-webkit-scrollbar-thumb    { background: #D4D3CE; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #AEACA8; }
+::-webkit-scrollbar-thumb    { background: #D3D1CB; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #9A9A97; }
 
 /* ── Typography ────────────────────────────────────────────────────────────── */
 h1, h2, h3, h4, h5, h6 {
@@ -175,7 +188,7 @@ p { margin: 0; color: var(--text-secondary); }
 
 /* Danger */
 .btn-danger { background: var(--negative); color: #fff; border-color: var(--negative); }
-.btn-danger:hover:not(:disabled) { background: #B91C1C; }
+.btn-danger:hover:not(:disabled) { background: #D94040; }
 
 /* ── Badge ─────────────────────────────────────────────────────────────────── */
 .badge {
@@ -191,18 +204,25 @@ p { margin: 0; color: var(--text-secondary); }
 .badge-info     { background: var(--info-bg);     color: var(--info);    border-color: var(--info-border); }
 .badge-neutral  { background: var(--bg-active);   color: var(--text-secondary); border-color: var(--border); }
 
+/* Tag badges */
+.tag-paid     { background: var(--tag-paid-bg);    color: var(--tag-paid-text); }
+.tag-pending  { background: var(--tag-pending-bg); color: var(--tag-pending-text); }
+.tag-overdue  { background: var(--tag-overdue-bg); color: var(--tag-overdue-text); }
+.tag-draft    { background: var(--tag-draft-bg);   color: var(--tag-draft-text); }
+.tag-info     { background: var(--tag-info-bg);    color: var(--tag-info-text); }
+
 /* ── Divider ───────────────────────────────────────────────────────────────── */
 hr, .divider { height: 1px; background: var(--border); border: none; margin: 0; }
 
 /* ── Dark gradient for login/hero panels ───────────────────────────────────── */
-.brand-gradient    { background: linear-gradient(160deg, #1A1A1A 0%, #2D2D2D 60%, #111111 100%); }
-.primary-gradient  { background: linear-gradient(160deg, #1A1A1A 0%, #2D2D2D 60%, #111111 100%); }
+.brand-gradient    { background: linear-gradient(160deg, #37352F 0%, #2D2B25 60%, #1A1A15 100%); }
+.primary-gradient  { background: linear-gradient(160deg, #37352F 0%, #2D2B25 60%, #1A1A15 100%); }
 
 /* ── Focus visible ─────────────────────────────────────────────────────────── */
 :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 4px; }
 
 /* ── Selection ─────────────────────────────────────────────────────────────── */
-::selection { background: rgba(26, 26, 26, 0.1); color: var(--text-primary); }
+::selection { background: rgba(55, 53, 47, 0.1); color: var(--text-primary); }
 
 /* ── KPI card ──────────────────────────────────────────────────────────────── */
 .kpi-card {
