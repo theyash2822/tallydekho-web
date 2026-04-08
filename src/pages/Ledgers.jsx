@@ -13,14 +13,14 @@ const LEDGER_TABS = ['Details', 'Vouchers', 'Balance Trend', 'GST Info'];
 
 const PAGE_SIZE_V = 15;
 const typeChip = (type) => {
-  if (!type) return 'bg-[#ECEEEF] text-[#1C2B3A]';
+  if (!type) return 'bg-[#ECEEEF] text-[#1A1A1A]';
   if (type.includes('Sales'))    return 'bg-[#E8F5ED] text-[#2D7D46]';
   if (type.includes('Purchase')) return 'bg-[#FFFBEB] text-[#D97706]';
   if (type.includes('Payment'))  return 'bg-[#FEF2F2] text-[#C0392B]';
   if (type.includes('Receipt'))  return 'bg-[#E8F5ED] text-[#2D7D46]';
   if (type.includes('Journal'))  return 'bg-[#EFF6FF] text-[#2563EB]';
   if (type.includes('Contra'))   return 'bg-[#FFFBEB] text-[#D97706]';
-  return 'bg-[#ECEEEF] text-[#1C2B3A]';
+  return 'bg-[#ECEEEF] text-[#1A1A1A]';
 };
 
 // Vouchers linked to a ledger — paginated, deduped, with drill-down
@@ -85,11 +85,11 @@ function LedgerVouchers({ ledger, companyGuid }) {
           <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-[#AEACA8]" />
           <input value={search} onChange={e => setSearch(e.target.value)}
             placeholder="Search vouchers..."
-            className="w-full pl-6 pr-2 py-1.5 text-xs bg-[#F5F4EF] border border-[#ECEEEF] rounded-lg outline-none focus:border-[#1C2B3A]"
+            className="w-full pl-6 pr-2 py-1.5 text-xs bg-[#F5F4EF] border border-[#ECEEEF] rounded-lg outline-none focus:border-[#1A1A1A]"
           />
         </div>
         <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}
-          className="py-1.5 px-2 text-xs bg-white border border-[#D4D3CE] rounded-lg outline-none focus:border-[#1C2B3A]">
+          className="py-1.5 px-2 text-xs bg-white border border-[#D4D3CE] rounded-lg outline-none focus:border-[#1A1A1A]">
           {types.map(t => <option key={t}>{t}</option>)}
         </select>
       </div>
@@ -279,7 +279,7 @@ export default function Ledgers() {
         </div>
         <button
           onClick={() => load(search, page)}
-          className="flex items-center gap-1.5 text-xs font-medium text-[#1C2B3A] hover:text-[#787774] transition-colors"
+          className="flex items-center gap-1.5 text-xs font-medium text-[#1A1A1A] hover:text-[#787774] transition-colors"
         >
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
@@ -287,7 +287,7 @@ export default function Ledgers() {
 
       {/* KPIs */}
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Ledgers"   value={loading ? '—' : ledgers.length} icon={BookOpen}     accent="#1C2B3A" />
+        <KPICard title="Total Ledgers"   value={loading ? '—' : ledgers.length} icon={BookOpen}     accent="#1A1A1A" />
         <KPICard title="Debit Balance"   value={loading ? '—' : totalDr}        icon={TrendingUp}   accent="#2D7D46" />
         <KPICard title="Credit Balance"  value={loading ? '—' : totalCr}        icon={TrendingDown} accent="#C0392B" />
         <KPICard title="With GSTIN"      value={loading ? '—' : withGstin}      icon={BookOpen}     accent="#798692" />
@@ -320,7 +320,7 @@ export default function Ledgers() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search ledger name or GSTIN..."
-                className="w-full pl-8 pr-3 py-2 text-sm bg-[#F5F4EF] border border-[#ECEEEF] rounded-lg outline-none focus:border-[#1C2B3A] focus:bg-white transition-all placeholder:text-[#AEACA8]"
+                className="w-full pl-8 pr-3 py-2 text-sm bg-[#F5F4EF] border border-[#ECEEEF] rounded-lg outline-none focus:border-[#1A1A1A] focus:bg-white transition-all placeholder:text-[#AEACA8]"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -328,14 +328,14 @@ export default function Ledgers() {
               <select
                 value={groupFilter}
                 onChange={e => setGroupFilter(e.target.value)}
-                className="py-2 px-3 text-sm bg-white border border-[#D4D3CE] rounded-lg outline-none focus:border-[#1C2B3A] text-[#1C2B3A] cursor-pointer"
+                className="py-2 px-3 text-sm bg-white border border-[#D4D3CE] rounded-lg outline-none focus:border-[#1A1A1A] text-[#1A1A1A] cursor-pointer"
               >
                 {groups.map(g => <option key={g}>{g}</option>)}
               </select>
               <select
                 value={typeFilter}
                 onChange={e => setTypeFilter(e.target.value)}
-                className="py-2 px-3 text-sm bg-white border border-[#D4D3CE] rounded-lg outline-none focus:border-[#1C2B3A] text-[#1C2B3A] cursor-pointer"
+                className="py-2 px-3 text-sm bg-white border border-[#D4D3CE] rounded-lg outline-none focus:border-[#1A1A1A] text-[#1A1A1A] cursor-pointer"
               >
                 <option value="All">All Types</option>
                 <option value="Dr">Debit (Dr)</option>
@@ -382,10 +382,10 @@ export default function Ledgers() {
                           setLedgerTab(0);
                         }}
                       >
-                        <td className="px-4 py-3 font-medium text-[#1C2B3A]">{getName(l)}</td>
+                        <td className="px-4 py-3 font-medium text-[#1A1A1A]">{getName(l)}</td>
                         <td className="px-4 py-3 text-[#787774] text-xs">{getGroup(l)}</td>
                         <td className="px-4 py-3 text-[#787774]">{fmt(getOpen(l))}</td>
-                        <td className="px-4 py-3 font-semibold text-[#1C2B3A]">{fmt(close)}</td>
+                        <td className="px-4 py-3 font-semibold text-[#1A1A1A]">{fmt(close)}</td>
                         <td className="px-4 py-3">
                           <span className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
                             type === 'Dr'
@@ -414,7 +414,7 @@ export default function Ledgers() {
             <div className="flex items-center justify-between px-4 py-3 border-t border-[#ECEEEF]">
               <p className="text-xs text-[#AEACA8]">
                 {total > 0
-                  ? <>Showing <span className="font-semibold text-[#1C2B3A]">{((page - 1) * pageSize) + 1}–{Math.min(page * pageSize, total)}</span> of <span className="font-semibold text-[#1C2B3A]">{total}</span></>
+                  ? <>Showing <span className="font-semibold text-[#1A1A1A]">{((page - 1) * pageSize) + 1}–{Math.min(page * pageSize, total)}</span> of <span className="font-semibold text-[#1A1A1A]">{total}</span></>
                   : <>{filtered.length} ledgers</>
                 }
               </p>
@@ -470,7 +470,7 @@ export default function Ledgers() {
             <div className="grid grid-cols-2 gap-3">
               <div className="p-4 bg-[#F5F4EF] rounded-xl border border-[#D4D3CE]">
                 <p className="text-xs text-[#AEACA8] mb-1">Opening Balance</p>
-                <p className="text-lg font-bold text-[#1C2B3A]">{fmt(getOpen(drawer))}</p>
+                <p className="text-lg font-bold text-[#1A1A1A]">{fmt(getOpen(drawer))}</p>
               </div>
               <div className={`p-4 rounded-xl border ${
                 getBalType(drawer) === 'Dr'
@@ -492,8 +492,8 @@ export default function Ledgers() {
                   onClick={() => setLedgerTab(i)}
                   className={`px-4 py-2.5 text-xs font-medium transition-colors ${
                     ledgerTab === i
-                      ? 'text-[#1C2B3A] border-b-2 border-[#1C2B3A] font-semibold'
-                      : 'text-[#787774] hover:text-[#1C2B3A]'
+                      ? 'text-[#1A1A1A] border-b-2 border-[#1A1A1A] font-semibold'
+                      : 'text-[#787774] hover:text-[#1A1A1A]'
                   }`}
                 >
                   {t}
@@ -521,7 +521,7 @@ export default function Ledgers() {
                 ].map(([label, value]) => (
                   <div key={label} className="flex justify-between items-center py-2.5 border-b border-[#F5F4EF]">
                     <span className="text-xs text-[#AEACA8]">{label}</span>
-                    <span className="text-sm font-medium text-[#1C2B3A] max-w-[60%] text-right truncate">{value}</span>
+                    <span className="text-sm font-medium text-[#1A1A1A] max-w-[60%] text-right truncate">{value}</span>
                   </div>
                 ))}
                 <p className="text-xs text-[#B0B7BF] text-center pt-3">
@@ -538,8 +538,8 @@ export default function Ledgers() {
                   <AreaChart data={movementData} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
                     <defs>
                       <linearGradient id="ledgerGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%"  stopColor="#1C2B3A" stopOpacity={0.2} />
-                        <stop offset="95%" stopColor="#1C2B3A" stopOpacity={0.02} />
+                        <stop offset="5%"  stopColor="#1A1A1A" stopOpacity={0.2} />
+                        <stop offset="95%" stopColor="#1A1A1A" stopOpacity={0.02} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="2 4" stroke="#ECEEEF" vertical={false} />
@@ -552,11 +552,11 @@ export default function Ledgers() {
                     <Area
                       type="monotone"
                       dataKey="balance"
-                      stroke="#1C2B3A"
+                      stroke="#1A1A1A"
                       strokeWidth={2}
                       fill="url(#ledgerGrad)"
-                      dot={{ r: 2, fill: '#1C2B3A', strokeWidth: 0 }}
-                      activeDot={{ r: 4, fill: '#1C2B3A' }}
+                      dot={{ r: 2, fill: '#1A1A1A', strokeWidth: 0 }}
+                      activeDot={{ r: 4, fill: '#1A1A1A' }}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -576,7 +576,7 @@ export default function Ledgers() {
                   ].map(([label, value]) => (
                     <div key={label} className="flex justify-between items-center py-2.5 border-b border-[#F5F4EF]">
                       <span className="text-xs text-[#AEACA8]">{label}</span>
-                      <span className="text-sm font-mono font-medium text-[#1C2B3A]">{value}</span>
+                      <span className="text-sm font-mono font-medium text-[#1A1A1A]">{value}</span>
                     </div>
                   ))
                 ) : (

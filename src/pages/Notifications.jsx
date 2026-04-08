@@ -3,9 +3,9 @@ import { Bell, AlertTriangle, TrendingUp, CheckCircle, Info, X } from 'lucide-re
 
 const ALL_NOTIFICATIONS = [
   { id:1, title:'GSTR-3B Filing Due',        desc:'GSTR-3B for July 2025 is due in 3 days. 2 mismatches need resolution before filing.', time:'5 mins ago',  tag:'Urgent',   category:'Compliance', color:'#C0392B', icon:AlertTriangle, read:false },
-  { id:2, title:'Tally Sync Complete',        desc:'Your Tally Prime data has been synced successfully. 48 new vouchers, 12 ledgers updated.', time:'32 mins ago', tag:'Info',     category:'Sync',       color:'#1C2B3A', icon:CheckCircle,  read:false },
+  { id:2, title:'Tally Sync Complete',        desc:'Your Tally Prime data has been synced successfully. 48 new vouchers, 12 ledgers updated.', time:'32 mins ago', tag:'Info',     category:'Sync',       color:'#1A1A1A', icon:CheckCircle,  read:false },
   { id:3, title:'3 E-Way Bills Expiring',     desc:'3 E-Way Bills will expire today. EWB-271234567892, EWB-271234567893, EWB-271234567894.', time:'1 hr ago',   tag:'Warning',  category:'Compliance', color:'#F59E0B', icon:AlertTriangle, read:false },
-  { id:4, title:'Payment Received',           desc:'₹9,80,000 received from Reliance Retail Ltd. via NEFT. Invoice SI-2025-0782 marked paid.', time:'2 hrs ago',  tag:'Success',  category:'Transactions',color:'#1C2B3A', icon:TrendingUp,   read:true  },
+  { id:4, title:'Payment Received',           desc:'₹9,80,000 received from Reliance Retail Ltd. via NEFT. Invoice SI-2025-0782 marked paid.', time:'2 hrs ago',  tag:'Success',  category:'Transactions',color:'#1A1A1A', icon:TrendingUp,   read:true  },
   { id:5, title:'Low Stock Alert',            desc:'B202 – Chemical Mix Type3 is below reorder level. Current: 80 Ltr. Reorder level: 150 Ltr.', time:'4 hrs ago',  tag:'Warning',  category:'Inventory',  color:'#F59E0B', icon:AlertTriangle, read:true  },
   { id:6, title:'Daily Summary Ready',        desc:'Your financial summary for 10 Jul 2025 is ready. Total Sales ₹45.8L, Net Profit ₹8.2L.', time:'8 hrs ago',  tag:'Info',     category:'Analytics',  color:'#6366F1', icon:Info,         read:true  },
   { id:7, title:'OD Utilization High',        desc:'HDFC CC-001 OD utilization has crossed 65%. Current: ₹32.8L of ₹50L limit.', time:'Yesterday', tag:'Warning',  category:'Financials', color:'#F59E0B', icon:AlertTriangle, read:true  },
@@ -14,7 +14,7 @@ const ALL_NOTIFICATIONS = [
 ];
 
 const TABS = ['All', 'Compliance', 'Transactions', 'Financials', 'Inventory', 'Sync'];
-const tagColors = { Urgent: 'bg-[#FEF2F2] text-[#C0392B] border border-[#FECACA]', Warning: 'bg-amber-50 text-amber-600 border border-amber-200', Success: 'bg-[#ECEEEF] text-[#1C2B3A] border border-[#C5CBD0]', Info: 'bg-blue-50 text-blue-600 border border-blue-200' };
+const tagColors = { Urgent: 'bg-[#FEF2F2] text-[#C0392B] border border-[#FECACA]', Warning: 'bg-amber-50 text-amber-600 border border-amber-200', Success: 'bg-[#ECEEEF] text-[#1A1A1A] border border-[#C5CBD0]', Info: 'bg-blue-50 text-blue-600 border border-blue-200' };
 
 export default function Notifications() {
   const [tab, setTab] = useState('All');
@@ -31,7 +31,7 @@ export default function Notifications() {
     <div className="space-y-5 max-w-3xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight flex items-center gap-2">
+          <h1 className="text-xl font-semibold text-[#1A1A1A] tracking-tight flex items-center gap-2">
             Notifications
             {unreadCount > 0 && (
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold text-white" style={{ background: '#C0392B' }}>{unreadCount}</span>
@@ -40,7 +40,7 @@ export default function Notifications() {
           <p className="text-sm text-[#787774] mt-0.5">{filtered.length} notifications</p>
         </div>
         {unreadCount > 0 && (
-          <button onClick={markAllRead} className="text-xs text-[#1C2B3A] hover:underline font-medium">Mark all as read</button>
+          <button onClick={markAllRead} className="text-xs text-[#1A1A1A] hover:underline font-medium">Mark all as read</button>
         )}
       </div>
 
@@ -48,8 +48,8 @@ export default function Notifications() {
       <div className="flex gap-1 overflow-x-auto pb-1">
         {TABS.map(t => (
           <button key={t} onClick={() => setTab(t)}
-            className={`px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-colors flex-shrink-0 ${tab === t ? 'text-white' : 'text-[#787774] bg-white border border-[#D4D3CE] hover:border-[#1C2B3A]'}`}
-            style={tab === t ? { background: '#1C2B3A' } : {}}>
+            className={`px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-colors flex-shrink-0 ${tab === t ? 'text-white' : 'text-[#787774] bg-white border border-[#D4D3CE] hover:border-[#1A1A1A]'}`}
+            style={tab === t ? { background: '#1A1A1A' } : {}}>
             {t}
           </button>
         ))}
@@ -74,7 +74,7 @@ export default function Notifications() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <p className={`text-sm font-semibold text-[#1C2B3A] ${!n.read ? 'font-bold' : ''}`}>{n.title}</p>
+                    <p className={`text-sm font-semibold text-[#1A1A1A] ${!n.read ? 'font-bold' : ''}`}>{n.title}</p>
                     <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${tagColors[n.tag]}`}>{n.tag}</span>
                   </div>
                   <button onClick={e => { e.stopPropagation(); dismiss(n.id); }} className="text-[#AEACA8] hover:text-[#787774] flex-shrink-0 mt-0.5">
@@ -86,7 +86,7 @@ export default function Notifications() {
                   <span className="text-[10px] text-[#AEACA8]">{n.time}</span>
                   <span className="text-[10px] text-[#AEACA8]">·</span>
                   <span className="text-[10px] text-[#AEACA8]">{n.category}</span>
-                  {!n.read && <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 ml-1" style={{ background: '#1C2B3A' }} />}
+                  {!n.read && <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 ml-1" style={{ background: '#1A1A1A' }} />}
                 </div>
               </div>
             </div>

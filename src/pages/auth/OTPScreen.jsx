@@ -125,15 +125,15 @@ export default function OTPScreen() {
         <div className="w-full max-w-sm">
           <button
             onClick={() => navigate('/auth/login')}
-            className="flex items-center gap-2 text-sm text-[#787774] hover:text-[#1C2B3A] mb-8 transition-colors"
+            className="flex items-center gap-2 text-sm text-[#787774] hover:text-[#1A1A1A] mb-8 transition-colors"
           >
             <ArrowLeft size={14} /> Back
           </button>
 
-          <h2 className="text-[22px] font-bold text-[#1C2B3A] mb-1 tracking-tight">Enter OTP</h2>
+          <h2 className="text-[22px] font-bold text-[#1A1A1A] mb-1 tracking-tight">Enter OTP</h2>
           <p className="text-sm text-[#787774] mb-7">
             Sent via WhatsApp to{' '}
-            <span className="font-semibold text-[#1C2B3A]">{countryFlag} {countryCode} {phone}</span>
+            <span className="font-semibold text-[#1A1A1A]">{countryFlag} {countryCode} {phone}</span>
           </p>
 
           {/* OTP input */}
@@ -154,8 +154,8 @@ export default function OTPScreen() {
                 error
                   ? 'border-[#C0392B] focus:ring-2 focus:ring-[#C0392B]/10'
                   : otp.length === 4
-                  ? 'border-[#1C2B3A]'
-                  : 'border-[#D4D3CE] focus:border-[#1C2B3A] focus:ring-2 focus:ring-[#1C2B3A]/10'
+                  ? 'border-[#1A1A1A]'
+                  : 'border-[#D4D3CE] focus:border-[#1A1A1A] focus:ring-2 focus:ring-[#1A1A1A]/10'
               }`}
               style={{ letterSpacing: otp ? '0.6em' : 'normal' }}
             />
@@ -190,13 +190,13 @@ export default function OTPScreen() {
           <div className="text-center mt-5">
             {resendDisabled ? (
               <p className="text-sm text-[#AEACA8]">
-                Resend in <span className="font-semibold text-[#1C2B3A]">{timer}s</span>
+                Resend in <span className="font-semibold text-[#1A1A1A]">{timer}s</span>
               </p>
             ) : (
               <button
                 onClick={handleResend}
                 disabled={resending}
-                className="text-sm font-semibold text-[#1C2B3A] hover:underline underline-offset-2 disabled:opacity-50 transition-colors"
+                className="text-sm font-semibold text-[#1A1A1A] hover:underline underline-offset-2 disabled:opacity-50 transition-colors"
               >
                 {resending ? 'Sending...' : '↩ Resend OTP'}
               </button>

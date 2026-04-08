@@ -44,7 +44,7 @@ export default function AIInsights() {
     {
       text: dashData ? `Cash & Bank: ${fmtL((dashData.cashBalance||0)+(dashData.bankBalance||0))}` : 'Cash loading...',
       sub: 'Available balance',
-      color: '#1C2B3A', bg: '#ECEEEF', border: '#C5CBD0', icon: Info
+      color: '#1A1A1A', bg: '#ECEEEF', border: '#C5CBD0', icon: Info
     },
     {
       text: dashData ? `Net Profit: ${fmtL(dashData.netProfit)}` : 'Net profit loading...',
@@ -71,7 +71,7 @@ export default function AIInsights() {
   const urgencyStyles = {
     high:   { dot: '#C0392B', bg: '#FEF2F2', border: '#FECACA', label: 'High', labelColor: '#C0392B' },
     medium: { dot: '#D97706', bg: '#FFFBEB', border: '#FDE68A', label: 'Medium', labelColor: '#D97706' },
-    low:    { dot: '#1C2B3A', bg: '#ECEEEF', border: '#C5CBD0', label: 'Low', labelColor: '#1C2B3A' },
+    low:    { dot: '#1A1A1A', bg: '#ECEEEF', border: '#C5CBD0', label: 'Low', labelColor: '#1A1A1A' },
   };
 
   return (
@@ -87,12 +87,12 @@ export default function AIInsights() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title flex items-center gap-2">
-            <Sparkles size={20} className="text-[#1C2B3A]" /> AI Insights
+            <Sparkles size={20} className="text-[#1A1A1A]" /> AI Insights
           </h1>
           <p className="page-subtitle">{selectedCompany?.name || 'Select a company'} · Powered by Tally data</p>
         </div>
         <button onClick={() => { setLoading(true); api.fetchDashboard({ companyGuid: selectedCompany?.guid }).then(r => { if(r?.data) setDashData(r.data); }).catch(err => setError(err?.message || 'Failed to load')).finally(()=>setLoading(false)); }}
-          className="flex items-center gap-1.5 text-xs text-[#1C2B3A] font-medium hover:text-[#787774]">
+          className="flex items-center gap-1.5 text-xs text-[#1A1A1A] font-medium hover:text-[#787774]">
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
       </div>
@@ -118,8 +118,8 @@ export default function AIInsights() {
 
       {/* Recommended actions */}
       <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
-        <p className="text-sm font-semibold text-[#1C2B3A] mb-4 flex items-center gap-2">
-          <Sparkles size={14} className="text-[#1C2B3A]" /> Recommended Actions
+        <p className="text-sm font-semibold text-[#1A1A1A] mb-4 flex items-center gap-2">
+          <Sparkles size={14} className="text-[#1A1A1A]" /> Recommended Actions
         </p>
         <div className="space-y-2">
           {actions.map((a, i) => {
@@ -133,7 +133,7 @@ export default function AIInsights() {
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: s.dot }} />
                   <div>
-                    <p className="text-sm font-medium text-[#1C2B3A]">{a.action}</p>
+                    <p className="text-sm font-medium text-[#1A1A1A]">{a.action}</p>
                     <p className="text-xs text-[#787774] mt-0.5">{a.reason}</p>
                   </div>
                 </div>
@@ -153,7 +153,7 @@ export default function AIInsights() {
       {dashData && (
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
-            <p className="text-sm font-semibold text-[#1C2B3A] mb-4">Financial Summary</p>
+            <p className="text-sm font-semibold text-[#1A1A1A] mb-4">Financial Summary</p>
             <div className="space-y-3">
               {[
                 ['Total Sales',    fmt(dashData.totalSales),    '#2D7D46'],
@@ -161,7 +161,7 @@ export default function AIInsights() {
                 ['Net Profit',     fmt(dashData.netProfit),     dashData.netProfit >= 0 ? '#2D7D46' : '#C0392B'],
                 ['Receivables',    fmt(dashData.receivables),   '#C0392B'],
                 ['Payables',       fmt(dashData.payables),      '#D97706'],
-                ['Cash & Bank',    fmt((dashData.cashBalance||0)+(dashData.bankBalance||0)), '#1C2B3A'],
+                ['Cash & Bank',    fmt((dashData.cashBalance||0)+(dashData.bankBalance||0)), '#1A1A1A'],
               ].map(([l, v, c]) => (
                 <div key={l} className="flex justify-between items-center py-1.5 border-b border-[#F5F4EF] last:border-0">
                   <span className="text-xs text-[#787774]">{l}</span>
@@ -171,7 +171,7 @@ export default function AIInsights() {
             </div>
           </div>
           <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
-            <p className="text-sm font-semibold text-[#1C2B3A] mb-4">Quick Navigate</p>
+            <p className="text-sm font-semibold text-[#1A1A1A] mb-4">Quick Navigate</p>
             <div className="space-y-2">
               {[
                 ['Sales Register',         '/sales'],
@@ -183,7 +183,7 @@ export default function AIInsights() {
               ].map(([l, p]) => (
                 <button key={l} onClick={() => navigate(p)}
                   className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-[#F5F4EF] transition-colors text-left">
-                  <span className="text-sm text-[#1C2B3A]">{l}</span>
+                  <span className="text-sm text-[#1A1A1A]">{l}</span>
                   <ArrowRight size={13} className="text-[#AEACA8]" />
                 </button>
               ))}

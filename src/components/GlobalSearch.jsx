@@ -7,8 +7,8 @@ import api from '../services/api';
 const fmt = n => n ? '₹' + n.toLocaleString('en-IN') : '';
 
 const QUICK_NAV = [
-  { label: 'Sales',      path: '/sales',     icon: TrendingUp,  color: '#1C2B3A' },
-  { label: 'Purchase',   path: '/purchase',  icon: ShoppingCart,color: '#1C2B3A' },
+  { label: 'Sales',      path: '/sales',     icon: TrendingUp,  color: '#1A1A1A' },
+  { label: 'Purchase',   path: '/purchase',  icon: ShoppingCart,color: '#1A1A1A' },
   { label: 'Inventory',  path: '/inventory', icon: Package,     color: '#798692' },
   { label: 'Ledgers',    path: '/ledgers',   icon: BookOpen,    color: '#9FA9B1' },
 ];
@@ -58,7 +58,7 @@ export default function GlobalSearch() {
             sub:    v.party_name || '—',
             path:   (v.voucher_type || '').toLowerCase().includes('purchase') ? '/purchase' : '/sales',
             icon:   (v.voucher_type || '').toLowerCase().includes('purchase') ? ShoppingCart : TrendingUp,
-            color:  (v.voucher_type || '').toLowerCase().includes('purchase') ? '#1C2B3A' : '#1C2B3A',
+            color:  (v.voucher_type || '').toLowerCase().includes('purchase') ? '#1A1A1A' : '#1A1A1A',
             amount: parseFloat(v.amount) || 0,
           })));
         })

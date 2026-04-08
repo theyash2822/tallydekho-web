@@ -73,8 +73,8 @@ export default function PurchaseInvoiceForm({ onClose }) {
         <div className="w-16 h-16 rounded-full bg-[#E8F5ED] flex items-center justify-center border border-[#A8D5BC]">
           <CheckCircle size={32} className="text-[#2D7D46]" />
         </div>
-        <p className="text-base font-semibold text-[#1C2B3A]">{isOptional ? 'Optional Entry Saved!' : 'Purchase Invoice Created in Tally!'}</p>
-        {createdNumber && <p className="text-sm font-mono font-bold text-[#1C2B3A] bg-[#ECEEEF] px-3 py-1 rounded-lg">{createdNumber}</p>}
+        <p className="text-base font-semibold text-[#1A1A1A]">{isOptional ? 'Optional Entry Saved!' : 'Purchase Invoice Created in Tally!'}</p>
+        {createdNumber && <p className="text-sm font-mono font-bold text-[#1A1A1A] bg-[#ECEEEF] px-3 py-1 rounded-lg">{createdNumber}</p>}
         <p className="text-sm text-[#787774]">{selectedCompany?.name}</p>
         <div className="flex gap-3 mt-2">
           <button onClick={() => { setSubmitted(false); setPartyLedger(''); setItems([]); setNarration(''); }} className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D4D3CE] text-[#787774] hover:bg-[#F5F4EF]">Create Another</button>

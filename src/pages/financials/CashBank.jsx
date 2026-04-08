@@ -81,7 +81,7 @@ export default function CashBank() {
           <h1 className="page-title">Cash & Bank</h1>
           <p className="page-subtitle">{selectedCompany?.name || '—'} · {fyLabel}</p>
         </div>
-        <button onClick={load} disabled={loading} className="flex items-center gap-1.5 text-xs text-[#787774] hover:text-[#1C2B3A] transition-colors disabled:opacity-40">
+        <button onClick={load} disabled={loading} className="flex items-center gap-1.5 text-xs text-[#787774] hover:text-[#1A1A1A] transition-colors disabled:opacity-40">
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
       </div>
@@ -90,14 +90,14 @@ export default function CashBank() {
         <KPICard title="Total Receipts"  value={loading ? '—' : fmtL(summary.totalReceipts)}  icon={TrendingUp}   accent="#2D7D46" />
         <KPICard title="Total Payments"  value={loading ? '—' : fmtL(summary.totalPayments)}  icon={TrendingDown} accent="#C0392B" />
         <KPICard title="Bank Balance"    value={loading ? '—' : fmtL(summary.bankBalance)}    icon={Landmark}     accent="#2563EB" />
-        <KPICard title="Net Cash Flow"   value={loading ? '—' : fmtL(summary.netCash)}        icon={RefreshCw}    accent="#1C2B3A" />
+        <KPICard title="Net Cash Flow"   value={loading ? '—' : fmtL(summary.netCash)}        icon={RefreshCw}    accent="#1A1A1A" />
       </div>
 
       <div className="bg-white border border-[#D4D3CE] rounded-xl">
         <div className="flex gap-1 p-1 border-b border-[#D4D3CE]">
           {TABS.map((t, i) => (
             <button key={t} onClick={() => setTab(i)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === i ? 'bg-[#F5F4EF] text-[#1C2B3A]' : 'text-[#787774] hover:text-[#1C2B3A]'}`}>
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === i ? 'bg-[#F5F4EF] text-[#1A1A1A]' : 'text-[#787774] hover:text-[#1A1A1A]'}`}>
               {t}
             </button>
           ))}

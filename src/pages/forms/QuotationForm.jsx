@@ -27,10 +27,10 @@ export default function QuotationForm({ onClose }) {
         <div className="w-16 h-16 rounded-full bg-[#E8F5ED] flex items-center justify-center border border-[#BBF7D0]">
           <CheckCircle size={32} className="text-emerald-500" />
         </div>
-        <p className="text-base font-semibold text-[#1C2B3A]">Quotation Created!</p>
+        <p className="text-base font-semibold text-[#1A1A1A]">Quotation Created!</p>
         <p className="text-sm text-[#787774]">QT-2025-0056</p>
         <div className="flex gap-3 mt-2">
-          <button className="px-4 py-2 rounded-lg text-sm font-medium text-white flex items-center gap-2" style={{ background: '#1C2B3A' }}>
+          <button className="px-4 py-2 rounded-lg text-sm font-medium text-white flex items-center gap-2" style={{ background: '#1A1A1A' }}>
             Convert to Order <ArrowRight size={13} />
           </button>
           <button className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D4D3CE] text-[#787774]">Share PDF</button>

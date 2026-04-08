@@ -216,7 +216,7 @@ hr, .divider { height: 1px; background: var(--border); border: none; margin: 0; 
 /* ── Dark gradient for login/hero panels ───────────────────────────────────── */
 .brand-gradient    { background: linear-gradient(160deg, #1A1A1A 0%, #2D2D2D 60%, #111111 100%); }
 .primary-gradient  { background: linear-gradient(160deg, #1A1A1A 0%, #2D2D2D 60%, #111111 100%); }
-.primary-gradient  { background: linear-gradient(160deg, #1C2B3A 0%, #2D2B25 60%, #1A1A15 100%); }
+.primary-gradient  { background: linear-gradient(160deg, #1A1A1A 0%, #2D2B25 60%, #1A1A15 100%); }
 
 /* ── Focus visible ─────────────────────────────────────────────────────────── */
 :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 4px; }

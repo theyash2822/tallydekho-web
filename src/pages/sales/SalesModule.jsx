@@ -139,7 +139,7 @@ export default function SalesModule() {
   );
 
   const invoiceCols = [
-    { key: 'ref',      label: 'Invoice No',  render: v => <span className="font-mono text-xs text-[#1C2B3A] font-semibold">{v}</span> },
+    { key: 'ref',      label: 'Invoice No',  render: v => <span className="font-mono text-xs text-[#1A1A1A] font-semibold">{v}</span> },
     { key: 'customer', label: 'Customer' },
     { key: 'voucherType', label: 'Type',     render: v => <span className="text-xs text-[#787774]">{v}</span> },
     { key: 'date',     label: 'Date',         render: v => <span className="text-[#787774]">{v}</span> },
@@ -174,14 +174,14 @@ export default function SalesModule() {
             {selectedCompany?.name || 'No company'} · {loading ? 'Loading...' : `${invoices.length} records`}
           </p>
         </div>
-        <button onClick={() => loadData(page, search)} className="flex items-center gap-1.5 text-xs text-[#1C2B3A] font-medium hover:text-[#787774]">
+        <button onClick={() => loadData(page, search)} className="flex items-center gap-1.5 text-xs text-[#1A1A1A] font-medium hover:text-[#787774]">
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Sales"    value={fmt(totalSales)}    icon={TrendingUp} accent="#1C2B3A" />
-        <KPICard title="Total Invoices" value={invoices.length}    icon={FileCheck}  accent="#1C2B3A" />
+        <KPICard title="Total Sales"    value={fmt(totalSales)}    icon={TrendingUp} accent="#1A1A1A" />
+        <KPICard title="Total Invoices" value={invoices.length}    icon={FileCheck}  accent="#1A1A1A" />
         <KPICard title="Paid"           value={paid}               icon={FileText}   accent="#2D7D46" />
         <KPICard title="Unpaid"         value={unpaid}             icon={ShoppingBag} accent="#C0392B" />
       </div>
@@ -189,26 +189,26 @@ export default function SalesModule() {
       {/* Chart + status */}
       <div className="grid grid-cols-3 gap-4">
         <div className="col-span-2 bg-white border border-[#D4D3CE] rounded-xl p-5">
-          <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Sales Trend</p>
+          <p className="text-sm font-semibold text-[#1A1A1A] mb-1">Sales Trend</p>
           <p className="text-xs text-[#AEACA8] mb-4">Monthly · {selectedFY?.name ? `FY ${selectedFY.name}` : "FY 2025-26"}</p>
           <ResponsiveContainer width="100%" height={180}>
             <AreaChart data={monthlyChart} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%"  stopColor="#1C2B3A" stopOpacity={0.2} />
-                  <stop offset="95%" stopColor="#1C2B3A" stopOpacity={0.01} />
+                  <stop offset="5%"  stopColor="#1A1A1A" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="#1A1A1A" stopOpacity={0.01} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="2 4" stroke="#ECEEEF" vertical={false} />
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#AEACA8' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: '#AEACA8' }} axisLine={false} tickLine={false} tickFormatter={v => v / 100 + 'L'} />
               <Tooltip formatter={v => ['₹' + (v / 100).toFixed(1) + 'L', 'Sales']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #D4D3CE' }} />
-              <Area type="monotone" dataKey="sales" stroke="#1C2B3A" strokeWidth={2.5} fill="url(#sg)" dot={false} activeDot={{ r: 4 }} />
+              <Area type="monotone" dataKey="sales" stroke="#1A1A1A" strokeWidth={2.5} fill="url(#sg)" dot={false} activeDot={{ r: 4 }} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
         <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
-          <p className="text-sm font-semibold text-[#1C2B3A] mb-4">Status Summary</p>
+          <p className="text-sm font-semibold text-[#1A1A1A] mb-4">Status Summary</p>
           <div className="space-y-3">
             {[['Paid', paid, '#2D7D46'], ['Unpaid', unpaid, '#C0392B']].map(([l, v, c]) => (
               <div key={l} className="flex items-center justify-between">
@@ -220,7 +220,7 @@ export default function SalesModule() {
                   <div className="w-24 bg-[#ECEEEF] rounded-full h-1.5">
                     <div className="h-1.5 rounded-full" style={{ width: invoices.length ? `${(v / invoices.length) * 100}%` : '0%', background: c }} />
                   </div>
-                  <span className="text-sm font-semibold text-[#1C2B3A] w-6 text-right">{v}</span>
+                  <span className="text-sm font-semibold text-[#1A1A1A] w-6 text-right">{v}</span>
                 </div>
               </div>
             ))}
@@ -235,7 +235,7 @@ export default function SalesModule() {
               return (
                 <div key={t} className="flex justify-between py-1 text-xs">
                   <span className="text-[#787774] truncate max-w-32">{t}</span>
-                  <span className="font-semibold text-[#1C2B3A]">{count}</span>
+                  <span className="font-semibold text-[#1A1A1A]">{count}</span>
                 </div>
               );
             })}
@@ -248,7 +248,7 @@ export default function SalesModule() {
         <div className="flex border-b border-[#ECEEEF] px-1 pt-1">
           {TABS.map((t, i) => (
             <button key={i} onClick={() => setTab(i)}
-              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#1C2B3A] bg-[#ECEEEF] font-semibold' : 'text-[#787774] hover:text-[#1C2B3A] hover:bg-[#F5F4EF]'}`}>
+              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#1A1A1A] bg-[#ECEEEF] font-semibold' : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F5F4EF]'}`}>
               {t}
             </button>
           ))}
@@ -260,10 +260,10 @@ export default function SalesModule() {
                 <div className="relative flex-1 min-w-48">
                   <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#AEACA8]" />
                   <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search customer or invoice..."
-                    className="w-full pl-8 pr-3 py-2 text-sm bg-[#F5F4EF] border border-[#ECEEEF] rounded-lg outline-none focus:border-[#1C2B3A] focus:bg-white transition-all placeholder:text-[#AEACA8]" />
+                    className="w-full pl-8 pr-3 py-2 text-sm bg-[#F5F4EF] border border-[#ECEEEF] rounded-lg outline-none focus:border-[#1A1A1A] focus:bg-white transition-all placeholder:text-[#AEACA8]" />
                 </div>
                 <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
-                  className="py-2 px-3 text-sm bg-white border border-[#D4D3CE] rounded-lg outline-none text-[#1C2B3A]">
+                  className="py-2 px-3 text-sm bg-white border border-[#D4D3CE] rounded-lg outline-none text-[#1A1A1A]">
                   {['All', 'Paid', 'Unpaid'].map(s => <option key={s}>{s}</option>)}
                 </select>
                 <button className="flex items-center gap-1.5 px-3 py-2 border border-[#D4D3CE] rounded-lg text-xs text-[#787774] hover:bg-[#F5F4EF]">
@@ -314,7 +314,7 @@ export default function SalesModule() {
           <div className="space-y-4">
             <div className="flex justify-between items-start">
               <div>
-                <p className="font-semibold text-[#1C2B3A] text-base">{drawer.customer}</p>
+                <p className="font-semibold text-[#1A1A1A] text-base">{drawer.customer}</p>
                 <p className="font-mono text-xs text-[#AEACA8] mt-0.5">{drawer.ref} · {drawer.voucherType}</p>
               </div>
               <Badge label={drawer.status} variant={statusVariant[drawer.status] || 'gray'} />
@@ -323,7 +323,7 @@ export default function SalesModule() {
               {[['Date', drawer.date], ['Amount', fmt(drawer.amount)], ['Type', drawer.voucherType], ['Status', drawer.status]].map(([l, v]) => (
                 <div key={l} className="p-3 bg-[#F5F4EF] rounded-xl border border-[#D4D3CE]">
                   <p className="text-xs text-[#AEACA8] mb-1">{l}</p>
-                  <p className="font-medium text-[#1C2B3A] text-sm">{v}</p>
+                  <p className="font-medium text-[#1A1A1A] text-sm">{v}</p>
                 </div>
               ))}
             </div>

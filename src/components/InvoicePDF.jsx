@@ -34,29 +34,29 @@ function buildTallyClassicHTML(inv) {
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:Arial,sans-serif;font-size:11px;color:#1A1A1A;background:#fff}
     .wrap{max-width:800px;margin:0 auto;padding:28px 32px}
-    .top-bar{background:#1C2B3A;color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;margin:-28px -32px 24px}
+    .top-bar{background:#1A1A1A;color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;margin:-28px -32px 24px}
     .top-bar .co{font-size:16px;font-weight:700;letter-spacing:.5px}
     .top-bar .title{font-size:13px;font-weight:600;opacity:.8;letter-spacing:2px}
     .inv-meta{display:flex;justify-content:space-between;margin-bottom:20px}
     .inv-meta .box{border:1px solid #D0D5DD;padding:12px 16px;border-radius:4px;min-width:200px}
     .inv-meta .box .lbl{font-size:9px;text-transform:uppercase;color:#787774;letter-spacing:.8px;margin-bottom:3px}
-    .inv-meta .box .val{font-size:13px;font-weight:700;color:#1C2B3A}
+    .inv-meta .box .val{font-size:13px;font-weight:700;color:#1A1A1A}
     .parties{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;padding:14px 16px;border:1px solid #D0D5DD;border-radius:4px;background:#F9FAFB}
     .party-lbl{font-size:9px;text-transform:uppercase;color:#787774;letter-spacing:.8px;margin-bottom:5px}
-    .party-name{font-size:13px;font-weight:700;color:#1C2B3A;margin-bottom:3px}
+    .party-name{font-size:13px;font-weight:700;color:#1A1A1A;margin-bottom:3px}
     .party-sub{font-size:10px;color:#787774;line-height:1.5}
     table{width:100%;border-collapse:collapse;margin-bottom:16px}
-    thead tr{background:#1C2B3A;color:#fff}
+    thead tr{background:#1A1A1A;color:#fff}
     th{padding:8px 10px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.6px;font-weight:600}
     td{padding:8px 10px;border-bottom:1px solid #F0F0F0;font-size:11px;vertical-align:middle}
     tbody tr:nth-child(even){background:#F9FAFB}
     .totals-wrap{display:flex;justify-content:flex-end;margin-bottom:20px}
     .totals{width:260px}
     .t-row{display:flex;justify-content:space-between;padding:5px 0;font-size:11px;border-bottom:1px solid #F0F0F0}
-    .t-row.grand{font-size:14px;font-weight:700;color:#1C2B3A;border-top:2px solid #1C2B3A;border-bottom:none;padding-top:8px;margin-top:4px}
+    .t-row.grand{font-size:14px;font-weight:700;color:#1A1A1A;border-top:2px solid #1A1A1A;border-bottom:none;padding-top:8px;margin-top:4px}
     .footer-bar{background:#F9FAFB;border:1px solid #D0D5DD;border-radius:4px;padding:12px 16px;display:flex;justify-content:space-between;font-size:10px;color:#787774}
     .sign-box{text-align:right}
-    .sign-line{border-top:1px solid #1C2B3A;width:160px;margin:28px 0 4px auto}
+    .sign-line{border-top:1px solid #1A1A1A;width:160px;margin:28px 0 4px auto}
     .stamp{text-align:center;margin-top:16px;font-size:9px;color:#AEACA8;padding-top:10px;border-top:1px solid #E8E7E3}
     @media print{@page{size:A4;margin:10mm}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
   </style></head><body>
@@ -367,7 +367,7 @@ export default function InvoicePDF({ open, onClose, invoice, companyGuid }) {
           </div>
           <div className="flex items-center gap-2">
             <button onClick={handlePrint}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium text-white bg-[#1C2B3A] hover:bg-[#1C2B3A] transition-colors">
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium text-white bg-[#1A1A1A] hover:bg-[#1A1A1A] transition-colors">
               <Printer size={14} /> Print / Download PDF
             </button>
             <button onClick={onClose}

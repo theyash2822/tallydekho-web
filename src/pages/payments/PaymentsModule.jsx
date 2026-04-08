@@ -15,7 +15,7 @@ const statusVariant = { Cleared: 'green', Pending: 'yellow', Reversed: 'red' };
 
 const paymentCols = [
   { key: 'date', label: 'Date', render: v => <span className="text-[#787774]">{v}</span> },
-  { key: 'voucher', label: 'Voucher', render: v => <span className="font-mono text-xs text-[#1C2B3A] font-semibold">{v}</span> },
+  { key: 'voucher', label: 'Voucher', render: v => <span className="font-mono text-xs text-[#1A1A1A] font-semibold">{v}</span> },
   { key: 'party', label: 'Party' },
   { key: 'ledger', label: 'Bank / Cash', render: v => <span className="text-xs text-[#787774]">{v}</span> },
   { key: 'amount', label: 'Amount', render: v => <span className="font-semibold text-[#C0392B]">{fmt(v)}</span> },
@@ -26,7 +26,7 @@ const paymentCols = [
 
 const receiptCols = [
   { key: 'date', label: 'Date', render: v => <span className="text-[#787774]">{v}</span> },
-  { key: 'voucher', label: 'Voucher', render: v => <span className="font-mono text-xs text-[#1C2B3A] font-semibold">{v}</span> },
+  { key: 'voucher', label: 'Voucher', render: v => <span className="font-mono text-xs text-[#1A1A1A] font-semibold">{v}</span> },
   { key: 'party', label: 'Party' },
   { key: 'ledger', label: 'Bank / Cash', render: v => <span className="text-xs text-[#787774]">{v}</span> },
   { key: 'amount', label: 'Amount', render: v => <span className="font-semibold text-[#2D7D46]">{fmt(v)}</span> },
@@ -85,36 +85,36 @@ export default function PaymentsModule() {
         </div>
       )}
       <div>
-        <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Payments & Receipts</h1>
+        <h1 className="text-xl font-semibold text-[#1A1A1A] tracking-tight">Payments & Receipts</h1>
         <p className="text-sm text-[#787774] mt-0.5">{selectedFY?.name ? "FY " + selectedFY.name : "Current FY"}</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
         <KPICard title="Total Payments"  value={loading ? '—' : fmt(displayPayments.reduce((s,p)=>s+(p.amount||0),0))} icon={ArrowUpRight}  accent="#C0392B" />
         <KPICard title="Total Receipts"  value={loading ? '—' : fmt(displayReceipts.reduce((s,r)=>s+(r.amount||0),0))} icon={ArrowDownLeft} accent="#2D7D46" />
-        <KPICard title="Net Cash Flow"   value={loading ? '—' : fmt(displayReceipts.reduce((s,r)=>s+(r.amount||0),0) - displayPayments.reduce((s,p)=>s+(p.amount||0),0))} icon={CreditCard} accent="#1C2B3A" />
+        <KPICard title="Net Cash Flow"   value={loading ? '—' : fmt(displayReceipts.reduce((s,r)=>s+(r.amount||0),0) - displayPayments.reduce((s,p)=>s+(p.amount||0),0))} icon={CreditCard} accent="#1A1A1A" />
         <KPICard title="Vouchers"        value={loading ? '—' : displayPayments.length + displayReceipts.length} icon={CreditCard} accent="#D97706" />
       </div>
 
       {/* Top parties */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white border border-[#D4D3CE] rounded-2xl p-5">
-          <p className="text-sm font-semibold text-[#1C2B3A] mb-3">Top Payment Parties</p>
+          <p className="text-sm font-semibold text-[#1A1A1A] mb-3">Top Payment Parties</p>
           <div className="space-y-2.5">
             {displayPayments.slice(0,4).map((p,i) => (
               <div key={i} className="flex justify-between items-center">
-                <span className="text-sm text-[#1C2B3A]">{p.party}</span>
+                <span className="text-sm text-[#1A1A1A]">{p.party}</span>
                 <span className="text-sm font-semibold text-[#C0392B]">{fmt(p.amount)}</span>
               </div>
             ))}
           </div>
         </div>
         <div className="bg-white border border-[#D4D3CE] rounded-2xl p-5">
-          <p className="text-sm font-semibold text-[#1C2B3A] mb-3">Top Receipt Parties</p>
+          <p className="text-sm font-semibold text-[#1A1A1A] mb-3">Top Receipt Parties</p>
           <div className="space-y-2.5">
             {displayReceipts.slice(0,4).map((r,i) => (
               <div key={i} className="flex justify-between items-center">
-                <span className="text-sm text-[#1C2B3A]">{r.party}</span>
+                <span className="text-sm text-[#1A1A1A]">{r.party}</span>
                 <span className="text-sm font-semibold text-[#2D7D46]">{fmt(r.amount)}</span>
               </div>
             ))}
@@ -126,7 +126,7 @@ export default function PaymentsModule() {
         <div className="flex border-b border-[#D4D3CE] px-1 pt-1">
           {TABS.map((t, i) => (
             <button key={i} onClick={() => setTab(i)}
-              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#1C2B3A] bg-[#ECEEEF] font-semibold' : 'text-[#787774] hover:text-[#1C2B3A] hover:bg-[#F5F4EF]'}`}>{t}
+              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#1A1A1A] bg-[#ECEEEF] font-semibold' : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F5F4EF]'}`}>{t}
             </button>
           ))}
         </div>

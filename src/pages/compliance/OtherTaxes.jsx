@@ -10,8 +10,8 @@ const fmt = n => '₹' + n.toLocaleString('en-IN');
 const statusVariant = { Remitted: 'green', Pending: 'yellow', Overdue: 'red' };
 const TAX_TABS = ['TDS','TCS','Import Duty','Export Duty','Excise','VAT','Cess'];
 const kpis = {
-  TDS:[{t:'Deducted',v:'₹42,000',a:'#1C2B3A'},{t:'Remitted',v:'₹29,250',a:'#2D7D46'},{t:'Pending Pay',v:'₹12,750',a:'#F59E0B'},{t:'Late Fee',v:'—',a:'#787774'}],
-  TCS:[{t:'Collected',v:'₹18,200',a:'#1C2B3A'},{t:'Remitted',v:'₹18,200',a:'#2D7D46'},{t:'Pending Pay',v:'—',a:'#F59E0B'},{t:'Late Fee',v:'—',a:'#787774'}],
+  TDS:[{t:'Deducted',v:'₹42,000',a:'#1A1A1A'},{t:'Remitted',v:'₹29,250',a:'#2D7D46'},{t:'Pending Pay',v:'₹12,750',a:'#F59E0B'},{t:'Late Fee',v:'—',a:'#787774'}],
+  TCS:[{t:'Collected',v:'₹18,200',a:'#1A1A1A'},{t:'Remitted',v:'₹18,200',a:'#2D7D46'},{t:'Pending Pay',v:'—',a:'#F59E0B'},{t:'Late Fee',v:'—',a:'#787774'}],
 };
 const lateChallans = [{party:'IT Services Co.',due:'07 Jul 2025',amount:9500,daysLate:3},{party:'Sunrise Electricals',due:'07 Jul 2025',amount:3000,daysLate:3}];
 const tdsCols = [
@@ -32,11 +32,11 @@ export default function OtherTaxes() {
 
   return (
     <div className="space-y-5">
-      <div><h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Other Taxes</h1><p className="text-sm text-[#787774] mt-0.5">FY 2025-26 · July 2025</p></div>
+      <div><h1 className="text-xl font-semibold text-[#1A1A1A] tracking-tight">Other Taxes</h1><p className="text-sm text-[#787774] mt-0.5">FY 2025-26 · July 2025</p></div>
       <div className="bg-white border border-[#D4D3CE] rounded-xl">
         <div className="flex border-b border-[#D4D3CE] px-1 pt-1 overflow-x-auto">
           {TAX_TABS.map(t=>(
-            <button key={t} onClick={()=>setTaxTab(t)} className={`px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors rounded-t-lg mr-1 ${taxTab===t?'text-[#1C2B3A] bg-[#ECEEEF]':'text-[#787774] hover:text-[#1C2B3A] hover:bg-[#F5F4EF]'}`}>{t}</button>
+            <button key={t} onClick={()=>setTaxTab(t)} className={`px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors rounded-t-lg mr-1 ${taxTab===t?'text-[#1A1A1A] bg-[#ECEEEF]':'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F5F4EF]'}`}>{t}</button>
           ))}
         </div>
         <div className="p-5 space-y-5">
@@ -50,7 +50,7 @@ export default function OtherTaxes() {
                 {lateChallans.map((c,i)=>(
                   <div key={i} className="flex justify-between items-center text-sm">
                     <span className="text-amber-700 font-medium">{c.party}</span>
-                    <span className="font-semibold text-[#1C2B3A]">{fmt(c.amount)}</span>
+                    <span className="font-semibold text-[#1A1A1A]">{fmt(c.amount)}</span>
                     <span className="text-xs text-[#C0392B] font-medium">{c.daysLate} days overdue</span>
                   </div>
                 ))}
@@ -78,10 +78,10 @@ export default function OtherTaxes() {
           <div className="space-y-3 text-sm">
             {[['Date',drawer.date],['Voucher',drawer.voucher],['Party',drawer.party],['Section',drawer.section],['Amount',fmt(drawer.amount)],['Challan',drawer.challan||'Pending'],['Status',drawer.status]].map(([l,v])=>(
               <div key={l} className="flex justify-between py-2 border-b border-[#F5F4EF]">
-                <span className="text-[#787774]">{l}</span><span className="font-medium text-[#1C2B3A]">{v}</span>
+                <span className="text-[#787774]">{l}</span><span className="font-medium text-[#1A1A1A]">{v}</span>
               </div>
             ))}
-            <button className="w-full py-2.5 mt-2 rounded-lg text-sm font-medium text-white" style={{background:'#1C2B3A'}}>Mark as Remitted</button>
+            <button className="w-full py-2.5 mt-2 rounded-lg text-sm font-medium text-white" style={{background:'#1A1A1A'}}>Mark as Remitted</button>
           </div>
         )}
       </Drawer>

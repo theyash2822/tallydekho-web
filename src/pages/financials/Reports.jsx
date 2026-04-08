@@ -9,13 +9,13 @@ import KPICard from '../../components/KPICard';
 const fmt = n => '₹' + n.toLocaleString('en-IN');
 const fmtL = n => '₹' + (n / 100000).toFixed(1) + 'L';
 const TABS = ['Profit & Loss', 'Balance Sheet', 'Trial Balance'];
-const COLORS = ['#1C2B3A','#1C2B3A','#798692','#9FA9B1','#B2BAC1'];
+const COLORS = ['#1A1A1A','#1A1A1A','#798692','#9FA9B1','#B2BAC1'];
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-white border border-[#D4D3CE] rounded-xl p-3 shadow-notion-md text-xs">
-      <p className="font-semibold text-[#1C2B3A] mb-1">{label}</p>
+      <p className="font-semibold text-[#1A1A1A] mb-1">{label}</p>
       {payload.map((p, i) => <div key={i} className="flex items-center gap-2"><div className="w-2 h-2 rounded-full" style={{ background: p.color }} /><span className="text-[#787774]">{p.name}:</span><span className="font-medium">{fmtL(p.value)}</span></div>)}
     </div>
   );
@@ -27,12 +27,12 @@ function ExpandRow({ label, amount, children, highlight }) {
     <>
       <tr className={`border-b border-[#F5F4EF] cursor-pointer hover:bg-[#F5F4EF] ${highlight ? 'bg-[#ECEEEF]' : ''}`} onClick={() => setOpen(p => !p)}>
         <td className="px-4 py-3">
-          <span className="flex items-center gap-2 font-medium text-[#1C2B3A]">
+          <span className="flex items-center gap-2 font-medium text-[#1A1A1A]">
             {children ? (open ? <ChevronDown size={13} className="text-[#787774]" /> : <ChevronRight size={13} className="text-[#787774]" />) : <span className="w-3.5" />}
             {label}
           </span>
         </td>
-        <td className={`px-4 py-3 text-right font-semibold ${highlight ? 'text-[#2D7D46]' : 'text-[#1C2B3A]'}`}>{fmt(amount)}</td>
+        <td className={`px-4 py-3 text-right font-semibold ${highlight ? 'text-[#2D7D46]' : 'text-[#1A1A1A]'}`}>{fmt(amount)}</td>
       </tr>
       {open && children}
     </>
@@ -92,12 +92,12 @@ export default function Reports() {
         </div>
       )}
       <div>
-        <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Financial Reports</h1>
+        <h1 className="text-xl font-semibold text-[#1A1A1A] tracking-tight">Financial Reports</h1>
         <p className="text-sm text-[#787774] mt-0.5">{selectedFY?.name ? `FY ${selectedFY.name}` : "FY 2025-26"}</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Revenue"  value={loading ? '—' : fmtL(totalIncome)}   icon={TrendingUp} accent="#1C2B3A" />
+        <KPICard title="Total Revenue"  value={loading ? '—' : fmtL(totalIncome)}   icon={TrendingUp} accent="#1A1A1A" />
         <KPICard title="Total Expenses" value={loading ? '—' : fmtL(totalExpenses)} icon={TrendingUp} accent="#C0392B" />
         <KPICard title="Net Profit"     value={loading ? '—' : fmtL(netProfit)}     icon={TrendingUp} accent="#2D7D46" />
         <KPICard title="Total Assets"   value={loading ? '—' : fmtL(totalAssets)}   icon={TrendingUp} accent="#D97706" />
@@ -106,27 +106,27 @@ export default function Reports() {
       {/* Charts */}
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
-          <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Profit Trend</p>
+          <p className="text-sm font-semibold text-[#1A1A1A] mb-1">Profit Trend</p>
           <p className="text-xs text-[#787774] mb-4">6-month net profit</p>
           <ResponsiveContainer width="100%" height={150}>
             <AreaChart data={profitTrend}>
               <defs>
                 <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#1C2B3A" stopOpacity={0.18} />
-                  <stop offset="95%" stopColor="#1C2B3A" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#1A1A1A" stopOpacity={0.18} />
+                  <stop offset="95%" stopColor="#1A1A1A" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#F5F4EF" vertical={false} />
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} />
               <YAxis hide />
               <Tooltip formatter={v => fmt(v)} contentStyle={{ fontSize: 11, border: '1px solid #D4D3CE', borderRadius: 8 }} />
-              <Area type="monotone" dataKey="profit" stroke="#1C2B3A" strokeWidth={2} fill="url(#pg)" dot={{ r: 3, fill: '#1C2B3A', strokeWidth: 0 }} />
+              <Area type="monotone" dataKey="profit" stroke="#1A1A1A" strokeWidth={2} fill="url(#pg)" dot={{ r: 3, fill: '#1A1A1A', strokeWidth: 0 }} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
 
         <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
-          <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Expense Breakdown</p>
+          <p className="text-sm font-semibold text-[#1A1A1A] mb-1">Expense Breakdown</p>
           <p className="text-xs text-[#787774] mb-4">By category</p>
           <ResponsiveContainer width="100%" height={150}>
             <PieChart>
@@ -139,7 +139,7 @@ export default function Reports() {
         </div>
 
         <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
-          <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Sales vs Purchase</p>
+          <p className="text-sm font-semibold text-[#1A1A1A] mb-1">Sales vs Purchase</p>
           <p className="text-xs text-[#787774] mb-4">Last 6 months</p>
           <ResponsiveContainer width="100%" height={150}>
             <BarChart data={(plReport?.monthlySales || [])} barSize={10}>
@@ -147,7 +147,7 @@ export default function Reports() {
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} />
               <YAxis hide />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="sales" fill="#1C2B3A" radius={[3,3,0,0]} />
+              <Bar dataKey="sales" fill="#1A1A1A" radius={[3,3,0,0]} />
               <Bar dataKey="purchase" fill="#C5CBD0" radius={[3,3,0,0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -158,7 +158,7 @@ export default function Reports() {
         <div className="flex border-b border-[#D4D3CE] px-1 pt-1">
           {TABS.map((t, i) => (
             <button key={i} onClick={() => setTab(i)}
-              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#1C2B3A] bg-[#ECEEEF] font-semibold' : 'text-[#787774] hover:text-[#1C2B3A] hover:bg-[#F5F4EF]'}`}>{t}</button>
+              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#1A1A1A] bg-[#ECEEEF] font-semibold' : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F5F4EF]'}`}>{t}</button>
           ))}
         </div>
         <div className="p-5">
@@ -202,10 +202,10 @@ export default function Reports() {
                       {rows.slice(0, 30).map((a, i) => (
                         <div key={i} className="flex justify-between py-1.5 pl-3 border-b border-[#F5F4EF] last:border-0">
                           <span className="text-[#787774] truncate max-w-[200px]">{a.name}</span>
-                          <span className="font-medium text-[#1C2B3A] ml-2">{fmt(parseFloat(a.closing_balance || 0))}</span>
+                          <span className="font-medium text-[#1A1A1A] ml-2">{fmt(parseFloat(a.closing_balance || 0))}</span>
                         </div>
                       ))}
-                      <div className="flex justify-between py-2.5 mt-2 border-t-2 border-[#1C2B3A] font-bold text-[#1C2B3A]">
+                      <div className="flex justify-between py-2.5 mt-2 border-t-2 border-[#1A1A1A] font-bold text-[#1A1A1A]">
                         <span>Total {title}</span><span>{fmt(total)}</span>
                       </div>
                     </div>
@@ -230,7 +230,7 @@ export default function Reports() {
                     ...bsLiabilities.map(l => ({ ...l, side: 'Cr' }))
                   ].map((row, i) => (
                     <tr key={i} className="border-b border-[#F5F4EF] hover:bg-[#F5F4EF]">
-                      <td className="px-3 py-2.5 font-medium text-[#1C2B3A]">{row.name}</td>
+                      <td className="px-3 py-2.5 font-medium text-[#1A1A1A]">{row.name}</td>
                       <td className="px-3 py-2.5 text-[#787774]">{row.parent || '—'}</td>
                       <td className="px-3 py-2.5 text-right">{row.side === 'Dr' ? fmt(parseFloat(row.opening_balance || 0)) : <span className="text-[#AEACA8]">—</span>}</td>
                       <td className="px-3 py-2.5 text-right">{row.side === 'Cr' ? fmt(parseFloat(row.opening_balance || 0)) : <span className="text-[#AEACA8]">—</span>}</td>

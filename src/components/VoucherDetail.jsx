@@ -5,14 +5,14 @@ import api from '../services/api';
 const fmt = n => '₹' + Math.abs(parseFloat(n) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const typeColor = (type) => {
-  if (!type) return 'bg-[#ECEEEF] text-[#1C2B3A]';
+  if (!type) return 'bg-[#ECEEEF] text-[#1A1A1A]';
   if (type.includes('Sales'))   return 'bg-[#E8F5ED] text-[#2D7D46]';
   if (type.includes('Purchase')) return 'bg-[#FFFBEB] text-[#D97706]';
   if (type.includes('Payment')) return 'bg-[#FEF2F2] text-[#C0392B]';
   if (type.includes('Receipt')) return 'bg-[#E8F5ED] text-[#2D7D46]';
   if (type.includes('Journal')) return 'bg-[#EFF6FF] text-[#2563EB]';
   if (type.includes('Contra'))  return 'bg-[#FFFBEB] text-[#D97706]';
-  return 'bg-[#ECEEEF] text-[#1C2B3A]';
+  return 'bg-[#ECEEEF] text-[#1A1A1A]';
 };
 
 export default function VoucherDetail({ voucherId, companyGuid, companyName, onBack }) {
@@ -40,15 +40,15 @@ export default function VoucherDetail({ voucherId, companyGuid, companyName, onB
       <html><head><title>Voucher</title>
       <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', Arial, sans-serif; font-size: 12px; color: #1C2B3A; padding: 20px; }
-        .header { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 2px solid #1C2B3A; padding-bottom: 12px; }
-        .company { font-size: 18px; font-weight: 700; color: #1C2B3A; }
+        body { font-family: 'Inter', Arial, sans-serif; font-size: 12px; color: #1A1A1A; padding: 20px; }
+        .header { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 2px solid #1A1A1A; padding-bottom: 12px; }
+        .company { font-size: 18px; font-weight: 700; color: #1A1A1A; }
         .voucher-type { font-size: 14px; font-weight: 600; text-align: right; }
-        .voucher-number { font-size: 22px; font-weight: 700; color: #1C2B3A; }
+        .voucher-number { font-size: 22px; font-weight: 700; color: #1A1A1A; }
         .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
         .meta-item { }
         .label { font-size: 10px; color: #787774; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
-        .value { font-size: 12px; font-weight: 500; color: #1C2B3A; }
+        .value { font-size: 12px; font-weight: 500; color: #1A1A1A; }
         table { width: 100%; border-collapse: collapse; margin: 16px 0; }
         th { background: #F5F4EF; padding: 8px 10px; text-align: left; font-size: 10px; text-transform: uppercase; color: #787774; border-bottom: 1px solid #D4D3CE; }
         td { padding: 8px 10px; border-bottom: 1px solid #F5F4EF; font-size: 12px; }
@@ -106,7 +106,7 @@ export default function VoucherDetail({ voucherId, companyGuid, companyName, onB
   if (error || !data) return (
     <div className="p-4 text-center">
       <p className="text-sm text-[#C0392B]">{error || 'Voucher not found'}</p>
-      <button onClick={onBack} className="mt-3 text-xs text-[#1C2B3A] hover:underline">← Back</button>
+      <button onClick={onBack} className="mt-3 text-xs text-[#1A1A1A] hover:underline">← Back</button>
     </div>
   );
 
@@ -118,7 +118,7 @@ export default function VoucherDetail({ voucherId, companyGuid, companyName, onB
     <div className="space-y-4">
       {/* Toolbar */}
       <div className="flex items-center justify-between">
-        <button onClick={onBack} className="flex items-center gap-1.5 text-xs text-[#1C2B3A] hover:text-[#787774] font-medium transition-colors">
+        <button onClick={onBack} className="flex items-center gap-1.5 text-xs text-[#1A1A1A] hover:text-[#787774] font-medium transition-colors">
           <ArrowLeft size={13} /> Back to vouchers
         </button>
         <div className="flex gap-2">
@@ -154,7 +154,7 @@ export default function VoucherDetail({ voucherId, companyGuid, companyName, onB
             </span>
           </div>
           <div className="text-right">
-            <p className="text-xl font-bold text-[#1C2B3A]">{voucher.voucher_number}</p>
+            <p className="text-xl font-bold text-[#1A1A1A]">{voucher.voucher_number}</p>
             <p className="text-xs text-[#AEACA8] mt-0.5">{voucher.date}</p>
           </div>
         </div>
@@ -169,7 +169,7 @@ export default function VoucherDetail({ voucherId, companyGuid, companyName, onB
           ].filter(([, v]) => v).map(([l, v]) => (
             <div key={l} className={`p-3 bg-white border border-[#D4D3CE] rounded-xl ${l === 'Narration' || l === 'Party' ? 'col-span-2' : ''}`}>
               <p className="text-[10px] font-semibold text-[#AEACA8] uppercase tracking-wider mb-1">{l}</p>
-              <p className="text-sm font-medium text-[#1C2B3A]">{v}</p>
+              <p className="text-sm font-medium text-[#1A1A1A]">{v}</p>
             </div>
           ))}
         </div>
@@ -194,7 +194,7 @@ export default function VoucherDetail({ voucherId, companyGuid, companyName, onB
                 {items.filter(i => parseFloat(i.amount) > 0 || i.item_name).map((item, i) => (
                   <tr key={i} className="border-b border-[#F5F4EF] last:border-0 hover:bg-[#F9F9F9]">
                     <td className="px-4 py-2.5">
-                      <p className="font-medium text-[#1C2B3A]">{item.ledger_name || '—'}</p>
+                      <p className="font-medium text-[#1A1A1A]">{item.ledger_name || '—'}</p>
                       {item.item_name && (
                         <p className="text-xs text-[#AEACA8] mt-0.5">{item.item_name}{item.qty ? ` · ${item.qty} ${item.unit || ''}` : ''}{item.rate ? ` @ ₹${item.rate}` : ''}</p>
                       )}
@@ -213,7 +213,7 @@ export default function VoucherDetail({ voucherId, companyGuid, companyName, onB
                 ))}
                 {/* Totals row */}
                 <tr className="bg-[#F5F4EF] font-semibold border-t border-[#D4D3CE]">
-                  <td className="px-4 py-2.5 text-sm text-[#1C2B3A]">Total</td>
+                  <td className="px-4 py-2.5 text-sm text-[#1A1A1A]">Total</td>
                   <td className="px-4 py-2.5 text-right text-sm text-[#C0392B]">{drTotal > 0 ? fmt(drTotal) : '—'}</td>
                   <td className="px-4 py-2.5 text-right text-sm text-[#2D7D46]">{crTotal > 0 ? fmt(crTotal) : '—'}</td>
                 </tr>

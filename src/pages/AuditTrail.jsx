@@ -108,7 +108,7 @@ export default function AuditTrail() {
           <button
             onClick={load}
             disabled={loading}
-            className="flex items-center gap-1.5 text-xs text-[#787774] hover:text-[#1C2B3A] transition-colors disabled:opacity-40"
+            className="flex items-center gap-1.5 text-xs text-[#787774] hover:text-[#1A1A1A] transition-colors disabled:opacity-40"
           >
             <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
             {loading ? 'Loading…' : 'Refresh'}
@@ -129,7 +129,7 @@ export default function AuditTrail() {
       {stats && (
         <div className="grid grid-cols-4 gap-3">
           {[
-            { label: 'Total Entries', value: stats.total, color: '#1C2B3A' },
+            { label: 'Total Entries', value: stats.total, color: '#1A1A1A' },
             { label: 'In Tally', value: stats.success_count, color: '#2D7D46' },
             { label: 'Pending / Offline', value: parseInt(stats.offline_count||0) + parseInt(stats.pending_count||0), color: '#D97706' },
             { label: 'Failed', value: stats.failed_count, color: '#C0392B' },
@@ -155,8 +155,8 @@ export default function AuditTrail() {
             onClick={() => setFilter(f.key)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
               filter === f.key
-                ? 'bg-[#1A1A1A] text-white border-[#1C2B3A]'
-                : 'bg-white text-[#787774] border-[#D4D3CE] hover:border-[#1C2B3A] hover:text-[#1C2B3A]'
+                ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
+                : 'bg-white text-[#787774] border-[#D4D3CE] hover:border-[#1A1A1A] hover:text-[#1A1A1A]'
             }`}
           >
             {f.label}
@@ -193,11 +193,11 @@ export default function AuditTrail() {
                   {/* Type + label */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs font-semibold text-[#1C2B3A]">
+                      <span className="text-xs font-semibold text-[#1A1A1A]">
                         {TYPE_LABELS[entry.entry_type] || entry.entry_type}
                       </span>
                       <span className="text-xs text-[#787774] truncate max-w-[200px]">{entry.entry_label}</span>
-                      {amount && <span className="text-xs font-semibold text-[#1C2B3A]">{amount}</span>}
+                      {amount && <span className="text-xs font-semibold text-[#1A1A1A]">{amount}</span>}
                       {entry.tally_voucher_number && (
                         <span className="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-semibold">
                           #{entry.tally_voucher_number}
@@ -227,7 +227,7 @@ export default function AuditTrail() {
                   {/* Expand */}
                   <button
                     onClick={() => setExpanded(e => ({ ...e, [entry.id]: !isExp }))}
-                    className="flex-shrink-0 w-6 h-6 flex items-center justify-center text-[#AEACA8] hover:text-[#1C2B3A]"
+                    className="flex-shrink-0 w-6 h-6 flex items-center justify-center text-[#AEACA8] hover:text-[#1A1A1A]"
                   >
                     {isExp ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                   </button>
@@ -237,9 +237,9 @@ export default function AuditTrail() {
                 {isExp && (
                   <div className="px-4 pb-3 border-t border-[#F0F0EE] mt-0 pt-3 space-y-1.5">
                     <div className="flex gap-6 text-[11px] text-[#AEACA8]">
-                      <span>Attempts: <strong className="text-[#1C2B3A]">{entry.attempt_count}</strong></span>
-                      <span>Updated: <strong className="text-[#1C2B3A]">{fmtTime(entry.updated_at)}</strong></span>
-                      {entry.tally_id && <span>Tally ID: <strong className="text-[#1C2B3A]">{entry.tally_id}</strong></span>}
+                      <span>Attempts: <strong className="text-[#1A1A1A]">{entry.attempt_count}</strong></span>
+                      <span>Updated: <strong className="text-[#1A1A1A]">{fmtTime(entry.updated_at)}</strong></span>
+                      {entry.tally_id && <span>Tally ID: <strong className="text-[#1A1A1A]">{entry.tally_id}</strong></span>}
                     </div>
                     {entry.error_message && (
                       <p className="text-[11px] text-red-600 bg-red-50 rounded-lg px-3 py-2 font-mono">

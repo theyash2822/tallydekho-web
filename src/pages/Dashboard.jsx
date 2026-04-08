@@ -12,12 +12,12 @@ import {
 } from 'recharts';
 import api from '../services/api';
 
-const CUSTOMER_COLORS = ['#1C2B3A', '#0D9488', '#D97706', '#E5484D', '#798692'];
+const CUSTOMER_COLORS = ['#1A1A1A', '#0D9488', '#D97706', '#E5484D', '#798692'];
 
 const ChartTip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-[#1C2B3A] rounded-xl px-4 py-3 shadow-xl text-xs min-w-[140px]">
+    <div className="bg-[#1A1A1A] rounded-xl px-4 py-3 shadow-xl text-xs min-w-[140px]">
       <p className="text-[#9FA9B1] mb-2 font-medium">{label}</p>
       {payload.map((p, i) => (
         <div key={i} className="flex items-center justify-between gap-4 mb-1 last:mb-0">
@@ -41,7 +41,7 @@ function KPICard({ label, value, sub, color, loading }) {
       </div>
       {loading
         ? <div className="h-7 w-24 bg-[#F5F4EF] rounded-lg animate-pulse" />
-        : <p className="text-2xl font-bold text-[#1C2B3A] tracking-tight">{value}</p>
+        : <p className="text-2xl font-bold text-[#1A1A1A] tracking-tight">{value}</p>
       }
       <p className="text-xs text-[#AEACA8] mt-1.5 truncate">{sub}</p>
     </div>
@@ -53,11 +53,11 @@ function ChartCard({ title, sub, action, onAction, children }) {
     <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
       <div className="flex items-start justify-between mb-4">
         <div>
-          <p className="text-sm font-semibold text-[#1C2B3A]">{title}</p>
+          <p className="text-sm font-semibold text-[#1A1A1A]">{title}</p>
           {sub && <p className="text-xs text-[#AEACA8] mt-0.5">{sub}</p>}
         </div>
         {action && (
-          <button onClick={onAction} className="flex items-center gap-1 text-xs text-[#1C2B3A] hover:text-[#787774] font-medium transition-colors">
+          <button onClick={onAction} className="flex items-center gap-1 text-xs text-[#1A1A1A] hover:text-[#787774] font-medium transition-colors">
             {action} <ExternalLink size={11} />
           </button>
         )}
@@ -152,7 +152,7 @@ export default function Dashboard() {
 
   const kpis = [
     { label: 'Total Revenue',  value: fmtL(dashData?.totalSales),    sub: fyLabel,       color: '#2D7D46' },
-    { label: 'Net Profit',     value: fmtL(dashData?.netProfit),      sub: 'This FY',     color: '#1C2B3A' },
+    { label: 'Net Profit',     value: fmtL(dashData?.netProfit),      sub: 'This FY',     color: '#1A1A1A' },
     { label: 'Receivables',    value: fmtL(dashData?.receivables),    sub: 'Outstanding', color: '#D97706' },
     { label: 'Payables',       value: fmtL(dashData?.payables),       sub: 'Outstanding', color: '#C0392B' },
     { label: 'Cash & Bank',    value: fmtL((dashData?.cashBalance||0)+(dashData?.bankBalance||0)), sub: 'Available', color: '#2563EB' },
@@ -171,7 +171,7 @@ export default function Dashboard() {
         <button
           onClick={load}
           disabled={loading}
-          className="flex items-center gap-1.5 text-xs text-[#787774] hover:text-[#1C2B3A] transition-colors disabled:opacity-40"
+          className="flex items-center gap-1.5 text-xs text-[#787774] hover:text-[#1A1A1A] transition-colors disabled:opacity-40"
         >
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
           {loading ? 'Loading…' : 'Refresh'}
@@ -199,7 +199,7 @@ export default function Dashboard() {
           </div>
           <button
             onClick={() => navigate('/settings?tab=integrations&sub=Tally+ERP+Sync')}
-            className="px-4 py-2 rounded-lg text-sm font-semibold bg-white text-[#1C2B3A] hover:bg-white/90 transition-colors flex-shrink-0"
+            className="px-4 py-2 rounded-lg text-sm font-semibold bg-white text-[#1A1A1A] hover:bg-white/90 transition-colors flex-shrink-0"
           >
             Connect →
           </button>
@@ -242,7 +242,7 @@ export default function Dashboard() {
                 <ResponsiveContainer width="100%" height={220}>
                   <AreaChart data={revenueData} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
                     <defs>
-                      {[['r','#1C2B3A'],['p','#D97706']].map(([id,c]) => (
+                      {[['r','#1A1A1A'],['p','#D97706']].map(([id,c]) => (
                         <linearGradient key={id} id={`g${id}`} x1="0" y1="0" x2="0" y2="1">
                           <stop offset="0%"   stopColor={c} stopOpacity={0.18} />
                           <stop offset="100%" stopColor={c} stopOpacity={0.01} />
@@ -253,16 +253,16 @@ export default function Dashboard() {
                     <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#AEACA8' }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fontSize: 10, fill: '#AEACA8' }} axisLine={false} tickLine={false} unit="K" />
                     <Tooltip content={<ChartTip />} />
-                    <Area type="monotone" dataKey="Revenue"  stroke="#1C2B3A" strokeWidth={2.5} fill="url(#gr)" dot={false} activeDot={{ r: 4, fill: '#1C2B3A', strokeWidth: 2, stroke: '#fff' }} />
+                    <Area type="monotone" dataKey="Revenue"  stroke="#1A1A1A" strokeWidth={2.5} fill="url(#gr)" dot={false} activeDot={{ r: 4, fill: '#1A1A1A', strokeWidth: 2, stroke: '#fff' }} />
                     <Area type="monotone" dataKey="Purchase" stroke="#D97706" strokeWidth={2}   fill="url(#gp)" dot={false} activeDot={{ r: 3, fill: '#D97706', strokeWidth: 2, stroke: '#fff' }} />
                   </AreaChart>
                 </ResponsiveContainer>
                 <div className="flex gap-5 mt-3 pt-3 border-t border-[#ECEEEF]">
-                  {[['Revenue','#1C2B3A',totalRevK],['Purchase','#D97706',totalPurK]].map(([l,c,v]) => (
+                  {[['Revenue','#1A1A1A',totalRevK],['Purchase','#D97706',totalPurK]].map(([l,c,v]) => (
                     <div key={l} className="flex items-center gap-2">
                       <div className="w-3 h-1.5 rounded-full" style={{ background: c }} />
                       <span className="text-xs text-[#AEACA8]">{l}</span>
-                      <span className="text-xs font-semibold text-[#1C2B3A]">{v > 0 ? `₹${v.toFixed(0)}K` : '—'}</span>
+                      <span className="text-xs font-semibold text-[#1A1A1A]">{v > 0 ? `₹${v.toFixed(0)}K` : '—'}</span>
                     </div>
                   ))}
                 </div>
@@ -298,8 +298,8 @@ export default function Dashboard() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-center mb-1">
-                      <span className="text-xs font-medium text-[#1C2B3A] truncate">{c.name}</span>
-                      <span className="text-xs font-semibold text-[#1C2B3A] ml-2 flex-shrink-0">{c.amount}</span>
+                      <span className="text-xs font-medium text-[#1A1A1A] truncate">{c.name}</span>
+                      <span className="text-xs font-semibold text-[#1A1A1A] ml-2 flex-shrink-0">{c.amount}</span>
                     </div>
                     <div className="w-full bg-[#ECEEEF] rounded-full h-1.5">
                       <div className="h-1.5 rounded-full" style={{ width: `${c.pct}%`, background: CUSTOMER_COLORS[i] }} />

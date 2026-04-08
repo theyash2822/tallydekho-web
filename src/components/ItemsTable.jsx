@@ -191,7 +191,7 @@ export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange
 
       <button
         onClick={add}
-        className="flex items-center gap-1.5 mt-3 text-xs text-[#1C2B3A] hover:text-[#787774] font-medium transition-colors"
+        className="flex items-center gap-1.5 mt-3 text-xs text-[#1A1A1A] hover:text-[#787774] font-medium transition-colors"
       >
         <Plus size={13} /> Add Item
       </button>

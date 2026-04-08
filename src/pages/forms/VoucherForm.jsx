@@ -99,9 +99,9 @@ export default function VoucherForm({ onClose }) {
         <div className="w-16 h-16 rounded-full bg-[#E8F5ED] flex items-center justify-center border border-[#A8D5BC]">
           <CheckCircle size={32} className="text-[#2D7D46]" />
         </div>
-        <p className="text-base font-semibold text-[#1C2B3A]">{type} Voucher Created in Tally!</p>
+        <p className="text-base font-semibold text-[#1A1A1A]">{type} Voucher Created in Tally!</p>
         {createdNumber && (
-          <p className="text-sm font-mono font-bold text-[#1C2B3A] bg-[#ECEEEF] px-3 py-1 rounded-lg">
+          <p className="text-sm font-mono font-bold text-[#1A1A1A] bg-[#ECEEEF] px-3 py-1 rounded-lg">
             {createdNumber}
           </p>
         )}
@@ -127,7 +127,7 @@ export default function VoucherForm({ onClose }) {
       <div className="flex items-center justify-between p-3 bg-[#F5F4EF] rounded-xl border border-[#D4D3CE]">
         <div>
           <p className="text-xs text-[#AEACA8]">Company</p>
-          <p className="text-sm font-semibold text-[#1C2B3A]">{selectedCompany?.name || 'No company selected'}</p>
+          <p className="text-sm font-semibold text-[#1A1A1A]">{selectedCompany?.name || 'No company selected'}</p>
         </div>
         <button onClick={() => setIsOptional(p => !p)}
           className={`px-3 py-1.5 text-xs rounded-lg border font-semibold transition-colors ${
@@ -143,7 +143,7 @@ export default function VoucherForm({ onClose }) {
           {VOUCHER_TYPES.map(t => (
             <button key={t} onClick={() => setType(t)}
               className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-colors ${
-                type === t ? 'bg-[#1A1A1A] text-white border-transparent' : 'border-[#D4D3CE] text-[#787774] hover:border-[#1C2B3A]'
+                type === t ? 'bg-[#1A1A1A] text-white border-transparent' : 'border-[#D4D3CE] text-[#787774] hover:border-[#1A1A1A]'
               }`}>
               {t}
             </button>

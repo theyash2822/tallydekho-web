@@ -15,9 +15,9 @@ const TABS = ['Items List', 'Stock Alerts'];
 const statusVariant = { Normal: 'green', 'Low Stock': 'yellow', 'Out of Stock': 'red' };
 
 const itemCols = [
-  { key: 'name',      label: 'Item Name',  render: v => <span className="font-medium text-[#1C2B3A]">{v}</span> },
+  { key: 'name',      label: 'Item Name',  render: v => <span className="font-medium text-[#1A1A1A]">{v}</span> },
   { key: 'category',  label: 'Category',   render: v => <span className="text-xs text-[#787774]">{v}</span> },
-  { key: 'qty',       label: 'Stock Qty',  render: (v, r) => <span className={`font-semibold ${v > 0 ? 'text-[#1C2B3A]' : 'text-[#C0392B]'}`}>{v} {r.unit}</span> },
+  { key: 'qty',       label: 'Stock Qty',  render: (v, r) => <span className={`font-semibold ${v > 0 ? 'text-[#1A1A1A]' : 'text-[#C0392B]'}`}>{v} {r.unit}</span> },
   { key: 'rate',      label: 'Rate',       render: v => fmt(v) },
   { key: 'value',     label: 'Value',      render: v => <span className="font-semibold">{fmt(v)}</span> },
   { key: 'status',    label: 'Status',     render: v => <Badge label={v} variant={statusVariant[v] || 'gray'} /> },
@@ -136,15 +136,15 @@ export default function InventoryModule() {
           <h1 className="page-title">Inventory</h1>
           <p className="page-subtitle">{selectedCompany?.name || 'No company'} · {loading ? 'Loading...' : `${total} items`}</p>
         </div>
-        <button onClick={() => loadStocks(page, search, categoryFilter)} className="flex items-center gap-1.5 text-xs text-[#1C2B3A] font-medium hover:text-[#787774]">
+        <button onClick={() => loadStocks(page, search, categoryFilter)} className="flex items-center gap-1.5 text-xs text-[#1A1A1A] font-medium hover:text-[#787774]">
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
       </div>
 
       {/* KPIs from real data */}
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Items"       value={total}           icon={Package}       accent="#1C2B3A" />
-        <KPICard title="Total Value"       value={fmt(totalValue)} icon={Package}       accent="#1C2B3A" />
+        <KPICard title="Total Items"       value={total}           icon={Package}       accent="#1A1A1A" />
+        <KPICard title="Total Value"       value={fmt(totalValue)} icon={Package}       accent="#1A1A1A" />
         <KPICard title="Low Stock"         value={lowStock}        icon={AlertTriangle} accent="#D97706" />
         <KPICard title="Out of Stock"      value={outOfStock}      icon={AlertTriangle} accent="#C0392B" />
       </div>
@@ -152,7 +152,7 @@ export default function InventoryModule() {
       {/* Chart + Alerts */}
       <div className="grid grid-cols-3 gap-4">
         <div className="col-span-2 bg-white border border-[#D4D3CE] rounded-xl p-5">
-          <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Value by Category</p>
+          <p className="text-sm font-semibold text-[#1A1A1A] mb-1">Value by Category</p>
           <p className="text-xs text-[#AEACA8] mb-4">₹K — top categories</p>
           {categoryValues.length > 0 ? (
             <ResponsiveContainer width="100%" height={170}>
@@ -161,7 +161,7 @@ export default function InventoryModule() {
                 <XAxis type="number" tick={{ fontSize: 10, fill: '#AEACA8' }} axisLine={false} tickLine={false} tickFormatter={v => v + 'K'} />
                 <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#787774' }} axisLine={false} tickLine={false} width={80} />
                 <Tooltip formatter={v => ['₹' + v + 'K']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #D4D3CE' }} />
-                <Bar dataKey="value" fill="#1C2B3A" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="value" fill="#1A1A1A" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
@@ -171,7 +171,7 @@ export default function InventoryModule() {
 
         {/* Top 5 Stock Alerts */}
         <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
-          <p className="text-sm font-semibold text-[#1C2B3A] mb-4">Stock Alerts <span className="text-xs font-normal text-[#AEACA8]">top 5</span></p>
+          <p className="text-sm font-semibold text-[#1A1A1A] mb-4">Stock Alerts <span className="text-xs font-normal text-[#AEACA8]">top 5</span></p>
           {alerts.length === 0 ? (
             <div className="py-6 text-center">
               <Package size={24} className="mx-auto mb-2 text-[#D4D3CE]" />
@@ -205,7 +205,7 @@ export default function InventoryModule() {
           {TABS.map((t, i) => (
             <button key={i} onClick={() => setTab(i)}
               className={`px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors rounded-t-lg mr-1 ${
-                tab === i ? 'text-[#1C2B3A] bg-[#ECEEEF] font-semibold' : 'text-[#787774] hover:text-[#1C2B3A] hover:bg-[#F5F4EF]'
+                tab === i ? 'text-[#1A1A1A] bg-[#ECEEEF] font-semibold' : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F5F4EF]'
               }`}>{t}
             </button>
           ))}
@@ -217,10 +217,10 @@ export default function InventoryModule() {
                 <div className="relative flex-1">
                   <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#AEACA8]" />
                   <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search item name..."
-                    className="w-full pl-8 pr-3 py-2 text-sm bg-[#F5F4EF] border border-[#ECEEEF] rounded-lg outline-none focus:border-[#1C2B3A] focus:bg-white transition-all placeholder:text-[#AEACA8]" />
+                    className="w-full pl-8 pr-3 py-2 text-sm bg-[#F5F4EF] border border-[#ECEEEF] rounded-lg outline-none focus:border-[#1A1A1A] focus:bg-white transition-all placeholder:text-[#AEACA8]" />
                 </div>
                 <select value={categoryFilter} onChange={e => { setCategoryFilter(e.target.value); }}
-                  className="py-2 px-3 text-sm bg-white border border-[#D4D3CE] rounded-lg outline-none focus:border-[#1C2B3A] text-[#1C2B3A]">
+                  className="py-2 px-3 text-sm bg-white border border-[#D4D3CE] rounded-lg outline-none focus:border-[#1A1A1A] text-[#1A1A1A]">
                   {categories.map(c => <option key={c}>{c}</option>)}
                 </select>
               </div>
@@ -284,7 +284,7 @@ export default function InventoryModule() {
           <div className="space-y-4">
             <div className="flex justify-between items-start">
               <div>
-                <p className="font-semibold text-[#1C2B3A]">{drawer.name}</p>
+                <p className="font-semibold text-[#1A1A1A]">{drawer.name}</p>
                 <p className="text-xs text-[#AEACA8] mt-0.5">{drawer.category} · SKU: {drawer.sku}</p>
               </div>
               <Badge label={drawer.status} variant={statusVariant[drawer.status] || 'gray'} />
@@ -300,7 +300,7 @@ export default function InventoryModule() {
               ].map(([l, v]) => (
                 <div key={l} className="p-3 bg-[#F5F4EF] rounded-xl border border-[#D4D3CE]">
                   <p className="text-xs text-[#AEACA8] mb-1">{l}</p>
-                  <p className="font-medium text-[#1C2B3A] text-sm">{v}</p>
+                  <p className="font-medium text-[#1A1A1A] text-sm">{v}</p>
                 </div>
               ))}
             </div>

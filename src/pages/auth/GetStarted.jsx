@@ -95,7 +95,7 @@ export default function GetStarted() {
                   step > n ? 'bg-white' : step === n ? 'bg-white/20 ring-2 ring-white/50' : 'bg-white/10'
                 }`}>
                   {step > n
-                    ? <Check size={14} className="text-[#1C2B3A]" />
+                    ? <Check size={14} className="text-[#1A1A1A]" />
                     : <Icon size={14} className="text-white" />
                   }
                 </div>
@@ -123,7 +123,7 @@ export default function GetStarted() {
           {/* Mobile logo */}
           <div className="flex items-center gap-3 mb-8 lg:hidden">
             <div className="w-8 h-8 rounded-xl bg-[#1A1A1A] flex items-center justify-center font-bold text-white text-sm">T</div>
-            <span className="font-semibold text-[#1C2B3A]">TallyDekho</span>
+            <span className="font-semibold text-[#1A1A1A]">TallyDekho</span>
           </div>
 
           {/* Mobile progress */}
@@ -138,7 +138,7 @@ export default function GetStarted() {
             <div className="space-y-6 animate-fade-in">
               <div>
                 <p className="text-xs font-semibold text-[#AEACA8] uppercase tracking-widest mb-1">Step 1 of {TOTAL_STEPS}</p>
-                <h2 className="text-[22px] font-bold text-[#1C2B3A] tracking-tight mb-1">What's your name?</h2>
+                <h2 className="text-[22px] font-bold text-[#1A1A1A] tracking-tight mb-1">What's your name?</h2>
                 <p className="text-sm text-[#787774] mt-1">We'll personalise TallyDekho for you</p>
               </div>
               <div>
@@ -151,7 +151,7 @@ export default function GetStarted() {
                     onChange={e => { setFullName(e.target.value); setErrors({}); }}
                     onKeyDown={e => e.key === 'Enter' && next()}
                     placeholder="Enter your full name"
-                    className="w-full h-12 pl-9 pr-4 bg-white border border-[#D4D3CE] rounded-xl text-sm text-[#1C2B3A] outline-none focus:border-[#1C2B3A] focus:ring-2 focus:ring-[#1C2B3A]/10 transition-all placeholder:text-[#AEACA8]"
+                    className="w-full h-12 pl-9 pr-4 bg-white border border-[#D4D3CE] rounded-xl text-sm text-[#1A1A1A] outline-none focus:border-[#1A1A1A] focus:ring-2 focus:ring-[#1A1A1A]/10 transition-all placeholder:text-[#AEACA8]"
                   />
                 </div>
                 {errors.fullName && <p className="text-xs text-[#C0392B] mt-1.5">{errors.fullName}</p>}
@@ -164,7 +164,7 @@ export default function GetStarted() {
             <div className="space-y-6 animate-fade-in">
               <div>
                 <p className="text-xs font-semibold text-[#AEACA8] uppercase tracking-widest mb-1">Step 2 of {TOTAL_STEPS}</p>
-                <h2 className="text-[22px] font-bold text-[#1C2B3A] tracking-tight mb-1">Your email address</h2>
+                <h2 className="text-[22px] font-bold text-[#1A1A1A] tracking-tight mb-1">Your email address</h2>
                 <p className="text-sm text-[#787774] mt-1">For account recovery and important updates. Optional but recommended.</p>
               </div>
               <div>
@@ -178,7 +178,7 @@ export default function GetStarted() {
                     onChange={e => { setEmail(e.target.value); setErrors({}); }}
                     onKeyDown={e => e.key === 'Enter' && next()}
                     placeholder="Enter your email address"
-                    className="w-full h-12 pl-9 pr-4 bg-white border border-[#D4D3CE] rounded-xl text-sm text-[#1C2B3A] outline-none focus:border-[#1C2B3A] focus:ring-2 focus:ring-[#1C2B3A]/10 transition-all placeholder:text-[#AEACA8]"
+                    className="w-full h-12 pl-9 pr-4 bg-white border border-[#D4D3CE] rounded-xl text-sm text-[#1A1A1A] outline-none focus:border-[#1A1A1A] focus:ring-2 focus:ring-[#1A1A1A]/10 transition-all placeholder:text-[#AEACA8]"
                   />
                 </div>
                 {errors.email && <p className="text-xs text-[#C0392B] mt-1.5">{errors.email}</p>}
@@ -192,7 +192,7 @@ export default function GetStarted() {
             <div className="space-y-6">
               <div>
                 <p className="text-xs font-semibold text-[#AEACA8] uppercase tracking-widest mb-1">Step 3 of {TOTAL_STEPS}</p>
-                <h2 className="text-[22px] font-bold text-[#1C2B3A] tracking-tight mb-1">Preferred language?</h2>
+                <h2 className="text-[22px] font-bold text-[#1A1A1A] tracking-tight mb-1">Preferred language?</h2>
                 <p className="text-sm text-[#787774] mt-1">Choose the language you're most comfortable with</p>
               </div>
               <div className="grid grid-cols-2 gap-2.5">
@@ -202,8 +202,8 @@ export default function GetStarted() {
                     onClick={() => setLanguage(l)}
                     className={`py-3 px-4 rounded-xl text-sm font-medium text-left transition-all border ${
                       language === l
-                        ? 'bg-[#1A1A1A] text-white border-[#1C2B3A] shadow-sm'
-                        : 'bg-white text-[#1C2B3A] border-[#D4D3CE] hover:border-[#1C2B3A] hover:bg-[#F5F4EF]'
+                        ? 'bg-[#1A1A1A] text-white border-[#1A1A1A] shadow-sm'
+                        : 'bg-white text-[#1A1A1A] border-[#D4D3CE] hover:border-[#1A1A1A] hover:bg-[#F5F4EF]'
                     }`}
                   >
                     {l}
@@ -219,7 +219,7 @@ export default function GetStarted() {
             <div className="space-y-6">
               <div>
                 <p className="text-xs font-semibold text-[#AEACA8] uppercase tracking-widest mb-1">Step 3 of {TOTAL_STEPS}</p>
-                <h2 className="text-[22px] font-bold text-[#1C2B3A] tracking-tight mb-1">What's your role?</h2>
+                <h2 className="text-[22px] font-bold text-[#1A1A1A] tracking-tight mb-1">What's your role?</h2>
                 <p className="text-sm text-[#787774] mt-1">Help us customise your experience</p>
               </div>
               <div className="space-y-3">
@@ -229,13 +229,13 @@ export default function GetStarted() {
                     onClick={() => { setRole(r.id); setErrors({}); }}
                     className={`w-full flex items-center gap-4 p-4 rounded-xl text-left transition-all border ${
                       role === r.id
-                        ? 'bg-[#F5F4EF] border-[#1C2B3A] ring-1 ring-[#1C2B3A]'
-                        : 'bg-white border-[#D4D3CE] hover:border-[#1C2B3A] hover:bg-[#F9F9F7]'
+                        ? 'bg-[#F5F4EF] border-[#1A1A1A] ring-1 ring-[#1A1A1A]'
+                        : 'bg-white border-[#D4D3CE] hover:border-[#1A1A1A] hover:bg-[#F9F9F7]'
                     }`}
                   >
                     <span className="text-2xl flex-shrink-0">{r.icon}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-[#1C2B3A]">{r.label}</p>
+                      <p className="text-sm font-semibold text-[#1A1A1A]">{r.label}</p>
                       <p className="text-xs text-[#787774] mt-0.5">{r.desc}</p>
                     </div>
                     {role === r.id && (
@@ -255,7 +255,7 @@ export default function GetStarted() {
             <div className="space-y-6">
               <div>
                 <p className="text-xs font-semibold text-[#AEACA8] uppercase tracking-widest mb-1">Step 5 of {TOTAL_STEPS}</p>
-                <h2 className="text-[22px] font-bold text-[#1C2B3A] tracking-tight mb-1">Almost there!</h2>
+                <h2 className="text-[22px] font-bold text-[#1A1A1A] tracking-tight mb-1">Almost there!</h2>
                 <p className="text-sm text-[#787774] mt-1">Review and accept to start using TallyDekho</p>
               </div>
 
@@ -270,7 +270,7 @@ export default function GetStarted() {
                 ].map(({ label, value }) => (
                   <div key={label} className="flex justify-between items-center">
                     <span className="text-xs text-[#787774]">{label}</span>
-                    <span className="text-sm font-medium text-[#1C2B3A]">{value}</span>
+                    <span className="text-sm font-medium text-[#1A1A1A]">{value}</span>
                   </div>
                 ))}
               </div>
@@ -293,16 +293,16 @@ export default function GetStarted() {
                   <div
                     onClick={() => { setAgreed(p => !p); setErrors({}); }}
                     className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${
-                      agreed ? 'bg-[#1A1A1A] border-[#1C2B3A]' : 'bg-white border-[#D4D3CE]'
+                      agreed ? 'bg-[#1A1A1A] border-[#1A1A1A]' : 'bg-white border-[#D4D3CE]'
                     }`}
                   >
                     {agreed && <Check size={11} className="text-white" />}
                   </div>
                   <span className="text-xs text-[#787774] leading-relaxed">
                     I agree to the{' '}
-                    <span onClick={() => setShowTerms(true)} className="text-[#1C2B3A] cursor-pointer hover:underline">Terms of Service</span>
+                    <span onClick={() => setShowTerms(true)} className="text-[#1A1A1A] cursor-pointer hover:underline">Terms of Service</span>
                     {' '}and{' '}
-                    <span onClick={() => setShowPrivacy(true)} className="text-[#1C2B3A] cursor-pointer hover:underline">Privacy Policy</span>
+                    <span onClick={() => setShowPrivacy(true)} className="text-[#1A1A1A] cursor-pointer hover:underline">Privacy Policy</span>
                   </span>
                 </label>
                 {errors.agreed && <p className="text-xs text-[#C0392B] mt-1.5">{errors.agreed}</p>}
@@ -349,14 +349,14 @@ export default function GetStarted() {
       {showTerms && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowTerms(false)}>
           <div className="bg-white rounded-2xl max-w-lg w-full max-h-[70vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
-            <h3 className="text-lg font-bold text-[#1C2B3A] mb-4">Terms of Service</h3>
+            <h3 className="text-lg font-bold text-[#1A1A1A] mb-4">Terms of Service</h3>
             <div className="text-sm text-[#787774] space-y-3">
               <p>By using TallyDekho, you agree to the following terms:</p>
-              <p><strong className="text-[#1C2B3A]">1. Data Ownership:</strong> Your Tally data remains on your systems. TallyDekho only syncs data for display and entry purposes.</p>
-              <p><strong className="text-[#1C2B3A]">2. Usage:</strong> TallyDekho is for legitimate business accounting purposes only.</p>
-              <p><strong className="text-[#1C2B3A]">3. Account Security:</strong> You are responsible for maintaining the security of your account credentials.</p>
-              <p><strong className="text-[#1C2B3A]">4. Service Availability:</strong> We strive for 99.9% uptime but cannot guarantee uninterrupted service.</p>
-              <p><strong className="text-[#1C2B3A]">5. Updates:</strong> We may update these terms with notice to users.</p>
+              <p><strong className="text-[#1A1A1A]">1. Data Ownership:</strong> Your Tally data remains on your systems. TallyDekho only syncs data for display and entry purposes.</p>
+              <p><strong className="text-[#1A1A1A]">2. Usage:</strong> TallyDekho is for legitimate business accounting purposes only.</p>
+              <p><strong className="text-[#1A1A1A]">3. Account Security:</strong> You are responsible for maintaining the security of your account credentials.</p>
+              <p><strong className="text-[#1A1A1A]">4. Service Availability:</strong> We strive for 99.9% uptime but cannot guarantee uninterrupted service.</p>
+              <p><strong className="text-[#1A1A1A]">5. Updates:</strong> We may update these terms with notice to users.</p>
             </div>
             <button onClick={() => setShowTerms(false)} className="mt-6 w-full py-2.5 bg-[#1A1A1A] text-white rounded-xl text-sm font-semibold">Got it</button>
           </div>
@@ -367,14 +367,14 @@ export default function GetStarted() {
       {showPrivacy && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowPrivacy(false)}>
           <div className="bg-white rounded-2xl max-w-lg w-full max-h-[70vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
-            <h3 className="text-lg font-bold text-[#1C2B3A] mb-4">Privacy Policy</h3>
+            <h3 className="text-lg font-bold text-[#1A1A1A] mb-4">Privacy Policy</h3>
             <div className="text-sm text-[#787774] space-y-3">
               <p>TallyDekho respects your privacy and is committed to protecting your data.</p>
-              <p><strong className="text-[#1C2B3A]">Data We Collect:</strong> Mobile number (for authentication), name, language preference, and Tally data you sync.</p>
-              <p><strong className="text-[#1C2B3A]">How We Use It:</strong> To provide the TallyDekho service — syncing, displaying, and allowing data entry for your Tally companies.</p>
-              <p><strong className="text-[#1C2B3A]">Data Storage:</strong> Data is stored securely on encrypted servers. Your Tally data is never shared with third parties.</p>
-              <p><strong className="text-[#1C2B3A]">Data Deletion:</strong> You can request deletion of your account and all associated data at any time.</p>
-              <p><strong className="text-[#1C2B3A]">Contact:</strong> privacy@tallydekho.com</p>
+              <p><strong className="text-[#1A1A1A]">Data We Collect:</strong> Mobile number (for authentication), name, language preference, and Tally data you sync.</p>
+              <p><strong className="text-[#1A1A1A]">How We Use It:</strong> To provide the TallyDekho service — syncing, displaying, and allowing data entry for your Tally companies.</p>
+              <p><strong className="text-[#1A1A1A]">Data Storage:</strong> Data is stored securely on encrypted servers. Your Tally data is never shared with third parties.</p>
+              <p><strong className="text-[#1A1A1A]">Data Deletion:</strong> You can request deletion of your account and all associated data at any time.</p>
+              <p><strong className="text-[#1A1A1A]">Contact:</strong> privacy@tallydekho.com</p>
             </div>
             <button onClick={() => setShowPrivacy(false)} className="mt-6 w-full py-2.5 bg-[#1A1A1A] text-white rounded-xl text-sm font-semibold">Got it</button>
           </div>

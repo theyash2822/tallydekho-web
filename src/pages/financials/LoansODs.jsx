@@ -45,14 +45,14 @@ export default function LoansODs() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Loans & ODs</h1>
+        <h1 className="text-xl font-semibold text-[#1A1A1A] tracking-tight">Loans & ODs</h1>
         <p className="text-sm text-[#787774] mt-0.5">July 2025</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
         <KPICard title="Total Loan Outstanding" value="₹43.2L" icon={CreditCard} accent="#C0392B" />
         <KPICard title="EMI / Month" value="₹1,28,500" icon={Calendar} accent="#F59E0B" />
-        <KPICard title="HDFC OD Utilization" value="65.6%" sub="₹32.8L of ₹50L" icon={TrendingDown} accent="#1C2B3A" />
+        <KPICard title="HDFC OD Utilization" value="65.6%" sub="₹32.8L of ₹50L" icon={TrendingDown} accent="#1A1A1A" />
         <KPICard title="EMI Due Soon" value="2 EMIs" sub="within 7 days" icon={AlertTriangle} accent="#C0392B" />
       </div>
 
@@ -60,7 +60,7 @@ export default function LoansODs() {
         <div className="flex border-b border-[#D4D3CE] px-1 pt-1">
           {TABS.map((t, i) => (
             <button key={i} onClick={() => setTab(i)}
-              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#1C2B3A] bg-[#ECEEEF]' : 'text-[#787774] hover:text-[#1C2B3A] hover:bg-[#F5F4EF]'}`}>{t}</button>
+              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#1A1A1A] bg-[#ECEEEF]' : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F5F4EF]'}`}>{t}</button>
           ))}
         </div>
         <div className="p-5">
@@ -74,13 +74,13 @@ export default function LoansODs() {
                   <div key={od.id} className="border border-[#D4D3CE] rounded-xl p-5 bg-[#F9F9F9]">
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <p className="font-semibold text-[#1C2B3A]">{od.name}</p>
+                        <p className="font-semibold text-[#1A1A1A]">{od.name}</p>
                         <p className="text-sm text-[#787774]">{od.bank} · {od.accountNo}</p>
                       </div>
                       <Badge label={od.status} variant="green" />
                     </div>
                     <div className="grid grid-cols-3 gap-4 text-sm mb-4">
-                      <div><p className="text-xs text-[#787774] mb-1">Limit</p><p className="font-semibold text-[#1C2B3A]">{fmt(od.limit)}</p></div>
+                      <div><p className="text-xs text-[#787774] mb-1">Limit</p><p className="font-semibold text-[#1A1A1A]">{fmt(od.limit)}</p></div>
                       <div><p className="text-xs text-[#787774] mb-1">Utilized</p><p className="font-semibold" style={{ color }}>{fmt(od.utilized)}</p></div>
                       <div><p className="text-xs text-[#787774] mb-1">Available</p><p className="font-semibold text-[#2D7D46]">{fmt(od.limit - od.utilized)}</p></div>
                     </div>
@@ -95,7 +95,7 @@ export default function LoansODs() {
           )}
           {tab === 2 && (
             <div>
-              <p className="text-sm font-semibold text-[#1C2B3A] mb-4">EMI Calendar — July 2025</p>
+              <p className="text-sm font-semibold text-[#1A1A1A] mb-4">EMI Calendar — July 2025</p>
               <div className="grid grid-cols-7 gap-1 mb-2">
                 {DAYS.map(d => <div key={d} className="text-center text-xs font-semibold text-[#AEACA8] py-1">{d}</div>)}
               </div>
@@ -104,16 +104,16 @@ export default function LoansODs() {
                   {week.map((day, di) => {
                     const emi = day && emiDays[day];
                     return (
-                      <div key={di} className={`h-14 rounded-lg flex flex-col items-center justify-center text-xs border transition-colors ${!day ? 'border-transparent' : emi ? 'border-[#1C2B3A] bg-[#ECEEEF] cursor-pointer hover:bg-[#E8F5ED]' : 'border-[#D4D3CE] bg-white hover:bg-[#F5F4EF]'}`}>
-                        {day && <span className={`font-medium ${emi ? 'text-[#1C2B3A]' : 'text-[#1C2B3A]'}`}>{day}</span>}
-                        {emi && <span className="text-[9px] font-semibold text-[#1C2B3A] mt-0.5 px-1 truncate">{emi.label}</span>}
+                      <div key={di} className={`h-14 rounded-lg flex flex-col items-center justify-center text-xs border transition-colors ${!day ? 'border-transparent' : emi ? 'border-[#1A1A1A] bg-[#ECEEEF] cursor-pointer hover:bg-[#E8F5ED]' : 'border-[#D4D3CE] bg-white hover:bg-[#F5F4EF]'}`}>
+                        {day && <span className={`font-medium ${emi ? 'text-[#1A1A1A]' : 'text-[#1A1A1A]'}`}>{day}</span>}
+                        {emi && <span className="text-[9px] font-semibold text-[#1A1A1A] mt-0.5 px-1 truncate">{emi.label}</span>}
                       </div>
                     );
                   })}
                 </div>
               ))}
               <div className="flex gap-4 mt-4 text-xs">
-                {[['Due','#F59E0B'],['Upcoming','#1C2B3A'],['Paid','#2D7D46'],['Overdue','#C0392B']].map(([l,c]) => (
+                {[['Due','#F59E0B'],['Upcoming','#1A1A1A'],['Paid','#2D7D46'],['Overdue','#C0392B']].map(([l,c]) => (
                   <div key={l} className="flex items-center gap-1.5">
                     <div className="w-2.5 h-2.5 rounded-sm" style={{ background: c }} />
                     <span className="text-[#787774]">{l}</span>
@@ -130,7 +130,7 @@ export default function LoansODs() {
           <div className="space-y-5">
             <div className="flex items-start justify-between">
               <div>
-                <p className="font-semibold text-[#1C2B3A]">{drawer.name}</p>
+                <p className="font-semibold text-[#1A1A1A]">{drawer.name}</p>
                 <p className="text-sm text-[#787774]">{drawer.lender} · {drawer.accountNo}</p>
               </div>
               <Badge label={drawer.status} variant={statusVariant[drawer.status]} />
@@ -139,7 +139,7 @@ export default function LoansODs() {
               {[['Sanctioned',fmt(drawer.sanctioned)],['Outstanding',fmt(drawer.outstanding)],['Interest Rate',drawer.interestRate+'%'],['Tenure',drawer.tenure+' months'],['EMI Amount',fmt(drawer.emiAmount)],['Next EMI',drawer.nextEmiDate],['Type',drawer.type],['Collateral',drawer.collateral]].map(([l,v]) => (
                 <div key={l} className="p-3 bg-[#F9F9F9] rounded-lg border border-[#D4D3CE]">
                   <p className="text-xs text-[#787774] mb-1">{l}</p>
-                  <p className="font-medium text-[#1C2B3A] text-sm">{v}</p>
+                  <p className="font-medium text-[#1A1A1A] text-sm">{v}</p>
                 </div>
               ))}
             </div>

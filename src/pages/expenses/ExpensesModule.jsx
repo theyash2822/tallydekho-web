@@ -14,10 +14,10 @@ const fmtL = n => {
   return fmt(n);
 };
 
-const COLORS = ['#1C2B3A','#0D9488','#D97706','#E5484D','#798692','#2563EB','#7C3AED','#059669','#C0392B','#AEACA8'];
+const COLORS = ['#1A1A1A','#0D9488','#D97706','#E5484D','#798692','#2563EB','#7C3AED','#059669','#C0392B','#AEACA8'];
 
 const cols = [
-  { key: 'ref',      label: 'Reference', render: v => <span className="font-mono text-xs text-[#1C2B3A]">{v || '—'}</span> },
+  { key: 'ref',      label: 'Reference', render: v => <span className="font-mono text-xs text-[#1A1A1A]">{v || '—'}</span> },
   { key: 'vendor',   label: 'Party' },
   { key: 'category', label: 'Category', render: v => <span className="text-xs text-[#787774]">{v || '—'}</span> },
   { key: 'date',     label: 'Date',     render: v => <span className="text-[#787774]">{v || '—'}</span> },
@@ -78,26 +78,26 @@ export default function ExpensesModule() {
           <h1 className="page-title">Expenses</h1>
           <p className="page-subtitle">{selectedCompany?.name || '—'} · {fyLabel}</p>
         </div>
-        <button onClick={load} disabled={loading} className="flex items-center gap-1.5 text-xs text-[#787774] hover:text-[#1C2B3A] transition-colors disabled:opacity-40">
+        <button onClick={load} disabled={loading} className="flex items-center gap-1.5 text-xs text-[#787774] hover:text-[#1A1A1A] transition-colors disabled:opacity-40">
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
         <KPICard title="Total Expenses" value={loading ? '—' : fmtL(summary.totalExpenses)} icon={Receipt} accent="#C0392B" />
-        <KPICard title="Transactions"   value={loading ? '—' : summary.count || 0}           icon={Receipt} accent="#1C2B3A" />
+        <KPICard title="Transactions"   value={loading ? '—' : summary.count || 0}           icon={Receipt} accent="#1A1A1A" />
         <KPICard title="Categories"     value={loading ? '—' : categories.length || 0}       icon={Receipt} accent="#D97706" />
       </div>
 
       <div className="grid grid-cols-3 gap-4">
         <div className="col-span-2 bg-white border border-[#D4D3CE] rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <p className="text-sm font-semibold text-[#1C2B3A]">Expense Transactions</p>
+            <p className="text-sm font-semibold text-[#1A1A1A]">Expense Transactions</p>
             <div className="relative">
               <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#AEACA8]" />
               <input value={search} onChange={e => setSearch(e.target.value)}
                 placeholder="Search..."
-                className="pl-7 pr-3 py-1.5 text-xs bg-[#F5F4EF] border border-[#ECEEEF] rounded-lg outline-none focus:border-[#1C2B3A]" />
+                className="pl-7 pr-3 py-1.5 text-xs bg-[#F5F4EF] border border-[#ECEEEF] rounded-lg outline-none focus:border-[#1A1A1A]" />
             </div>
           </div>
           {loading ? (
@@ -110,7 +110,7 @@ export default function ExpensesModule() {
         </div>
 
         <div className="bg-white border border-[#D4D3CE] rounded-xl p-5">
-          <p className="text-sm font-semibold text-[#1C2B3A] mb-4">By Category</p>
+          <p className="text-sm font-semibold text-[#1A1A1A] mb-4">By Category</p>
           {loading ? (
             <div className="h-40 flex items-center justify-center text-xs text-[#AEACA8]">Loading…</div>
           ) : categories.length === 0 ? (
@@ -132,7 +132,7 @@ export default function ExpensesModule() {
                       <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
                       <span className="text-[#787774] truncate max-w-[100px]">{c.name}</span>
                     </div>
-                    <span className="font-semibold text-[#1C2B3A]">{fmtL(c.amount)}</span>
+                    <span className="font-semibold text-[#1A1A1A]">{fmtL(c.amount)}</span>
                   </div>
                 ))}
               </div>

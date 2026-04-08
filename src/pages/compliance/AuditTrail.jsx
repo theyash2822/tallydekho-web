@@ -136,10 +136,10 @@ export default function AuditTrail() {
 
   const cols = [
     { key: 'date', label: 'Date', render: v => <span className="text-[#787774]">{v || '—'}</span> },
-    { key: 'voucher_number', label: 'Voucher No', render: v => <span className="font-mono text-xs text-[#1C2B3A] font-semibold">{v || '—'}</span> },
-    { key: 'voucher_type', label: 'Type', render: v => <span className="text-sm text-[#1C2B3A]">{getVoucherTypeLabel(v)}</span> },
+    { key: 'voucher_number', label: 'Voucher No', render: v => <span className="font-mono text-xs text-[#1A1A1A] font-semibold">{v || '—'}</span> },
+    { key: 'voucher_type', label: 'Type', render: v => <span className="text-sm text-[#1A1A1A]">{getVoucherTypeLabel(v)}</span> },
     { key: 'party_name', label: 'Party', render: v => <span className="text-[#787774] truncate max-w-32 block">{v || '—'}</span> },
-    { key: 'amount', label: 'Amount', render: v => <span className="font-semibold text-[#1C2B3A]">{v ? fmt(v) : '—'}</span> },
+    { key: 'amount', label: 'Amount', render: v => <span className="font-semibold text-[#1A1A1A]">{v ? fmt(v) : '—'}</span> },
     { key: 'narration', label: 'Narration', render: v => <span className="text-xs text-[#AEACA8] truncate max-w-32 block">{v || '—'}</span> },
   ];
 
@@ -147,19 +147,19 @@ export default function AuditTrail() {
     <div className="space-y-5">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-xl font-semibold text-[#1C2B3A] tracking-tight">Audit Trail</h1>
+          <h1 className="text-xl font-semibold text-[#1A1A1A] tracking-tight">Audit Trail</h1>
           <p className="text-sm text-[#787774] mt-0.5">
             {selectedCompany?.name || 'No company'} · {loading ? 'Loading...' : `${vouchers.length} vouchers`}
           </p>
         </div>
-        <button onClick={loadData} className="flex items-center gap-1.5 text-xs text-[#787774] font-medium hover:text-[#1C2B3A]">
+        <button onClick={loadData} className="flex items-center gap-1.5 text-xs text-[#787774] font-medium hover:text-[#1A1A1A]">
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
       </div>
 
       {/* KPIs */}
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="Total Vouchers" value={summary.total} icon={ClipboardList} accent="#1C2B3A" />
+        <KPICard title="Total Vouchers" value={summary.total} icon={ClipboardList} accent="#1A1A1A" />
         <KPICard title="Sales" value={summary.sales} icon={Plus} accent="#2D7D46" />
         <KPICard title="Purchase" value={summary.purchase} icon={Edit} accent="#F59E0B" />
         <KPICard title="Payments/Receipts" value={summary.payment} icon={Trash2} accent="#C0392B" />
@@ -168,7 +168,7 @@ export default function AuditTrail() {
       {/* Chart + Latest */}
       <div className="grid grid-cols-3 gap-4">
         <div className="col-span-2 bg-white border border-[#D4D3CE] rounded-2xl p-5">
-          <p className="text-sm font-semibold text-[#1C2B3A] mb-1">Vouchers per Day</p>
+          <p className="text-sm font-semibold text-[#1A1A1A] mb-1">Vouchers per Day</p>
           <p className="text-xs text-[#787774] mb-4">Activity trend</p>
           {activityByDay.length > 0 ? (
             <ResponsiveContainer width="100%" height={150}>
@@ -177,7 +177,7 @@ export default function AuditTrail() {
                 <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 10, fill: '#787774' }} axisLine={false} tickLine={false} />
                 <Tooltip contentStyle={{ fontSize: 11, border: '1px solid #D4D3CE', borderRadius: 8 }} />
-                <Bar dataKey="count" name="Vouchers" fill="#1C2B3A" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="count" name="Vouchers" fill="#1A1A1A" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
@@ -187,7 +187,7 @@ export default function AuditTrail() {
           )}
         </div>
         <div className="bg-white border border-[#D4D3CE] rounded-2xl p-5">
-          <p className="text-sm font-semibold text-[#1C2B3A] mb-3">Latest Entries</p>
+          <p className="text-sm font-semibold text-[#1A1A1A] mb-3">Latest Entries</p>
           {vouchers.length === 0 ? (
             <p className="text-xs text-[#AEACA8] text-center py-6">No vouchers yet — sync from Desktop</p>
           ) : (
@@ -196,7 +196,7 @@ export default function AuditTrail() {
                 <div key={i} className="flex items-start gap-2.5 cursor-pointer hover:bg-[#F5F4EF] p-1.5 rounded-lg" onClick={() => setDrawer(v)}>
                   <span className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0 bg-[#1A1A1A]" />
                   <div>
-                    <p className="text-xs font-medium text-[#1C2B3A]">{v.voucher_number} – {getVoucherTypeLabel(v.voucher_type)}</p>
+                    <p className="text-xs font-medium text-[#1A1A1A]">{v.voucher_number} – {getVoucherTypeLabel(v.voucher_type)}</p>
                     <p className="text-xs text-[#787774]">{v.party_name || '—'} · {v.date || '—'}</p>
                   </div>
                 </div>
@@ -211,7 +211,7 @@ export default function AuditTrail() {
         <div className="flex border-b border-[#D4D3CE] px-1 pt-1">
           {TABS.map((t, i) => (
             <button key={i} onClick={() => setTab(i)}
-              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#1C2B3A] bg-[#ECEEEF]' : 'text-[#787774] hover:text-[#1C2B3A] hover:bg-[#F5F4EF]'}`}>{t}
+              className={`px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg mr-1 ${tab === i ? 'text-[#1A1A1A] bg-[#ECEEEF]' : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F5F4EF]'}`}>{t}
             </button>
           ))}
         </div>
@@ -236,7 +236,7 @@ export default function AuditTrail() {
                 type="date"
                 value={fromDate}
                 onChange={e => setFromDate(e.target.value)}
-                className="text-xs text-[#1C2B3A] outline-none bg-transparent"
+                className="text-xs text-[#1A1A1A] outline-none bg-transparent"
               />
             </div>
             <div className="flex items-center gap-2 bg-white border border-[#D4D3CE] rounded-lg px-3 py-1.5">
@@ -245,7 +245,7 @@ export default function AuditTrail() {
                 type="date"
                 value={toDate}
                 onChange={e => setToDate(e.target.value)}
-                className="text-xs text-[#1C2B3A] outline-none bg-transparent"
+                className="text-xs text-[#1A1A1A] outline-none bg-transparent"
               />
             </div>
             {/* Clear dates */}
@@ -283,7 +283,7 @@ export default function AuditTrail() {
                     }`}>{k === 'all' ? 'All' : k === 'success' ? '✓ In Tally' : k === 'desktop_offline' ? '⏳ Offline' : '✗ Failed'}</button>
                   ))}
                 </div>
-                <button onClick={loadMyEntries} disabled={myLoading} className="flex items-center gap-1 text-xs text-[#787774] hover:text-[#1C2B3A] disabled:opacity-40">
+                <button onClick={loadMyEntries} disabled={myLoading} className="flex items-center gap-1 text-xs text-[#787774] hover:text-[#1A1A1A] disabled:opacity-40">
                   <RefreshCw size={12} className={myLoading ? 'animate-spin' : ''} /> Refresh
                 </button>
               </div>
@@ -303,9 +303,9 @@ export default function AuditTrail() {
                         <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${e.status === 'success' ? 'bg-emerald-500' : e.status === 'desktop_offline' ? 'bg-amber-400 animate-pulse' : e.status === 'failed' ? 'bg-red-500' : 'bg-blue-400 animate-pulse'}`} />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-xs font-semibold text-[#1C2B3A]">{TYPE_LBL[e.entry_type] || e.entry_type}</span>
+                            <span className="text-xs font-semibold text-[#1A1A1A]">{TYPE_LBL[e.entry_type] || e.entry_type}</span>
                             <span className="text-xs text-[#787774] truncate max-w-[180px]">{e.entry_label}</span>
-                            {e.amount && parseFloat(e.amount) > 0 && <span className="text-xs font-bold text-[#1C2B3A]">₹{parseFloat(e.amount).toLocaleString('en-IN',{maximumFractionDigits:0})}</span>}
+                            {e.amount && parseFloat(e.amount) > 0 && <span className="text-xs font-bold text-[#1A1A1A]">₹{parseFloat(e.amount).toLocaleString('en-IN',{maximumFractionDigits:0})}</span>}
                             {e.tally_voucher_number && <span className="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-semibold">#{e.tally_voucher_number}</span>}
                           </div>
                           <p className="text-[10px] text-[#AEACA8] mt-0.5">{new Date(e.created_at*1000).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:true})} · {e.source === 'mobile' ? '📱' : '🌐'}
@@ -336,10 +336,10 @@ export default function AuditTrail() {
           <div className="space-y-4">
             <div className="flex justify-between items-start">
               <div>
-                <p className="font-semibold text-[#1C2B3A]">{drawer.party_name || 'No party'}</p>
+                <p className="font-semibold text-[#1A1A1A]">{drawer.party_name || 'No party'}</p>
                 <p className="font-mono text-xs text-[#787774] mt-0.5">{drawer.voucher_number || '—'}</p>
               </div>
-              <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-[#ECEEEF] text-[#1C2B3A] border border-[#C5CBD0]">
+              <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-[#ECEEEF] text-[#1A1A1A] border border-[#C5CBD0]">
                 {getVoucherTypeLabel(drawer.voucher_type)}
               </span>
             </div>
@@ -354,7 +354,7 @@ export default function AuditTrail() {
               ].map(([l, v]) => (
                 <div key={l} className="p-3 bg-[#F9F9F9] rounded-xl border border-[#D4D3CE]">
                   <p className="text-xs text-[#787774] mb-1">{l}</p>
-                  <p className="font-medium text-[#1C2B3A] text-sm break-all">{v}</p>
+                  <p className="font-medium text-[#1A1A1A] text-sm break-all">{v}</p>
                 </div>
               ))}
             </div>

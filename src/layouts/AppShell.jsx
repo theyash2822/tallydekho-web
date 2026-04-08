@@ -81,7 +81,7 @@ function FYSelector() {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(p => !p)}
-        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#E9E8E3] hover:bg-[#F5F4EF] transition-colors text-xs font-medium text-[#1C2B3A]"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#E9E8E3] hover:bg-[#F5F4EF] transition-colors text-xs font-medium text-[#1A1A1A]"
       >
         <span className="text-[10px] text-[#AEACA8] font-normal">FY</span>
         <span className="font-semibold">{currentFY?.name || '2025-26'}</span>
@@ -101,7 +101,7 @@ function FYSelector() {
               className="w-full flex items-center justify-between px-3 py-2 hover:bg-[#F5F4EF] transition-colors text-left"
             >
               <span className="text-sm text-[#1A1A1A]">FY {y.name}</span>
-              {currentFY?.uniqueId === y.uniqueId && <Check size={12} className="text-[#1C2B3A]" />}
+              {currentFY?.uniqueId === y.uniqueId && <Check size={12} className="text-[#1A1A1A]" />}
             </button>
           ))}
         </div>

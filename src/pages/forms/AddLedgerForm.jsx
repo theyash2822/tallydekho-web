@@ -45,9 +45,9 @@ export default function AddLedgerForm({ onClose }) {
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
         <div className="w-16 h-16 rounded-full bg-[#ECEEEF] flex items-center justify-center border border-[#C5CBD0]">
-          <CheckCircle size={32} style={{ color: '#1C2B3A' }} />
+          <CheckCircle size={32} style={{ color: '#1A1A1A' }} />
         </div>
-        <p className="text-base font-semibold text-[#1C2B3A]">Ledger Created!</p>
+        <p className="text-base font-semibold text-[#1A1A1A]">Ledger Created!</p>
         <p className="text-sm text-[#787774]">{form.name} · {form.group}</p>
         <p className="text-xs text-[#AEACA8]">Will sync to Tally on next desktop sync</p>
         <div className="flex gap-3 mt-2">
@@ -55,7 +55,7 @@ export default function AddLedgerForm({ onClose }) {
             className="px-4 py-2 rounded-lg text-sm font-medium border border-[#D4D3CE] text-[#787774] hover:bg-[#F5F4EF]">
             Add Another
           </button>
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{ background: '#1C2B3A' }}>Done</button>
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{ background: '#1A1A1A' }}>Done</button>
         </div>
       </div>
     );
@@ -130,7 +130,7 @@ export default function AddLedgerForm({ onClose }) {
             {['Dr', 'Cr'].map(t => (
               <button key={t} onClick={() => set('openingType', t)}
                 className={`flex-1 py-2 rounded-lg text-sm font-medium border transition-colors ${form.openingType === t ? 'text-white border-transparent' : 'border-[#D4D3CE] text-[#787774]'}`}
-                style={form.openingType === t ? { background: '#1C2B3A' } : {}}>
+                style={form.openingType === t ? { background: '#1A1A1A' } : {}}>
                 {t === 'Dr' ? 'Debit (Dr)' : 'Credit (Cr)'}
               </button>
             ))}
@@ -145,7 +145,7 @@ export default function AddLedgerForm({ onClose }) {
 
       {/* Actions */}
       <div className="flex gap-3 pt-2">
-        <button onClick={handleSubmit} className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90" style={{ background: '#1C2B3A' }}>
+        <button onClick={handleSubmit} className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90" style={{ background: '#1A1A1A' }}>
           Create Ledger
         </button>
         <button onClick={onClose} className="px-5 py-2.5 rounded-lg text-sm font-medium border border-[#D4D3CE] text-[#787774] hover:bg-[#F5F4EF]">

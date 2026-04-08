@@ -54,7 +54,7 @@ function Dropdown({ anchorRef, results, loading, query, onSelect, onUseRaw }) {
           className="w-full flex items-center gap-2 px-3 py-2.5 hover:bg-[#F5F4EF] text-left border-b border-[#F5F4EF] last:border-0 transition-colors"
         >
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-[#1C2B3A] truncate">{item.label}</p>
+            <p className="text-sm font-medium text-[#1A1A1A] truncate">{item.label}</p>
             {item.sub && <p className="text-xs text-[#AEACA8] truncate">{item.sub}</p>}
           </div>
           {item.badge && (
@@ -68,7 +68,7 @@ function Dropdown({ anchorRef, results, loading, query, onSelect, onUseRaw }) {
           onMouseDown={e => { e.preventDefault(); onUseRaw(query); }}
           className="w-full flex items-center gap-2 px-3 py-2 hover:bg-[#EEF1F3] text-left border-t border-[#F5F4EF]"
         >
-          <span className="text-xs text-[#1C2B3A] font-medium">Use "{query}"</span>
+          <span className="text-xs text-[#1A1A1A] font-medium">Use "{query}"</span>
         </button>
       )}
     </div>,
@@ -158,7 +158,7 @@ export default function LiveSearch({
           required={required}
           autoComplete="off"
           className={`w-full pl-8 pr-7 py-2 text-sm border rounded-lg outline-none transition-all
-            ${query ? 'border-[#1C2B3A] bg-white' : 'border-[#D4D3CE] bg-white focus:border-[#1C2B3A]'}
+            ${query ? 'border-[#1A1A1A] bg-white' : 'border-[#D4D3CE] bg-white focus:border-[#1A1A1A]'}
             ${disabled ? 'bg-[#F5F4EF] cursor-not-allowed' : ''}
           `}
         />

@@ -161,11 +161,11 @@ export default function SalesInvoiceForm({ onClose }) {
         }`}>
           <CheckCircle size={32} className={isQueued ? 'text-amber-500' : 'text-[#2D7D46]'} />
         </div>
-        <p className="text-base font-semibold text-[#1C2B3A]">
+        <p className="text-base font-semibold text-[#1A1A1A]">
           {isQueued ? 'Entry Saved — Waiting for Desktop' : isOptional ? 'Optional Entry Saved!' : 'Sales Invoice Created in Tally!'}
         </p>
         {createdVoucherNumber ? (
-          <p className="text-sm font-mono font-bold text-[#1C2B3A] bg-[#ECEEEF] px-3 py-1 rounded-lg">
+          <p className="text-sm font-mono font-bold text-[#1A1A1A] bg-[#ECEEEF] px-3 py-1 rounded-lg">
             {createdVoucherNumber}
           </p>
         ) : isQueued ? (
@@ -203,7 +203,7 @@ export default function SalesInvoiceForm({ onClose }) {
       <div className="flex items-center justify-between p-3 bg-[#F5F4EF] rounded-xl border border-[#D4D3CE]">
         <div>
           <p className="text-xs text-[#AEACA8]">Company</p>
-          <p className="text-sm font-semibold text-[#1C2B3A]">{selectedCompany?.name || 'No company selected'}</p>
+          <p className="text-sm font-semibold text-[#1A1A1A]">{selectedCompany?.name || 'No company selected'}</p>
         </div>
         <button
           onClick={() => setIsOptional(p => !p)}

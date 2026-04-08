@@ -32,7 +32,7 @@ export default function LogisticsSection({ onLogisticsChange }) {
     <div>
       <div className="flex items-center justify-between mb-3">
         <button onClick={() => { setShow(p => !p); if (!show && entries.length === 0) add(); }}
-          className="flex items-center gap-1.5 text-xs font-medium text-[#1C2B3A] hover:text-[#787774]">
+          className="flex items-center gap-1.5 text-xs font-medium text-[#1A1A1A] hover:text-[#787774]">
           <Truck size={13} /> {show ? 'Hide Logistics' : '+ Add Logistics / Shipping'}
         </button>
         {total > 0 && <span className="text-xs text-[#787774]">Total: <strong className="text-[#1A1A1A]">₹{total.toLocaleString('en-IN')}</strong></span>}
@@ -56,7 +56,7 @@ export default function LogisticsSection({ onLogisticsChange }) {
             </div>
           ))}
           <div className="flex items-center justify-between pt-1">
-            <button onClick={add} className="flex items-center gap-1.5 text-xs text-[#1C2B3A] font-medium">
+            <button onClick={add} className="flex items-center gap-1.5 text-xs text-[#1A1A1A] font-medium">
               <Plus size={12} /> Add Logistics Entry
             </button>
             <div className="flex items-center gap-2 text-xs">

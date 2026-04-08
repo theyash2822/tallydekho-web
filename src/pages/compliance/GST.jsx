@@ -42,7 +42,7 @@ export default function GST() {
   const fmtL = n => { if (!n || n === 0) return '—'; if (n >= 100000) return '₹' + (n / 100000).toFixed(2) + ' L'; return '₹' + n.toLocaleString('en-IN'); };
 
   const gstr1Cols = [
-    { key: 'invoice',  label: 'Invoice No', render: v => <span className="font-mono text-xs text-[#1C2B3A] font-semibold">{v}</span> },
+    { key: 'invoice',  label: 'Invoice No', render: v => <span className="font-mono text-xs text-[#1A1A1A] font-semibold">{v}</span> },
     { key: 'customer', label: 'Customer' },
     { key: 'gstin',    label: 'GSTIN',      render: v => <span className="font-mono text-xs text-[#AEACA8]">{v}</span> },
     { key: 'taxable',  label: 'Taxable',    render: v => fmt(v) },
@@ -81,13 +81,13 @@ export default function GST() {
           <h1 className="page-title">GST Compliance</h1>
           <p className="page-subtitle">{selectedCompany?.name || '—'} · {fyLabel}</p>
         </div>
-        <button onClick={load} disabled={loading} className="flex items-center gap-1.5 text-xs text-[#787774] hover:text-[#1C2B3A] transition-colors disabled:opacity-40">
+        <button onClick={load} disabled={loading} className="flex items-center gap-1.5 text-xs text-[#787774] hover:text-[#1A1A1A] transition-colors disabled:opacity-40">
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        <KPICard title="CGST Payable"  value={loading ? '—' : fmtL(gstSummary.cgst)}  icon={ShieldCheck}   accent="#1C2B3A" />
+        <KPICard title="CGST Payable"  value={loading ? '—' : fmtL(gstSummary.cgst)}  icon={ShieldCheck}   accent="#1A1A1A" />
         <KPICard title="SGST Payable"  value={loading ? '—' : fmtL(gstSummary.sgst)}  icon={ShieldCheck}   accent="#0D9488" />
         <KPICard title="IGST Payable"  value={loading ? '—' : fmtL(gstSummary.igst)}  icon={ShieldCheck}   accent="#D97706" />
         <KPICard title="Total GST"     value={loading ? '—' : fmtL(gstSummary.total)} icon={CheckCircle}   accent="#2D7D46" />
@@ -100,7 +100,7 @@ export default function GST() {
               key={i}
               onClick={() => setTab(i)}
               className={`px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors rounded-t-lg mr-1 ${
-                tab === i ? 'text-[#1C2B3A] bg-[#ECEEEF] font-semibold' : 'text-[#787774] hover:text-[#1C2B3A] hover:bg-[#F5F4EF]'
+                tab === i ? 'text-[#1A1A1A] bg-[#ECEEEF] font-semibold' : 'text-[#787774] hover:text-[#1A1A1A] hover:bg-[#F5F4EF]'
               }`}
             >
               {t}
@@ -112,7 +112,7 @@ export default function GST() {
           {tab === 0 && (
             <>
               <div className="flex justify-between items-center mb-4">
-                <p className="text-sm font-semibold text-[#1C2B3A]">Outward Supplies — July 2025</p>
+                <p className="text-sm font-semibold text-[#1A1A1A]">Outward Supplies — July 2025</p>
                 <div className="flex gap-2">
                   {['JSON', 'CSV', 'XLSX'].map(b => (
                     <button key={b} className="px-3 py-1.5 border border-[#D4D3CE] text-[#787774] text-xs rounded-lg hover:bg-[#F5F4EF] transition-colors">
@@ -128,7 +128,7 @@ export default function GST() {
           {tab === 1 && (
             <>
               <div className="flex justify-between items-center mb-4">
-                <p className="text-sm font-semibold text-[#1C2B3A]">GSTR-2A Reconciliation</p>
+                <p className="text-sm font-semibold text-[#1A1A1A]">GSTR-2A Reconciliation</p>
                 <div className="flex gap-2">
                   <button className="px-3 py-1.5 text-xs font-semibold text-white rounded-lg bg-[#1A1A1A] hover:bg-[#333] transition-colors">
                     Auto-Match All
@@ -144,7 +144,7 @@ export default function GST() {
 
           {tab === 2 && (
             <div>
-              <p className="text-sm font-semibold text-[#1C2B3A] mb-4">GSTR-3B Summary — July 2025</p>
+              <p className="text-sm font-semibold text-[#1A1A1A] mb-4">GSTR-3B Summary — July 2025</p>
               <div className="overflow-x-auto rounded-xl border border-[#D4D3CE]">
                 <table className="w-full text-sm">
                   <thead>
@@ -157,7 +157,7 @@ export default function GST() {
                   <tbody>
                     {gstr3b.map((row, i) => (
                       <tr key={i} className="border-b border-[#ECEEEF] hover:bg-[#F5F4EF]">
-                        <td className="px-4 py-3 font-medium text-[#1C2B3A]">{row.section}</td>
+                        <td className="px-4 py-3 font-medium text-[#1A1A1A]">{row.section}</td>
                         <td className="px-4 py-3">{row.taxable ? fmt(row.taxable) : <span className="text-[#C5CBD0]">—</span>}</td>
                         <td className="px-4 py-3">{row.igst   ? fmt(row.igst)    : <span className="text-[#C5CBD0]">—</span>}</td>
                         <td className="px-4 py-3">{row.cgst   ? fmt(row.cgst)    : <span className="text-[#C5CBD0]">—</span>}</td>
@@ -187,7 +187,7 @@ export default function GST() {
                 {[['Outward Supplies (YTD)', '₹2,31,80,000'], ['ITC Claimed (YTD)', '₹18,45,000'], ['Tax Paid (YTD)', '₹24,52,000'], ['Late Fee (YTD)', '—']].map(([l, v]) => (
                   <div key={l} className="p-4 bg-[#F5F4EF] rounded-xl border border-[#D4D3CE]">
                     <p className="text-xs text-[#AEACA8] mb-1">{l}</p>
-                    <p className="font-bold text-[#1C2B3A]">{v}</p>
+                    <p className="font-bold text-[#1A1A1A]">{v}</p>
                   </div>
                 ))}
               </div>
@@ -202,7 +202,7 @@ export default function GST() {
             {Object.entries(drawer).filter(([k]) => k !== 'id').map(([k, v]) => (
               <div key={k} className="flex justify-between items-center py-2.5 border-b border-[#F5F4EF]">
                 <span className="text-xs text-[#AEACA8] capitalize">{k.replace(/_/g, ' ')}</span>
-                <span className="text-sm font-medium text-[#1C2B3A] text-right max-w-xs">{String(v)}</span>
+                <span className="text-sm font-medium text-[#1A1A1A] text-right max-w-xs">{String(v)}</span>
               </div>
             ))}
           </div>
