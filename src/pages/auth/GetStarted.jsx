@@ -63,7 +63,7 @@ export default function GetStarted() {
       if (mobile) localStorage.setItem(`onboardingDone_${mobile}`, 'true');
       localStorage.setItem('onboardingDone', 'true'); // Legacy fallback
       localStorage.setItem('authUser', JSON.stringify({ ...user, name: fullName.trim(), email: email.trim(), language }));
-      navigate('/');
+      navigate('/auth/tally-sync', { replace: true });
       setSubmitting(false);
     }
   };

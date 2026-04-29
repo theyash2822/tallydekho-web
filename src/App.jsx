@@ -6,6 +6,7 @@ import AppShell from './layouts/AppShell';
 const Login = lazy(() => import('./pages/auth/Login'));
 const OTPScreen = lazy(() => import('./pages/auth/OTPScreen'));
 const GetStarted = lazy(() => import('./pages/auth/GetStarted'));
+const TallySync  = lazy(() => import('./pages/auth/TallySync'));
 const Notifications = lazy(() => import('./pages/Notifications'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const CashBank = lazy(() => import('./pages/financials/CashBank'));
@@ -78,6 +79,7 @@ function AppRoutes() {
         {/* OTP page: NO AuthRoute wrapper - login() sets token here, AuthRoute would race-redirect */}
         <Route path="/auth/otp" element={<OTPScreen />} />
         <Route path="/auth/get-started" element={<ProtectedRoute><GetStarted /></ProtectedRoute>} />
+        <Route path="/auth/tally-sync"   element={<ProtectedRoute><TallySync  /></ProtectedRoute>} />
 
         {/* Protected app routes */}
         <Route path="/" element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
