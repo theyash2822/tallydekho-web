@@ -67,11 +67,27 @@ export function AuthProvider({ children }) {
         localStorage.setItem('selectedCompany', JSON.stringify(freshComp));
         setSelectedCompany(freshComp);
 
-        // Auto-select latest FY if none selected yet
+        // Reset selectedFY if it points to a future year with no data
+        const today = new Date().toISOString().slice(0, 10);
+        if (selectedFY && selectedFY.startDate > today) {
+          // Current selection is a future FY — reset to latest past FY
+          const fyWithData = [...freshComp.years].reverse().find(y => y.startDate <= today);
+          if (fyWithData) {
+            localStorage.setItem('selectedFY', JSON.stringify(fyWithData));
+            setSelectedFY(fyWithData);
+          }
+        }
+
+        // Auto-select latest FY with data (not a future FY that has no vouchers yet)
         if (freshComp?.years?.length && !selectedFY) {
-          const latestFY = freshComp.years[freshComp.years.length - 1];
-          localStorage.setItem('selectedFY', JSON.stringify(latestFY));
-          setSelectedFY(latestFY);
+          const today = new Date().toISOString().slice(0, 10);
+          // Pick the latest FY whose start date is on or before today
+          const fyWithData = [...freshComp.years]
+            .reverse()
+            .find(y => y.startDate <= today);
+          const defaultFY = fyWithData || freshComp.years[freshComp.years.length - 1];
+          localStorage.setItem('selectedFY', JSON.stringify(defaultFY));
+          setSelectedFY(defaultFY);
         }
       }
       return arr;
