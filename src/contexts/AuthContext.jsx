@@ -57,17 +57,22 @@ export function AuthProvider({ children }) {
       const arr = Array.isArray(list) ? list : [];
       localStorage.setItem('companies', JSON.stringify(arr));
       setCompanies(arr);
-      // Auto-select first company if none selected
-      if (arr.length > 0 && !selectedCompany) {
-        localStorage.setItem('selectedCompany', JSON.stringify(arr[0]));
-        setSelectedCompany(arr[0]);
-      }
-      // Auto-select latest FY for selected company
-      const comp = selectedCompany || arr[0];
-      if (comp?.years?.length && !selectedFY) {
-        const latestFY = comp.years[comp.years.length - 1];
-        localStorage.setItem('selectedFY', JSON.stringify(latestFY));
-        setSelectedFY(latestFY);
+
+      if (arr.length > 0) {
+        // Always refresh the selected company with fresh data (picks up new FY years)
+        const currentGuid = selectedCompany?.guid;
+        const freshComp = currentGuid
+          ? (arr.find(c => c.guid === currentGuid) || arr[0])
+          : arr[0];
+        localStorage.setItem('selectedCompany', JSON.stringify(freshComp));
+        setSelectedCompany(freshComp);
+
+        // Auto-select latest FY if none selected yet
+        if (freshComp?.years?.length && !selectedFY) {
+          const latestFY = freshComp.years[freshComp.years.length - 1];
+          localStorage.setItem('selectedFY', JSON.stringify(latestFY));
+          setSelectedFY(latestFY);
+        }
       }
       return arr;
     } catch (err) {
