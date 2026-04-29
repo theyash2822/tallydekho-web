@@ -46,6 +46,12 @@ class WebSocketService {
       this._emit('synced', data);
     });
 
+    // Mobile paired with desktop — web portal needs to update its paired state
+    this.socket.on('paired', (data) => {
+      console.info('[WS] paired', data);
+      this._emit('paired', data);
+    });
+
     this.socket.on('unpaired', (data) => {
       console.warn('[WS] unpaired', data);
       this._emit('unpaired', data);
