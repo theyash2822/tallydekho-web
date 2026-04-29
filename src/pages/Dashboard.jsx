@@ -82,7 +82,7 @@ function EmptyState({ paired, message }) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { isPaired, selectedCompany, selectedFY, loadCompanies } = useAuth();
+  const { isPaired, selectedCompany, selectedFY, loadCompanies, syncVersion } = useAuth();
   const fyLabel = selectedFY?.name ? `FY ${selectedFY.name}` : 'FY 2025-26';
 
   const [dashData, setDashData] = useState(null);
@@ -117,7 +117,7 @@ export default function Dashboard() {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { setDashData(null); load(); }, [selectedCompany?.guid, selectedFY?.uniqueId]);
+  useEffect(() => { setDashData(null); load(); }, [selectedCompany?.guid, selectedFY?.uniqueId, syncVersion]);
 
   useEffect(() => {
     const unsub = wsService.on('synced', () => {

@@ -21,13 +21,15 @@ export function AuthProvider({ children }) {
   const [selectedFY, setSelectedFY] = useState(() => { try { return JSON.parse(localStorage.getItem('selectedFY')); } catch { return null; } });
   const [isPaired,  setIsPaired]  = useState(() => localStorage.getItem('isPaired') === 'true');
   const [syncToast, setSyncToast] = useState(null);
+  // Incremented on every successful sync — any page that depends on fresh data should use this as a useEffect dep
+  const [syncVersion, setSyncVersion] = useState(0);
 
   // ── Connect WebSocket when token is available ─────────────────────────────
   useEffect(() => {
     if (!token) return;
     wsService.connect(token);
 
-    const unSynced   = wsService.on('synced',   (d) => { showToast('✅ Tally data synced', 'success'); loadCompanies(); });
+    const unSynced   = wsService.on('synced',   (d) => { showToast('✅ Tally data synced', 'success'); loadCompanies(); setSyncVersion(v => v + 1); });
     const unUnpaired = wsService.on('unpaired', (d) => { setIsPaired(false); localStorage.removeItem('isPaired'); showToast('⚠️ Tally unpaired', 'warning'); });
     const unLogout   = wsService.on('logout',   (d) => logout());
     // Auto-refresh everything after successful pairing
@@ -96,28 +98,51 @@ export function AuthProvider({ children }) {
     localStorage.setItem('authUser', JSON.stringify(userData));
     setToken(authToken);
     setUser(userData);
-    // Eagerly load companies right after login (don't wait for useEffect)
+
+    // Fetch /api/auth/me to get real isPaired + company state
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/app'}/companies`, {
+      const apiBase = import.meta.env.VITE_API_URL?.replace('/app', '') || 'http://localhost:3001';
+      const meRes = await fetch(`${apiBase}/api/auth/me`, {
         headers: { 'Authorization': `Bearer ${authToken}`, 'Content-Type': 'application/json' }
       });
-      const data = await res.json();
-      const arr = data?.data?.companies || [];
-      if (arr.length > 0) {
-        localStorage.setItem('companies', JSON.stringify(arr));
-        setCompanies(arr);
-        // Auto-select first company + latest FY
-        const comp = arr[0];
-        localStorage.setItem('selectedCompany', JSON.stringify(comp));
-        setSelectedCompany(comp);
-        if (comp?.years?.length) {
-          const latestFY = comp.years[comp.years.length - 1];
-          localStorage.setItem('selectedFY', JSON.stringify(latestFY));
-          setSelectedFY(latestFY);
+      const meData = await meRes.json();
+      const me = meData?.data;
+      if (me) {
+        const freshUser = { ...userData, ...me };
+        localStorage.setItem('authUser', JSON.stringify(freshUser));
+        setUser(freshUser);
+        if (me.is_paired) {
+          localStorage.setItem('isPaired', 'true');
+          setIsPaired(true);
+        } else {
+          localStorage.setItem('isPaired', 'false');
+          setIsPaired(false);
+        }
+        // Load companies if paired
+        if (me.is_paired && me.company?.guid) {
+          const comp = me.company;
+          // Fetch full companies list
+          const compRes = await fetch(`${apiBase}/api/companies`, {
+            headers: { 'Authorization': `Bearer ${authToken}`, 'Content-Type': 'application/json' }
+          });
+          const compData = await compRes.json();
+          const arr = compData?.data || [];
+          if (arr.length > 0) {
+            localStorage.setItem('companies', JSON.stringify(arr));
+            setCompanies(arr);
+            localStorage.setItem('selectedCompany', JSON.stringify(arr[0]));
+            setSelectedCompany(arr[0]);
+          } else {
+            // Fallback: use company from me endpoint
+            localStorage.setItem('companies', JSON.stringify([comp]));
+            setCompanies([comp]);
+            localStorage.setItem('selectedCompany', JSON.stringify(comp));
+            setSelectedCompany(comp);
+          }
         }
       }
     } catch (e) {
-      console.warn('Eager company load failed:', e.message);
+      console.warn('Login bootstrap failed:', e.message);
     }
   };
 
@@ -153,7 +178,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{
-      token, user, companies, selectedCompany, selectedFY, isPaired, syncToast,
+      token, user, companies, selectedCompany, selectedFY, isPaired, syncToast, syncVersion,
       login, logout, selectCompany, selectFY, loadCompanies, markPaired, showToast,
     }}>
       {children}
