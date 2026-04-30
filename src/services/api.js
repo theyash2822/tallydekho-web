@@ -53,6 +53,7 @@ export const fetchCompanies = () => get('/companies');
 export const fetchLedgers        = (body) => post('/ledgers', body);
 export const fetchLedgerDetails  = (body) => post('/ledger',  body);
 export const fetchLedgerVouchers = (body) => post('/ledger-vouchers', body);
+export const fetchLedgerTrend    = (body) => post('/ledger-trend', body);
 export const fetchVoucherDetail  = (body) => post('/voucher-detail', body);  // { companyGuid, voucherId }
 
 // ─── Stocks ───────────────────────────────────────────────────────────────────

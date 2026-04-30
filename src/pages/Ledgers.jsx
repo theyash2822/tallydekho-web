@@ -206,6 +206,8 @@ export default function Ledgers() {
   const [total,   setTotal]           = useState(0);
   const [drawer,  setDrawer]          = useState(null);
   const [ledgerTab, setLedgerTab]     = useState(0);
+  const [trendData, setTrendData]     = useState([]);
+  const [trendLoading, setTrendLoading] = useState(false);
 
 
   const companyGuid = selectedCompany?.guid;
@@ -380,6 +382,15 @@ export default function Ledgers() {
                         onClick={() => {
                           setDrawer(l);
                           setLedgerTab(0);
+                          setTrendData([]);
+                          // Pre-fetch trend data
+                          if (companyGuid && selectedFY) {
+                            setTrendLoading(true);
+                            api.fetchLedgerTrend({ companyGuid, ledgerName: getName(l), fromDate: selectedFY.startDate, toDate: selectedFY.endDate })
+                              .then(r => setTrendData(r?.data || []))
+                              .catch(() => setTrendData([]))
+                              .finally(() => setTrendLoading(false));
+                          }
                         }}
                       >
                         <td className="px-4 py-3 font-medium text-[#1A1A1A]">{getName(l)}</td>
@@ -533,34 +544,38 @@ export default function Ledgers() {
             {/* Tab: Balance Trend */}
             {ledgerTab === 2 && (
               <div>
-                <p className="text-xs font-semibold text-[#AEACA8] uppercase tracking-wider mb-3">Balance Movement</p>
-                <ResponsiveContainer width="100%" height={140}>
-                  <AreaChart data={movementData} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
-                    <defs>
-                      <linearGradient id="ledgerGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%"  stopColor="#1A1A1A" stopOpacity={0.2} />
-                        <stop offset="95%" stopColor="#1A1A1A" stopOpacity={0.02} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="2 4" stroke="#ECEEEF" vertical={false} />
-                    <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#AEACA8' }} axisLine={false} tickLine={false} />
-                    <YAxis hide />
-                    <Tooltip
-                      formatter={v => [fmt(v), 'Balance']}
-                      contentStyle={{ fontSize: 11, border: '1px solid #D4D3CE', borderRadius: 8 }}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="balance"
-                      stroke="#1A1A1A"
-                      strokeWidth={2}
-                      fill="url(#ledgerGrad)"
-                      dot={{ r: 2, fill: '#1A1A1A', strokeWidth: 0 }}
-                      activeDot={{ r: 4, fill: '#1A1A1A' }}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-                <p className="text-xs text-[#B0B7BF] text-center mt-2">Sample data · updates after sync</p>
+                <p className="text-xs font-semibold text-[#AEACA8] uppercase tracking-wider mb-3">Transaction Amounts by Month</p>
+                {trendLoading ? (
+                  <div className="h-36 flex items-center justify-center text-xs text-[#AEACA8]">Loading trend…</div>
+                ) : trendData.length === 0 ? (
+                  <div className="h-36 flex items-center justify-center text-xs text-[#AEACA8]">
+                    No transactions in selected FY · do a Hard Sync to update
+                  </div>
+                ) : (
+                  <>
+                    <ResponsiveContainer width="100%" height={140}>
+                      <AreaChart data={trendData} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
+                        <defs>
+                          <linearGradient id="ledgerGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%"  stopColor="#3F5263" stopOpacity={0.3} />
+                            <stop offset="95%" stopColor="#3F5263" stopOpacity={0.02} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="2 4" stroke="#ECEEEF" vertical={false} />
+                        <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#AEACA8' }} axisLine={false} tickLine={false} />
+                        <YAxis hide />
+                        <Tooltip
+                          formatter={v => [fmt(v), 'Transactions']}
+                          contentStyle={{ fontSize: 11, border: '1px solid #D4D3CE', borderRadius: 8 }}
+                        />
+                        <Area type="monotone" dataKey="balance" stroke="#3F5263" strokeWidth={2}
+                          fill="url(#ledgerGrad)" dot={{ r: 2, fill: '#3F5263', strokeWidth: 0 }}
+                          activeDot={{ r: 4, fill: '#3F5263' }} />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                    <p className="text-xs text-[#B0B7BF] text-center mt-2">{trendData.length} months · {selectedFY?.name || 'current FY'}</p>
+                  </>
+                )}
               </div>
             )}
 
@@ -570,13 +585,14 @@ export default function Ledgers() {
                 {getGstin(drawer) ? (
                   [
                     ['GSTIN', getGstin(drawer)],
-                    ['Registration Type', 'Regular'],
-                    ['Place of Supply', 'Maharashtra (27)'],
-                    ['Classification', 'B2B'],
-                  ].map(([label, value]) => (
+                    drawer.pan ? ['PAN', drawer.pan] : null,
+                    drawer.phone ? ['Phone', drawer.phone] : null,
+                    drawer.email ? ['Email', drawer.email] : null,
+                    drawer.address ? ['Address', drawer.address] : null,
+                  ].filter(Boolean).map(([label, value]) => (
                     <div key={label} className="flex justify-between items-center py-2.5 border-b border-[#F5F4EF]">
                       <span className="text-xs text-[#AEACA8]">{label}</span>
-                      <span className="text-sm font-mono font-medium text-[#1A1A1A]">{value}</span>
+                      <span className="text-sm font-mono font-medium text-[#1A1A1A] max-w-[60%] text-right break-all">{value}</span>
                     </div>
                   ))
                 ) : (
