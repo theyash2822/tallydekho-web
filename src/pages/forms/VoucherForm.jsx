@@ -1,3 +1,4 @@
+import useFYDates from '../../hooks/useFYDates';
 import { useState, useCallback } from 'react';
 import { FormField, Input, Select, SectionTitle, Textarea } from '../../components/FormField';
 import SummaryFooter from '../../components/SummaryFooter';
@@ -153,7 +154,7 @@ export default function VoucherForm({ onClose }) {
 
       <div className="grid grid-cols-2 gap-4">
         <FormField label="Date" required>
-          <Input type="date" value={date} onChange={e => setDate(e.target.value)} />
+          <Input type="date" value={date} onChange={e => setDate(e.target.value)} min={fyMin || undefined} max={fyMax || undefined} />
         </FormField>
         <FormField label="Amount (₹)" required>
           <Input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" prefix="₹" />

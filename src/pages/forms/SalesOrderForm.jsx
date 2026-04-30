@@ -1,3 +1,4 @@
+import useFYDates from '../../hooks/useFYDates';
 import { useState, useCallback } from 'react';
 import { FormField, Input, SectionTitle, Toggle } from '../../components/FormField';
 import ItemsTable from '../../components/ItemsTable';
@@ -93,7 +94,7 @@ export default function SalesOrderForm({ onClose }) {
         </FormField>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <FormField label="Date" required><Input type="date" value={orderDate} onChange={e => setOrderDate(e.target.value)} /></FormField>
+        <FormField label="Date" required><Input type="date" value={orderDate} onChange={e => setOrderDate(e.target.value)} min={fyMin || undefined} max={fyMax || undefined} /></FormField>
         <FormField label="Reference No"><Input value={reference} onChange={e => setReference(e.target.value)} placeholder="Optional reference" /></FormField>
       </div>
       <SectionTitle title="Items / Services" subtitle="Add products with qty, rate and tax" />

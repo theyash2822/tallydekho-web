@@ -1,3 +1,4 @@
+import useFYDates from '../../hooks/useFYDates';
 import { useState, useCallback } from 'react';
 import { FormField, Input, Select, SectionTitle, Toggle } from '../../components/FormField';
 import ItemsTable from '../../components/ItemsTable';
@@ -100,7 +101,7 @@ export default function PurchaseInvoiceForm({ onClose }) {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <FormField label="Invoice Date" required><Input type="date" value={invoiceDate} onChange={e => setInvoiceDate(e.target.value)} /></FormField>
+        <FormField label="Invoice Date" required><Input type="date" value={invoiceDate} onChange={e => setInvoiceDate(e.target.value)} min={fyMin || undefined} max={fyMax || undefined} /></FormField>
         <FormField label="Vendor Invoice No"><Input value={invoiceNumber} onChange={e => setInvoiceNumber(e.target.value)} placeholder="Vendor's invoice number" /></FormField>
       </div>
 

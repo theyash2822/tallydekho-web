@@ -1,3 +1,4 @@
+import useFYDates from '../../hooks/useFYDates';
 import { useState, useCallback } from 'react';
 import { FormField, Input, SectionTitle, Toggle } from '../../components/FormField';
 import ItemsTable from '../../components/ItemsTable';
@@ -78,7 +79,7 @@ export default function CreditNoteForm({ onClose }) {
         </FormField>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <FormField label="Date" required><Input type="date" value={date} onChange={e => setDate(e.target.value)} /></FormField>
+        <FormField label="Date" required><Input type="date" value={date} onChange={e => setDate(e.target.value)} min={fyMin || undefined} max={fyMax || undefined} /></FormField>
       </div>
       <SectionTitle title="Items / Services" subtitle="Products being returned / noted" />
       <ItemsTable warehouse={warehouse} onWarehouseChange={setWarehouse} onItemsChange={setItems} />
