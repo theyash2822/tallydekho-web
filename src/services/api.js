@@ -71,7 +71,32 @@ export const fetchDashboard = (body) => post('/dashboard', body);
 
 // ─── Reports ──────────────────────────────────────────────────────────────────
 export const fetchReportsPL = (body) => post('/reports/pl', body);
-export const fetchReportsBS           = (body) => post('/reports/balance-sheet', body);
+export const fetchReportsBS = (body) => post('/reports/balance-sheet', body);
+export const fetchReportsTB = (body) => post('/reports/trial-balance', body);
+
+// V2: FY-specific balance fetchers — pass fy= query param
+// fyParam: '2025-2026' format (from selectedFY.startDate)
+export const fyParamFromFY = (fy) => {
+  if (!fy) return null;
+  if (fy.startDate) {
+    const y = parseInt(fy.startDate.slice(0, 4), 10);
+    return `${y}-${y + 1}`;
+  }
+  return null;
+};
+export const fetchLedgerFyBalances = (companyGuid, fy) => {
+  const fyParam = typeof fy === 'string' ? fy : fyParamFromFY(fy);
+  const params = new URLSearchParams({ companyGuid });
+  if (fyParam) params.set('fy', fyParam);
+  return request('GET', `/api/ledgers/fy-balances?${params}`);
+};
+export const fetchLedgerStatement = (companyGuid, id, fy, extra = {}) => {
+  const fyParam = typeof fy === 'string' ? fy : fyParamFromFY(fy);
+  const params = new URLSearchParams({ companyGuid });
+  if (fyParam) params.set('fy', fyParam);
+  Object.entries(extra).forEach(([k, v]) => v && params.set(k, v));
+  return request('GET', `/api/ledgers/${id}/statement?${params}`);
+};
 export const fetchCashBank            = (body) => post('/cash-bank', body);
 export const fetchReceivablesPayables = (body) => post('/receivables-payables', body);
 export const fetchExpenses            = (body) => post('/expenses', body);

@@ -53,9 +53,17 @@ export default function Reports() {
     if (!selectedCompany?.guid) { setLoading(false); return; }
     setLoading(true);
     setError(null);
+    // V2: pass fy= param for FY-specific balances
+    const fyParam = api.fyParamFromFY(selectedFY);  // e.g. '2025-2026'
+    const fyBody = {
+      companyGuid: selectedCompany.guid,
+      from: selectedFY?.startDate,
+      to:   selectedFY?.endDate,
+      ...(fyParam ? { fy: fyParam } : {}),
+    };
     Promise.all([
-      api.fetchReportsPL({ companyGuid: selectedCompany.guid, fromDate: selectedFY?.startDate, toDate: selectedFY?.endDate }).catch(() => null),
-      api.fetchReportsBS({ companyGuid: selectedCompany.guid, fromDate: selectedFY?.startDate, toDate: selectedFY?.endDate }).catch(() => null),
+      api.fetchReportsPL(fyBody),
+      api.fetchReportsBS(fyBody),
     ]).then(([pl, bs]) => {
       if (pl?.data) setPlReport(pl.data);
       if (bs?.data) setBsReport(bs.data);
