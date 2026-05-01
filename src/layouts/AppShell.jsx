@@ -121,7 +121,7 @@ function CompanySwitcher() {
     return () => document.removeEventListener('mousedown', h);
   }, []);
 
-  const list = companies.length > 0 ? companies : [{ name: 'Demo Company', guid: 'demo' }];
+  const list = companies || [];
   const current = selectedCompany || list[0];
   const displayName = current?.name || 'Select Company';
 

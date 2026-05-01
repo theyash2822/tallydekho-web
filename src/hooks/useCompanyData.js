@@ -1,35 +1,28 @@
 // Universal hook for fetching company-specific data from real API
-// Falls back to mock data if API fails or no company selected
+// STRICT RULE: No mock/fallback data. Show empty state or error state only.
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import api from '../services/api';
 
-export function useCompanyData(fetcher, deps = [], mockData = null) {
+export function useCompanyData(fetcher, deps = []) {
   const { token, selectedCompany } = useAuth();
   const companyGuid = selectedCompany?.guid;
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [usingMock, setUsingMock] = useState(false);
 
   const load = useCallback(async () => {
-    if (!token) { setLoading(false); return; }
+    if (!token || !companyGuid) { setLoading(false); setData(null); return; }
     setLoading(true);
     setError(null);
     try {
       const res = await fetcher(companyGuid);
       const result = res?.data ?? res;
-      if (result && (Array.isArray(result) ? result.length > 0 : Object.keys(result).length > 0)) {
-        setData(result);
-        setUsingMock(false);
-      } else if (mockData) {
-        setData(mockData);
-        setUsingMock(true);
-      }
+      // Empty is valid — null/[] is real data, not a fallback trigger
+      setData(result ?? null);
     } catch (err) {
-      console.warn('[API] Using mock data:', err.message);
-      if (mockData) { setData(mockData); setUsingMock(true); }
-      setError(err.message);
+      console.error('[API] fetch failed:', err.message);
+      setError(err.message || 'Failed to load data');
+      setData(null);
     } finally {
       setLoading(false);
     }
@@ -37,5 +30,5 @@ export function useCompanyData(fetcher, deps = [], mockData = null) {
 
   useEffect(() => { load(); }, [load]);
 
-  return { data, loading, error, usingMock, reload: load, companyGuid };
+  return { data, loading, error, reload: load, companyGuid };
 }

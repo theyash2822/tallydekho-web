@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { User, Building2, CreditCard, Globe, Bell, Plug, Info, ChevronRight, Check, FileText } from 'lucide-react';
-import { company } from '../data/mockData';
+
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
 import { getPDFTemplate, setPDFTemplate, buildInvoiceHTML } from '../components/InvoicePDF';

@@ -4,7 +4,7 @@ import KPICard from '../../components/KPICard';
 import Badge from '../../components/Badge';
 import Table from '../../components/Table';
 import Drawer from '../../components/Drawer';
-import { loans, odAccounts, emiSchedule } from '../../data/mockData';
+
 
 const fmt = n => '₹' + n.toLocaleString('en-IN');
 const statusVariant = { Active: 'green', Closed: 'gray', NPA: 'red' };

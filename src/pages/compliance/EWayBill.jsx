@@ -4,7 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import KPICard from '../../components/KPICard';
 import Badge from '../../components/Badge';
 import Drawer from '../../components/Drawer';
-import { ewayBills, ewbPerDay } from '../../data/mockData';
+
 
 const fmt = n => '₹' + n.toLocaleString('en-IN');
 const statusVariant = { Active: 'green', Expiring: 'yellow', Expired: 'red', Cancelled: 'gray' };

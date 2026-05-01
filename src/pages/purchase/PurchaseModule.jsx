@@ -44,7 +44,7 @@ export default function PurchaseModule() {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState(null);
-  const [usingMock, setUsingMock] = useState(false);
+  
 
   const loadData = () => {
     if (!selectedCompany?.guid) { setLoading(false); return; }

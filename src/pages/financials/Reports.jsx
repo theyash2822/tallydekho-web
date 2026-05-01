@@ -64,23 +64,21 @@ export default function Reports() {
     }).finally(() => setLoading(false));
   }, [selectedCompany?.guid, selectedFY?.uniqueId]);
 
-  // Derive totals from real data or fall back to mock
+  // Real data only — no mock fallback
   const incomeRows = plReport?.income || [];
   const expenseRows = plReport?.expenses || [];
-  const totalIncome   = plReport?.summary?.totalIncome   ?? plData.income.directIncome.reduce((s,i)=>s+i.amount,0) + plData.income.indirectIncome.reduce((s,i)=>s+i.amount,0);
-  const totalExpenses = plReport?.summary?.totalExpenses ?? plData.expenses.directExpense.reduce((s,i)=>s+i.amount,0) + plData.expenses.indirectExpense.reduce((s,i)=>s+i.amount,0);
-  const netProfit     = plReport?.summary?.netProfit     ?? (totalIncome - totalExpenses);
-  const grossProfit   = plReport?.summary?.grossProfit   ?? netProfit;
+  const totalIncome   = plReport?.summary?.totalIncome   ?? 0;
+  const totalExpenses = plReport?.summary?.totalExpenses ?? 0;
+  const netProfit     = plReport?.summary?.netProfit     ?? 0;
+  const grossProfit   = plReport?.summary?.grossProfit   ?? 0;
 
   const totalAssets = bsReport?.summary?.totalAssets ?? 0;
   const totalLiab   = bsReport?.summary?.totalLiabilities ?? 0;
   const bsAssets      = bsReport?.assets      || [];
   const bsLiabilities = bsReport?.liabilities || [];
 
-  // Expense breakdown for chart
-  const expBreakdown = expenseRows.length > 0
-    ? expenseRows.slice(0, 5).map(e => ({ name: (e.name||'').split(' ').slice(0,2).join(' '), value: Math.abs(parseFloat(e.closing_balance)||0) }))
-    : [{ name: 'Purchase', value: 2840000 }, { name: 'Salary', value: 380000 }, { name: 'Others', value: 182500 }];
+  // Expense breakdown for chart — real data only, empty array if no data
+  const expBreakdown = expenseRows.slice(0, 5).map(e => ({ name: (e.name||'').split(' ').slice(0,2).join(' '), value: Math.abs(parseFloat(e.closing_balance)||0) }));
 
   return (
     <div className="space-y-5">
@@ -172,18 +170,16 @@ export default function Reports() {
                   </tr>
                 </thead>
                 <tbody>
-                  <ExpandRow label="Direct Income" amount={totalDI}>
-                    {plData.income.directIncome.map(i => <tr key={i.ledger} className="border-b border-[#F5F4EF] bg-[#F9F9F9]"><td className="px-4 py-2 text-[#787774] pl-10">{i.ledger}</td><td className="px-4 py-2 text-right text-[#787774]">{fmt(i.amount)}</td></tr>)}
-                  </ExpandRow>
-                  <ExpandRow label="Indirect Income" amount={totalII}>
-                    {plData.income.indirectIncome.map(i => <tr key={i.ledger} className="border-b border-[#F5F4EF] bg-[#F9F9F9]"><td className="px-4 py-2 text-[#787774] pl-10">{i.ledger}</td><td className="px-4 py-2 text-right text-[#787774]">{fmt(i.amount)}</td></tr>)}
+                  <ExpandRow label="Income" amount={totalIncome}>
+                    {incomeRows.length > 0
+                      ? incomeRows.map(i => <tr key={i.name} className="border-b border-[#F5F4EF] bg-[#F9F9F9]"><td className="px-4 py-2 text-[#787774] pl-10">{i.name}</td><td className="px-4 py-2 text-right text-[#787774]">{fmt(Math.abs(parseFloat(i.closing_balance||0)))}</td></tr>)
+                      : <tr><td colSpan={2} className="px-4 py-3 text-center text-[#787774] text-xs">No data available</td></tr>}
                   </ExpandRow>
                   <tr className="bg-[#E8F5ED] border-b border-[#A8D5BC]"><td className="px-4 py-3 font-bold text-[#2D7D46]">Gross Profit</td><td className="px-4 py-3 text-right font-bold text-[#2D7D46]">{fmt(grossProfit)}</td></tr>
-                  <ExpandRow label="Direct Expense" amount={totalDE}>
-                    {plData.expenses.directExpense.map(i => <tr key={i.ledger} className="border-b border-[#F5F4EF] bg-[#F9F9F9]"><td className="px-4 py-2 text-[#787774] pl-10">{i.ledger}</td><td className="px-4 py-2 text-right text-[#787774]">{fmt(i.amount)}</td></tr>)}
-                  </ExpandRow>
-                  <ExpandRow label="Indirect Expense" amount={totalIE}>
-                    {plData.expenses.indirectExpense.map(i => <tr key={i.ledger} className="border-b border-[#F5F4EF] bg-[#F9F9F9]"><td className="px-4 py-2 text-[#787774] pl-10">{i.ledger}</td><td className="px-4 py-2 text-right text-[#787774]">{fmt(i.amount)}</td></tr>)}
+                  <ExpandRow label="Expenses" amount={totalExpenses}>
+                    {expenseRows.length > 0
+                      ? expenseRows.map(i => <tr key={i.name} className="border-b border-[#F5F4EF] bg-[#F9F9F9]"><td className="px-4 py-2 text-[#787774] pl-10">{i.name}</td><td className="px-4 py-2 text-right text-[#787774]">{fmt(Math.abs(parseFloat(i.closing_balance||0)))}</td></tr>)
+                      : <tr><td colSpan={2} className="px-4 py-3 text-center text-[#787774] text-xs">No data available</td></tr>}
                   </ExpandRow>
                   <tr className="bg-[#E8F5ED]"><td className="px-4 py-3 font-bold text-[#2D7D46] text-base">Net Profit</td><td className="px-4 py-3 text-right font-bold text-[#2D7D46] text-base">{fmt(netProfit)}</td></tr>
                 </tbody>
