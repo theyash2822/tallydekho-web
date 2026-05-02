@@ -208,6 +208,7 @@ export default function Ledgers() {
   const [ledgerTab, setLedgerTab]     = useState(0);
   const [trendData, setTrendData]     = useState([]);
   const [trendLoading, setTrendLoading] = useState(false);
+  const [drawerStatement, setDrawerStatement] = useState(null); // FY-computed opening/closing
 
 
   const companyGuid = selectedCompany?.guid;
@@ -383,6 +384,14 @@ export default function Ledgers() {
                           setDrawer(l);
                           setLedgerTab(0);
                           setTrendData([]);
+                          setDrawerStatement(null);
+                          // Fetch FY-computed opening/closing from statement API
+                          if (companyGuid && l.guid) {
+                            const stParams = selectedFY ? { from: selectedFY.startDate, to: selectedFY.endDate } : {};
+                            api.fetchLedgerStatement(companyGuid, l.guid, undefined, stParams)
+                              .then(r => { if (r?.data) setDrawerStatement(r.data); })
+                              .catch(() => {});
+                          }
                           // Pre-fetch trend data
                           if (companyGuid && selectedFY) {
                             setTrendLoading(true);
@@ -473,7 +482,7 @@ export default function Ledgers() {
       )}
 
       {/* Drawer — Ledger Detail */}
-      <Drawer open={!!drawer} onClose={() => setDrawer(null)} title={getName(drawer || {})}>
+      <Drawer open={!!drawer} onClose={() => { setDrawer(null); setDrawerStatement(null); }} title={getName(drawer || {})}>
         {drawer && (
           <div className="space-y-4">
 
@@ -481,16 +490,22 @@ export default function Ledgers() {
             <div className="grid grid-cols-2 gap-3">
               <div className="p-4 bg-[#F5F4EF] rounded-xl border border-[#D4D3CE]">
                 <p className="text-xs text-[#AEACA8] mb-1">Opening Balance</p>
-                <p className="text-lg font-bold text-[#1A1A1A]">{fmt(getOpen(drawer))}</p>
+                <p className="text-lg font-bold text-[#1A1A1A]">
+                  {drawerStatement ? fmt(drawerStatement.opening_balance) : fmt(getOpen(drawer))}
+                  {drawerStatement && <span className="text-xs font-normal text-[#787774] ml-1">{drawerStatement.opening_balance_type}</span>}
+                </p>
               </div>
               <div className={`p-4 rounded-xl border ${
-                getBalType(drawer) === 'Dr'
+                (drawerStatement?.closing_balance_type || getBalType(drawer)) === 'Dr'
                   ? 'bg-[#E8F5ED] border-[#A8D5BC]'
                   : 'bg-[#FDECEA] border-[#EDBBB8]'
               }`}>
                 <p className="text-xs text-[#AEACA8] mb-1">Closing Balance</p>
-                <p className={`text-lg font-bold ${getBalType(drawer) === 'Dr' ? 'text-[#2D7D46]' : 'text-[#C0392B]'}`}>
-                  {fmt(Math.abs(getClose(drawer)))} {getBalType(drawer)}
+                <p className={`text-lg font-bold ${
+                  (drawerStatement?.closing_balance_type || getBalType(drawer)) === 'Dr' ? 'text-[#2D7D46]' : 'text-[#C0392B]'
+                }`}>
+                  {drawerStatement ? fmt(drawerStatement.closing_balance) : fmt(Math.abs(getClose(drawer)))}{' '}
+                  {drawerStatement ? drawerStatement.closing_balance_type : getBalType(drawer)}
                 </p>
               </div>
             </div>
