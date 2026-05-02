@@ -218,7 +218,8 @@ export default function Ledgers() {
     setLoading(true);
     setError(null);
     try {
-      const res = await api.fetchLedgers({ companyGuid, page: pg, pageSize, searchText });
+      const fyParams = selectedFY ? { from: selectedFY.startDate, to: selectedFY.endDate } : {};
+      const res = await api.fetchLedgers({ companyGuid, page: pg, pageSize, searchText, ...fyParams, fy: selectedFY?.finYear });
       const list = res?.data?.ledgers || res?.data || [];
       setLedgers(Array.isArray(list) ? list : []);
       if (res?.data?.total) setTotal(res.data.total);
