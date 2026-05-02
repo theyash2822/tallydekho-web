@@ -81,8 +81,8 @@ export default function VoucherDetail({ voucherId, companyGuid, companyName, onB
             </tr>`).join('')}
           <tr class="total-row">
             <td><strong>Total</strong></td>
-            <td style="text-align:right"><strong>${fmt(data?.voucher?.amount)}</strong></td>
-            <td style="text-align:right"><strong>${fmt(data?.voucher?.amount)}</strong></td>
+            <td style="text-align:right"><strong>${fmt(data?.voucher?.party_amount ?? data?.voucher?.amount)}</strong></td>
+            <td style="text-align:right"><strong>${fmt(data?.voucher?.party_amount ?? data?.voucher?.amount)}</strong></td>
           </tr>
         </tbody>
       </table>
@@ -124,7 +124,7 @@ export default function VoucherDetail({ voucherId, companyGuid, companyName, onB
         <div className="flex gap-2">
           <button
             onClick={() => {
-              const text = `${voucher?.voucher_type || 'Voucher'} ${voucher?.voucher_number || ''} | ${voucher?.party_name || ''} | ₹${Math.abs(parseFloat(voucher?.amount) || 0).toLocaleString('en-IN')} | ${voucher?.date || ''} | ${companyName || ''}`;
+              const text = `${voucher?.voucher_type || 'Voucher'} ${voucher?.voucher_number || ''} | ${voucher?.party_name || ''} | ₹${Math.abs(parseFloat(voucher?.party_amount ?? voucher?.amount) || 0).toLocaleString('en-IN')} | ${voucher?.date || ''} | ${companyName || ''}`;
               if (navigator.share) {
                 navigator.share({ title: `Voucher ${voucher?.voucher_number}`, text });
               } else {
@@ -225,7 +225,7 @@ export default function VoucherDetail({ voucherId, companyGuid, companyName, onB
         {/* Grand total */}
         <div className="flex justify-between items-center p-4 bg-[#1A1A1A] rounded-xl">
           <span className="text-sm font-semibold text-white/80">Net Amount</span>
-          <span className="text-xl font-bold text-white">{fmt(voucher.amount)}</span>
+          <span className="text-xl font-bold text-white">{fmt(voucher.party_amount ?? voucher.amount)}</span>
         </div>
       </div>
     </div>
