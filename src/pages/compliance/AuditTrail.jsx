@@ -40,7 +40,7 @@ export default function AuditTrail() {
   const [typeFilter, setTypeFilter] = useState('All');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
-  const { selectedCompany, token } = useAuth();
+  const { selectedCompany, token, selectedFY } = useAuth();
   const [myEntries, setMyEntries] = useState([]);
   const [myStats, setMyStats] = useState(null);
   const [myLoading, setMyLoading] = useState(false);
@@ -92,7 +92,7 @@ export default function AuditTrail() {
     if (!selectedCompany?.guid) return;
     setMyLoading(true);
     setMyError(null);
-    fetchAuditTrail({ companyGuid: selectedCompany.guid, status: myFilter === 'all' ? undefined : myFilter, limit: 100 })
+    fetchAuditTrail({ companyGuid: selectedCompany.guid, status: myFilter === 'all' ? undefined : myFilter, limit: 100, ...(selectedFY ? { from: selectedFY.startDate, to: selectedFY.endDate } : {}) })
       .then(res => { if (res?.data) { setMyEntries(res.data.entries || []); setMyStats(res.data.stats); } })
       .catch(e => setMyError(e?.message || 'Failed to load'))
       .finally(() => setMyLoading(false));

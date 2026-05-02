@@ -38,7 +38,7 @@ function fmtAmt(amt) {
 }
 
 export default function AuditTrail() {
-  const { selectedCompany } = useAuth();
+  const { selectedCompany, selectedFY } = useAuth();
   const [entries, setEntries] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -55,6 +55,7 @@ export default function AuditTrail() {
       companyGuid: selectedCompany.guid,
       status: filter === 'all' ? undefined : filter,
       limit: 100,
+      ...(selectedFY ? { from: selectedFY.startDate, to: selectedFY.endDate } : {}),
     })
       .then(res => {
         if (res?.data) {
