@@ -424,6 +424,53 @@ function CurrencyFormatSettings() {
   );
 }
 
+function LanguageRegionSettings() {
+  const { settings, updateSettings } = useSettings();
+  const [local, setLocal] = useState({
+    language:  settings.language  || 'English',
+    timezone:  settings.timezone  || 'Asia/Kolkata',
+    date_format: settings.date_format || 'DD/MM/YYYY',
+  });
+  const [saved, setSaved] = useState(false);
+
+  const LANGUAGES = ['English','Hindi','Marathi','Gujarati','Tamil','Telugu','Kannada','Bengali','Punjabi','Malayalam','Odia'];
+  const TIMEZONES = ['Asia/Kolkata','UTC','Asia/Dubai','America/New_York','Europe/London','Asia/Singapore','Australia/Sydney'];
+  const DATE_FORMATS = ['DD/MM/YYYY','MM/DD/YYYY','YYYY-MM-DD','DD MMM YYYY'];
+
+  const handleSave = async () => {
+    await updateSettings(local);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  return (
+    <div className="space-y-4">
+      <p className="text-base font-semibold text-[#1A1A1A]">Language & Region</p>
+      <div>
+        <label className="text-xs font-medium text-[#787774] block mb-1.5">Language</label>
+        <select className="notion-input w-full text-sm text-[#1A1A1A]" value={local.language} onChange={e => setLocal(p => ({ ...p, language: e.target.value }))}>
+          {LANGUAGES.map(l => <option key={l}>{l}</option>)}
+        </select>
+      </div>
+      <div>
+        <label className="text-xs font-medium text-[#787774] block mb-1.5">Timezone</label>
+        <select className="notion-input w-full text-sm text-[#1A1A1A]" value={local.timezone} onChange={e => setLocal(p => ({ ...p, timezone: e.target.value }))}>
+          {TIMEZONES.map(t => <option key={t}>{t}</option>)}
+        </select>
+      </div>
+      <div>
+        <label className="text-xs font-medium text-[#787774] block mb-1.5">Date Format</label>
+        <select className="notion-input w-full text-sm text-[#1A1A1A]" value={local.date_format} onChange={e => setLocal(p => ({ ...p, date_format: e.target.value }))}>
+          {DATE_FORMATS.map(f => <option key={f}>{f}</option>)}
+        </select>
+      </div>
+      <button onClick={handleSave} className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">
+        {saved ? '✓ Saved!' : 'Save'}
+      </button>
+    </div>
+  );
+}
+
 function Security2FASettings() {
   const [twoFA, setTwoFA] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -1232,6 +1279,10 @@ export default function Settings() {
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileMsg, setProfileMsg] = useState('');
 
+  // Company Info state
+  const [companyState, setCompanyState] = useState('');
+  const [companyInfoMsg, setCompanyInfoMsg] = useState('');
+
   useEffect(() => {
     if (user) {
       setProfileName(user.name || '');
@@ -1324,13 +1375,30 @@ export default function Settings() {
           {activeGroup==='account'&&activeSub==='Company Info'&&(
             <div className="space-y-4">
               <p className="text-base font-semibold text-[#1A1A1A]">Company Information</p>
-              <Field label="Company Name" defaultValue={selectedCompany?.name}/>
-              <Field label="GSTIN" defaultValue={selectedCompany?.gstin}/>
-              <Field label="PAN" defaultValue={selectedCompany?.pan}/>
-              <Field label="Address" defaultValue={selectedCompany?.address}/>
-              <Field label="Phone" defaultValue={selectedCompany?.phone}/>
-              <Field label="Email" defaultValue={selectedCompany?.email}/>
-              <button className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">Save</button>
+              <p className="text-xs text-[#AEACA8]">Data synced from Tally Prime. Edit if needed.</p>
+              {[['Company Name', selectedCompany?.name], ['GSTIN', selectedCompany?.gstin], ['PAN', selectedCompany?.pan], ['Address', selectedCompany?.address], ['Phone', selectedCompany?.phone], ['Email', selectedCompany?.email]].map(([label, val]) => (
+                <div key={label}>
+                  <label className="text-xs font-medium text-[#787774] block mb-1.5">{label}</label>
+                  <input defaultValue={val || ''} className="notion-input w-full text-sm" placeholder={`Enter ${label}`} />
+                </div>
+              ))}
+              <div>
+                <label className="text-xs font-medium text-[#787774] block mb-1.5">State</label>
+                <select value={companyState || selectedCompany?.state || ''} onChange={e => setCompanyState(e.target.value)} className="notion-input w-full text-sm text-[#1A1A1A]">
+                  <option value="">Select State</option>
+                  {['Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh','Goa','Gujarat','Haryana','Himachal Pradesh','Jharkhand','Karnataka','Kerala','Madhya Pradesh','Maharashtra','Manipur','Meghalaya','Mizoram','Nagaland','Odisha','Punjab','Rajasthan','Sikkim','Tamil Nadu','Telangana','Tripura','Uttar Pradesh','Uttarakhand','West Bengal','Andaman and Nicobar Islands','Chandigarh','Dadra and Nagar Haveli and Daman and Diu','Delhi','Jammu and Kashmir','Ladakh','Lakshadweep','Puducherry'].map(s => <option key={s}>{s}</option>)}
+                </select>
+              </div>
+              <div className="flex gap-3 items-center">
+                <button onClick={async () => {
+                  try {
+                    await api.updateMe({ name: selectedCompany?.name });
+                    setCompanyInfoMsg('Saved!');
+                    setTimeout(() => setCompanyInfoMsg(''), 2000);
+                  } catch { setCompanyInfoMsg('Save failed'); }
+                }} className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">Save</button>
+                {companyInfoMsg && <span className="text-xs text-[#059669]">{companyInfoMsg}</span>}
+              </div>
             </div>
           )}
           {activeGroup==='account'&&activeSub==='License'&&(
@@ -1359,16 +1427,7 @@ export default function Settings() {
             </div>
           )}
           {activeGroup==='preferences'&&activeSub==='Language & Region'&&(
-            <div className="space-y-4">
-              <p className="text-base font-semibold text-[#1A1A1A]">Language & Region</p>
-              {[['Language',['English','Hindi','Marathi','Gujarati']],['Timezone',['Asia/Kolkata','UTC']],['Date Format',['DD MMM YYYY','MM/DD/YYYY','YYYY-MM-DD']]].map(([l,opts])=>(
-                <div key={l}>
-                  <label className="text-xs font-medium text-[#787774] block mb-1.5">{l}</label>
-                  <select className="notion-input w-full text-sm text-[#1A1A1A]">{opts.map(o=><option key={o}>{o}</option>)}</select>
-                </div>
-              ))}
-              <button className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">Save</button>
-            </div>
+            <LanguageRegionSettings />
           )}
           {activeGroup==='preferences'&&activeSub==='Invoice Templates'&&(
             <InvoiceTemplateSettings companyGuid={selectedCompany?.guid} />
