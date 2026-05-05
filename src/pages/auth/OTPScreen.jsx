@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, MessageCircle, CheckCircle, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
+import PinModal from '../../components/PinModal';
 
 export default function OTPScreen() {
   const navigate = useNavigate();
@@ -21,6 +22,10 @@ export default function OTPScreen() {
   const [timer, setTimer]               = useState(30);
   const [resendDisabled, setResendDisabled] = useState(true);
   const inputRef = useRef(null);
+
+  // 2FA state
+  const [showPin, setShowPin]       = useState(false);
+  const [preAuthToken, setPreAuth]  = useState('');
 
   useEffect(() => {
     if (timer <= 0) { setResendDisabled(false); return; }
@@ -52,13 +57,21 @@ export default function OTPScreen() {
     setError('');
     try {
       const res = await api.verifyOtp(phone, otpCode, countryCode);
+
+      // ── 2FA required ───────────────────────────────────────────────
+      if (res?.status && res?.data?.requires2FA) {
+        setPreAuth(res.data.pre_auth_token || '');
+        setShowPin(true);
+        setOtp('');
+        return;
+      }
+
+      // ── Normal login ───────────────────────────────────────────────
       if (res?.status && res?.data?.token) {
         await login(res.data.token, { mobileNumber: phone, countryCode, name: res.data.user?.name });
         if (res.data.isPaired) markPaired();
-        // Simple rule: backend says isNewUser (name not set) -> onboarding, else -> dashboard
         navigate(res.data.isNewUser ? '/auth/get-started' : '/');
       } else {
-        // Wrong OTP - show error, do NOT login
         setError(res?.message || 'Invalid OTP. Please try again.');
         setOtp('');
         setTimeout(() => inputRef.current?.focus(), 100);
@@ -208,6 +221,23 @@ export default function OTPScreen() {
           </p>
         </div>
       </div>
+
+      {/* ── 2FA PIN Modal ─────────────────────────────────────── */}
+      <PinModal
+        visible={showPin}
+        phone={phone}
+        preAuthToken={preAuthToken}
+        onSuccess={async (data) => {
+          setShowPin(false);
+          await login(data.token, { mobileNumber: phone, countryCode, name: data.user?.name });
+          if (data.isPaired) markPaired();
+          navigate(data.isNewUser ? '/auth/get-started' : '/');
+        }}
+        onCancel={() => {
+          setShowPin(false);
+          setPreAuth('');
+        }}
+      />
     </div>
   );
 }

@@ -4,14 +4,14 @@ import KPICard from '../../components/KPICard';
 import Table from '../../components/Table';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
+import { useSettings } from '../../contexts/SettingsContext';
 
 const fmtL = n => {
   if (!n || n === 0) return '—';
   if (n >= 10000000) return '₹' + (n / 10000000).toFixed(2) + ' Cr';
   if (n >= 100000)   return '₹' + (n / 100000).toFixed(2) + ' L';
-  return '₹' + n.toLocaleString('en-IN');
+  return formatAmount(n);
 };
-const fmt = n => '₹' + (n || 0).toLocaleString('en-IN');
 
 const recCols = [
   { key: 'name',          label: 'Party Name' },

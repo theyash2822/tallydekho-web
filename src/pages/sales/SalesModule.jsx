@@ -11,8 +11,8 @@ import VoucherDetail from '../../components/VoucherDetail';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 import wsService from '../../services/websocket';
+import { useSettings } from '../../contexts/SettingsContext';
 
-const fmt = n => '₹' + (n || 0).toLocaleString('en-IN');
 const TABS = ['Sales Register', 'Order Register', 'Quotations'];
 
 // All Tally sales-type voucher names
@@ -20,6 +20,8 @@ const SALES_TYPES = ['Sales GST', 'Sales', 'Sales Invoice', 'Retail Invoice', 'T
 const statusVariant = { Paid: 'green', Unpaid: 'red', Partial: 'yellow', Open: 'blue', Converted: 'green', Expired: 'gray', Lost: 'red', 'Fully Invoiced': 'green', 'Partially Invoiced': 'yellow', Closed: 'gray' };
 
 export default function SalesModule() {
+  const { formatAmount, formatAmountCompact, formatDate } = useSettings();
+  const fmt = n => formatAmount(n || 0);
   const [tab, setTab] = useState(0);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');

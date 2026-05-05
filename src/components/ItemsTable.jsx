@@ -3,6 +3,7 @@ import { Plus, Trash2, Package } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { fetchStocks, fetchLedgers } from '../services/api';
 import LiveSearch from './LiveSearch';
+import { useSettings } from '../contexts/SettingsContext';
 
 const TAX_RATES = ['0%', '5%', '12%', '18%', '28%'];
 const UNITS = ['Pcs', 'Kg', 'Ltr', 'Box', 'Mtr', 'Set', 'Nos'];
@@ -10,6 +11,7 @@ const UNITS = ['Pcs', 'Kg', 'Ltr', 'Box', 'Mtr', 'Set', 'Nos'];
 const emptyItem = () => ({ id: Date.now(), name: '', hsn: '', qty: 1, unit: 'Pcs', rate: '', tax: '18%', amount: 0 });
 
 export default function ItemsTable({ warehouse, onWarehouseChange, onItemsChange }) {
+  const { formatAmount, formatAmountCompact, formatDate } = useSettings();
   const [items, setItems] = useState([emptyItem()]);
   const [warehouses, setWarehouses] = useState([]);
   const { selectedCompany } = useAuth();

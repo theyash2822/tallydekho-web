@@ -4,9 +4,9 @@ import KPICard from '../../components/KPICard';
 import Badge from '../../components/Badge';
 import Table from '../../components/Table';
 import Drawer from '../../components/Drawer';
+import { useSettings } from '../../contexts/SettingsContext';
 
 
-const fmt = n => '₹' + n.toLocaleString('en-IN');
 const statusVariant = { Remitted: 'green', Pending: 'yellow', Overdue: 'red' };
 const TAX_TABS = ['TDS','TCS','Import Duty','Export Duty','Excise','VAT','Cess'];
 const kpis = {

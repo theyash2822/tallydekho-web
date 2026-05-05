@@ -8,10 +8,10 @@ import Badge from '../../components/Badge';
 import Table from '../../components/Table';
 import Drawer from '../../components/Drawer';
 import VoucherDetail from '../../components/VoucherDetail';
+import { useSettings } from '../../contexts/SettingsContext';
 // No mock data — show empty state when not paired
 
 
-const fmt = n => '₹' + (n || 0).toLocaleString('en-IN');
 const TABS = ['Purchase Register', 'Order Register'];
 const statusVariant = { Paid: 'green', Unpaid: 'red', Partial: 'yellow', Open: 'blue', 'Fully Received': 'green', Closed: 'gray' };
 const receivedVariant = { Complete: 'green', Partial: 'yellow', Pending: 'red' };
@@ -37,6 +37,8 @@ const orderCols = [
 ];
 
 export default function PurchaseModule() {
+  const { formatAmount, formatAmountCompact, formatDate } = useSettings();
+  const fmt = n => formatAmount(n || 0);
   const [tab, setTab] = useState(0);
   const { selectedCompany, token, selectedFY, isPaired } = useAuth();
   const isDemo = !isPaired;

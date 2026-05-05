@@ -4,9 +4,9 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import KPICard from '../../components/KPICard';
 import Badge from '../../components/Badge';
 import Drawer from '../../components/Drawer';
+import { useSettings } from '../../contexts/SettingsContext';
 
 
-const fmt = n => '₹' + n.toLocaleString('en-IN');
 const statusVariant = { Active: 'green', Expiring: 'yellow', Expired: 'red', Cancelled: 'gray' };
 
 export default function EWayBill() {

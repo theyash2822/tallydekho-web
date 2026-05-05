@@ -35,7 +35,28 @@ const del  = (ep)          => request('DELETE', ep);
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 export const sendOtp  = (mobileNumber, countryCode = '+91') => post('/send-otp',  { mobileNumber, countryCode }, { skipAuth: true });
-export const verifyOtp= (mobileNumber, otp, countryCode = '+91') => post('/verify-otp',{ mobileNumber, otp, countryCode }, { skipAuth: true });
+export const verifyOtp      = (mobileNumber, otp, countryCode = '+91', opts = {}) =>
+  post('/verify-otp', { mobileNumber, otp, countryCode, ...opts }, { skipAuth: true });
+
+// 2FA PIN endpoints
+export const verifyPin  = (pin, preAuthToken) => {
+  return fetch(`${BASE_URL}/verify-pin`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${preAuthToken}` },
+    body: JSON.stringify({ pin }),
+  }).then(r => r.json());
+};
+export const setPin     = (pin) => post('/set-pin', { pin });
+export const removePin  = (pin) => request('DELETE', '/remove-pin', { pin });
+export const resetPin   = (pin, preAuthToken) => {
+  return fetch(`${BASE_URL}/reset-pin`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${preAuthToken}` },
+    body: JSON.stringify({ pin }),
+  }).then(r => r.json());
+};
+export const setBiometric   = (enabled) => request('PATCH', '/set-biometric', { enabled });
+export const get2FAStatus   = () => get('/two-fa-status');
 export const verifyToken = (token)          => post('/verify',    { token }, { skipAuth: true });
 export const submitOnboarding = (body)      => post('/onboarding', body);
 export const fetchMe         = ()           => get('/me');
@@ -148,7 +169,7 @@ export const createStockItemInTally= (b) => tallyRequest('/tally/master/stock-it
 // ─── Default export (object style — matches mobile usage pattern) ─────────────
 const api = {
   // Auth
-  sendOtp, verifyOtp, verifyToken, submitOnboarding, fetchMe, updateMe,
+  sendOtp, verifyOtp, verifyPin, setPin, removePin, resetPin, get2FAStatus, setBiometric, verifyToken, submitOnboarding, fetchMe, updateMe,
   // Pairing
   pairDevice, fetchPairingDetails, updatePairing,
   // Companies

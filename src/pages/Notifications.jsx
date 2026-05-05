@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Bell, AlertTriangle, TrendingUp, CheckCircle, Info, X } from 'lucide-react';
+import { useSettings } from '../contexts/SettingsContext';
 
 const ALL_NOTIFICATIONS = [
   { id:1, title:'GSTR-3B Filing Due',        desc:'GSTR-3B for July 2025 is due in 3 days. 2 mismatches need resolution before filing.', time:'5 mins ago',  tag:'Urgent',   category:'Compliance', color:'#C0392B', icon:AlertTriangle, read:false },

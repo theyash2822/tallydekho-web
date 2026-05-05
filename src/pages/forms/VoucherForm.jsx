@@ -7,10 +7,12 @@ import { useAuth } from '../../contexts/AuthContext';
 import { fetchLedgers } from '../../services/api';
 import LiveSearch from '../../components/LiveSearch';
 import { createPaymentVoucher, createReceiptVoucher, createJournalVoucher, createContraVoucher } from '../../services/api';
+import { useSettings } from '../../contexts/SettingsContext';
 
 const VOUCHER_TYPES = ['Payment', 'Receipt', 'Journal', 'Contra'];
 
 export default function VoucherForm({ onClose }) {
+  const { formatAmount, formatAmountCompact, formatDate } = useSettings();
   const { selectedCompany } = useAuth();
 
   const fetchAllLedgers = useCallback(async (q) => {

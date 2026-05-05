@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FormField, Input, Select, SectionTitle, Toggle } from '../../components/FormField';
 import { CheckCircle } from 'lucide-react';
 import { addToQueue } from '../../services/localQueue';
+import { useSettings } from '../../contexts/SettingsContext';
 
 const GROUPS = [
   'Sundry Debtors', 'Sundry Creditors', 'Bank Accounts', 'Cash in Hand',
@@ -13,6 +14,7 @@ const GROUPS = [
 const REG_TYPES = ['Regular', 'Composition', 'Unregistered', 'Consumer', 'Overseas'];
 
 export default function AddLedgerForm({ onClose }) {
+  const { formatAmount, formatAmountCompact, formatDate } = useSettings();
   const [submitted, setSubmitted] = useState(false);
   const [hasGST, setHasGST] = useState(false);
   const [hasBankDetails, setHasBankDetails] = useState(false);

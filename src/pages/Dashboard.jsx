@@ -11,6 +11,7 @@ import {
   Tooltip, ResponsiveContainer
 } from 'recharts';
 import api from '../services/api';
+import { useSettings } from '../contexts/SettingsContext';
 
 const CUSTOMER_COLORS = ['#1A1A1A', '#0D9488', '#D97706', '#E5484D', '#798692'];
 
@@ -81,6 +82,7 @@ function EmptyState({ paired, message }) {
 }
 
 export default function Dashboard() {
+  const { formatAmount, formatAmountCompact, formatDate } = useSettings();
   const navigate = useNavigate();
   const { isPaired, selectedCompany, selectedFY, loadCompanies, syncVersion } = useAuth();
   const fyLabel = selectedFY?.name ? `FY ${selectedFY.name}` : 'FY 2025-26';
@@ -95,7 +97,7 @@ export default function Dashboard() {
     const num = Number(n);
     if (num >= 10000000) return '₹' + (num / 10000000).toFixed(2) + ' Cr';
     if (num >= 100000)   return '₹' + (num / 100000).toFixed(2) + ' L';
-    return '₹' + num.toLocaleString('en-IN');
+    return formatAmount(num);
   };
 
   const load = () => {

@@ -1,6 +1,5 @@
 import { addToQueue } from '../services/localQueue';
 
-const fmt = n => '₹' + (n || 0).toLocaleString('en-IN');
 
 export default function SummaryFooter({ subtotal = 0, discount = 0, tax = 0, logistics = 0, onSubmit, onDraft, submitLabel = 'Submit', showDraft = true, formType = 'entry', formData = {} }) {
   const grand = subtotal - discount + tax + logistics;

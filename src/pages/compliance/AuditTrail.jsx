@@ -9,8 +9,8 @@ import Drawer from '../../components/Drawer';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 import wsService from '../../services/websocket';
+import { useSettings } from '../../contexts/SettingsContext';
 
-const fmt = n => '₹' + Math.abs(n || 0).toLocaleString('en-IN');
 const actionVariant = { Created: 'green', Modified: 'yellow', Deleted: 'red' };
 const TABS = ['Day Book', 'My Entries'];
 
@@ -32,6 +32,8 @@ const getVoucherTypeLabel = (type) => {
 };
 
 export default function AuditTrail() {
+  const { formatAmount, formatAmountCompact, formatDate } = useSettings();
+  const fmt = n => formatAmount(n || 0);
   const [tab, setTab] = useState(0);
   const [drawer, setDrawer] = useState(null);
   const [vouchers, setVouchers] = useState([]);

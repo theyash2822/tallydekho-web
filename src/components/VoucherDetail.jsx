@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Printer, Share2, Check } from 'lucide-react';
 import api from '../services/api';
+import { useSettings } from '../contexts/SettingsContext';
 
 const fmt = n => '₹' + Math.abs(parseFloat(n) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -16,6 +17,7 @@ const typeColor = (type) => {
 };
 
 export default function VoucherDetail({ voucherId, companyGuid, companyName, onBack }) {
+  const { formatAmount, formatAmountCompact, formatDate } = useSettings();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

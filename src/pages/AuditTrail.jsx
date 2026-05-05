@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { fetchAuditTrail, retryAuditEntry } from '../services/api';
 import {
+import { useSettings } from '../contexts/SettingsContext';
   CheckCircle2, Clock, WifiOff, XCircle, RefreshCw,
   AlertCircle, RotateCcw, ChevronDown, ChevronUp, Filter
 } from 'lucide-react';
@@ -23,6 +24,7 @@ const TYPE_LABELS = {
 };
 
 function fmtTime(epoch) {
+  const { formatAmount, formatAmountCompact, formatDate } = useSettings();
   if (!epoch) return '—';
   return new Date(epoch * 1000).toLocaleString('en-IN', {
     day: '2-digit', month: 'short', year: 'numeric',

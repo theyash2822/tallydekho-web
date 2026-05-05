@@ -4,9 +4,9 @@ import api from '../../services/api';
 import { TrendingUp, ChevronDown, ChevronRight } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import KPICard from '../../components/KPICard';
+import { useSettings } from '../../contexts/SettingsContext';
 // No mock data
 
-const fmt = n => '₹' + n.toLocaleString('en-IN');
 const fmtL = n => '₹' + (n / 100000).toFixed(1) + 'L';
 const TABS = ['Profit & Loss', 'Balance Sheet', 'Trial Balance'];
 const COLORS = ['#1A1A1A','#1A1A1A','#798692','#9FA9B1','#B2BAC1'];
@@ -40,6 +40,7 @@ function ExpandRow({ label, amount, children, highlight }) {
 }
 
 export default function Reports() {
+  const { formatAmount, formatAmountCompact, formatDate } = useSettings();
   const [tab, setTab] = useState(0);
   const { selectedCompany, token, selectedFY, isPaired } = useAuth();
   const [plReport, setPlReport] = useState(null);

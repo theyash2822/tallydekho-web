@@ -6,8 +6,8 @@ import Badge from '../../components/Badge';
 import Table from '../../components/Table';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
+import { useSettings } from '../../contexts/SettingsContext';
 
-const fmt  = n => '₹' + (n || 0).toLocaleString('en-IN');
 const fmtL = n => {
   if (!n || n === 0) return '—';
   if (n >= 100000) return '₹' + (n / 100000).toFixed(2) + ' L';
@@ -26,6 +26,7 @@ const cols = [
 ];
 
 export default function ExpensesModule() {
+  const { formatAmount, formatAmountCompact, formatDate } = useSettings();
   const { selectedCompany, selectedFY, isPaired } = useAuth();
   const [data, setData]       = useState(null);
   const [loading, setLoading] = useState(true);
@@ -122,7 +123,7 @@ export default function ExpensesModule() {
                   <Pie data={categories} dataKey="amount" nameKey="name" cx="50%" cy="50%" innerRadius={40} outerRadius={70}>
                     {categories.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} stroke="none" />)}
                   </Pie>
-                  <Tooltip formatter={v => ['₹' + v.toLocaleString('en-IN')]} contentStyle={{ fontSize: 11, borderRadius: 8 }} />
+                  <Tooltip formatter={v => [formatAmount(v)]} contentStyle={{ fontSize: 11, borderRadius: 8 }} />
                 </PieChart>
               </ResponsiveContainer>
               <div className="space-y-2 mt-2">

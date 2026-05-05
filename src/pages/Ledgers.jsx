@@ -7,8 +7,8 @@ import Drawer from '../components/Drawer';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
 import VoucherDetail from '../components/VoucherDetail';
+import { useSettings } from '../contexts/SettingsContext';
 
-const fmt = n => '₹' + Math.abs(n || 0).toLocaleString('en-IN');
 const LEDGER_TABS = ['Details', 'Vouchers', 'Balance Trend', 'GST Info'];
 
 const PAGE_SIZE_V = 15;

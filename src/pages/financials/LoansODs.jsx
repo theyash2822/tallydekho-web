@@ -4,9 +4,9 @@ import KPICard from '../../components/KPICard';
 import Badge from '../../components/Badge';
 import Table from '../../components/Table';
 import Drawer from '../../components/Drawer';
+import { useSettings } from '../../contexts/SettingsContext';
 
 
-const fmt = n => '₹' + n.toLocaleString('en-IN');
 const statusVariant = { Active: 'green', Closed: 'gray', NPA: 'red' };
 const emiVariant = { Paid: 'green', Due: 'yellow', Upcoming: 'blue', Overdue: 'red' };
 const TABS = ['Loans Register', 'OD Accounts', 'EMI Calendar'];
@@ -27,6 +27,8 @@ function buildCalendar() {
 const emiDays = { 15: { label: 'HDFC EMI', status: 'Due', amount: 110000 }, 20: { label: 'Axis EMI', status: 'Upcoming', amount: 18500 } };
 
 export default function LoansODs() {
+  const { formatAmount, formatAmountCompact, formatDate } = useSettings();
+  const fmt = n => formatAmount(n || 0);
   const [tab, setTab] = useState(0);
   const [drawer, setDrawer] = useState(null);
   const calendar = buildCalendar();

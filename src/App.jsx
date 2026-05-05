@@ -1,6 +1,7 @@
 import { lazy, Suspense, Component } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { SettingsProvider } from './contexts/SettingsContext';
 import AppShell from './layouts/AppShell';
 
 const Login = lazy(() => import('./pages/auth/Login'));
@@ -116,7 +117,9 @@ export default function App() {
     <BrowserRouter>
       <ErrorBoundary>
         <AuthProvider>
-          <AppRoutes />
+          <SettingsProvider>
+            <AppRoutes />
+          </SettingsProvider>
         </AuthProvider>
       </ErrorBoundary>
     </BrowserRouter>

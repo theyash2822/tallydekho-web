@@ -3,8 +3,8 @@ import { Search, BookOpen, Package, TrendingUp, ShoppingCart, X, ArrowRight } fr
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
+import { useSettings } from '../contexts/SettingsContext';
 
-const fmt = n => n ? '₹' + n.toLocaleString('en-IN') : '';
 
 const QUICK_NAV = [
   { label: 'Sales',      path: '/sales',     icon: TrendingUp,  color: '#1A1A1A' },

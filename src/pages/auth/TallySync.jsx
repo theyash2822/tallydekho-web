@@ -69,7 +69,7 @@ export default function TallySyncScreen() {
             <p className="text-white/60 text-xs font-semibold uppercase tracking-widest">How pairing works</p>
             {[
               { icon: Monitor, step: '1', text: 'Open the TallyDekho Desktop App on the same PC as Tally' },
-              { icon: Zap, step: '2', text: 'Find the 6-digit pairing code in the app's Pairing Panel' },
+              { icon: Zap, step: '2', text: 'Find the 6-digit pairing code in the app&#39;s Pairing Panel' },
               { icon: Smartphone, step: '3', text: 'Enter the code here — your data will sync automatically' },
             ].map(({ icon: Icon, step: s, text }) => (
               <div key={s} className="flex items-start gap-4">

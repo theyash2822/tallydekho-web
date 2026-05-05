@@ -8,8 +8,8 @@ import Drawer from '../../components/Drawer';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 import wsService from '../../services/websocket';
+import { useSettings } from '../../contexts/SettingsContext';
 
-const fmt = n => '₹' + (n || 0).toLocaleString('en-IN');
 const TABS = ['Items List', 'Stock Alerts'];
 
 const statusVariant = { Normal: 'green', 'Low Stock': 'yellow', 'Out of Stock': 'red' };
@@ -24,6 +24,8 @@ const itemCols = [
 ];
 
 export default function InventoryModule() {
+  const { formatAmount, formatAmountCompact, formatDate } = useSettings();
+  const fmt = n => formatAmount(n || 0);
   const [tab, setTab] = useState(0);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');

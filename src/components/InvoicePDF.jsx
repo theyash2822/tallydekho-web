@@ -1,6 +1,7 @@
 // Invoice PDF — 3 professional templates: TallyClassic (default), Modern, Minimal
 import { useRef } from 'react';
 import { X, Printer, Download } from 'lucide-react';
+import { formatAmount as _formatAmount, formatAmountCompact as _formatAmountCompact, DEFAULT_FORMAT_SETTINGS } from '../utils/format';
 
 const fmt  = n => '₹' + (Math.abs(n) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const fmtQ = (qty, unit) => `${qty || 0}${unit ? ' ' + unit : ''}`;

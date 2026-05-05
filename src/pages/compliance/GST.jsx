@@ -6,8 +6,8 @@ import Table from '../../components/Table';
 import Drawer from '../../components/Drawer';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
+import { useSettings } from '../../contexts/SettingsContext';
 
-const fmt = n => '₹' + n.toLocaleString('en-IN');
 const statusVariant = { Filed: 'green', Pending: 'yellow', Matched: 'green', Unmatched: 'red', Suggested: 'yellow', Rejected: 'red' };
 const TABS = ['GSTR-1', 'GSTR-2A Recon', 'GSTR-3B', 'GSTR-4', 'GSTR-6', 'GSTR-9'];
 
@@ -19,6 +19,7 @@ const gstr3b = [
 ];
 
 export default function GST() {
+  const { formatAmount, formatAmountCompact, formatDate } = useSettings();
   const [tab, setTab] = useState(0);
   const [drawer, setDrawer] = useState(null);
   const { selectedCompany, selectedFY, isPaired } = useAuth();
@@ -39,7 +40,7 @@ export default function GST() {
 
   const gstSummary = gstData?.summary || {};
   const fyLabel    = selectedFY?.name ? `FY ${selectedFY.name}` : 'FY 2025-26';
-  const fmtL = n => { if (!n || n === 0) return '—'; if (n >= 100000) return '₹' + (n / 100000).toFixed(2) + ' L'; return '₹' + n.toLocaleString('en-IN'); };
+  const fmtL = n => { if (!n || n === 0) return '—'; if (n >= 100000) return '₹' + (n / 100000).toFixed(2) + ' L'; return formatAmount(n); };
 
   const gstr1Cols = [
     { key: 'invoice',  label: 'Invoice No', render: v => <span className="font-mono text-xs text-[#1A1A1A] font-semibold">{v}</span> },

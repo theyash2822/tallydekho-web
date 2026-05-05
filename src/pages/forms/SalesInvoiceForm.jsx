@@ -9,10 +9,12 @@ import { useAuth } from '../../contexts/AuthContext';
 import { createSalesInvoice, fetchLedgers, fetchStocks, fetchParties as fetchPartiesAPI } from '../../services/api';
 import InvoicePDF from '../../components/InvoicePDF';
 import LiveSearch from '../../components/LiveSearch';
+import { useSettings } from '../../contexts/SettingsContext';
 
 const PAYMENT_TERMS = ['Paid / Due on Receipt', '15 Days', '30 Days', 'Custom'];
 
 export default function SalesInvoiceForm({ onClose }) {
+  const { formatAmount, formatAmountCompact, formatDate } = useSettings();
   const { selectedCompany } = useAuth();
 
   // Live search fetch functions using real company data

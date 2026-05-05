@@ -8,8 +8,8 @@ import Drawer from '../../components/Drawer';
 // No mock data
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
+import { useSettings } from '../../contexts/SettingsContext';
 
-const fmt = n => '₹' + (n || 0).toLocaleString('en-IN');
 const TABS = ['Payments', 'Receipts'];
 const statusVariant = { Cleared: 'green', Pending: 'yellow', Reversed: 'red' };
 

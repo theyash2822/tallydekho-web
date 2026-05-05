@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Plus, Trash2, Truck } from 'lucide-react';
+import { useSettings } from '../contexts/SettingsContext';
 
 const emptyEntry = () => ({ id: Date.now(), type: 'Courier', amount: '', tracking: '', remarks: '' });
 
 export default function LogisticsSection({ onLogisticsChange }) {
+  const { formatAmount, formatAmountCompact, formatDate } = useSettings();
   const [entries, setEntries] = useState([]);
   const [taxRate, setTaxRate] = useState('18%');
   const [show, setShow] = useState(false);

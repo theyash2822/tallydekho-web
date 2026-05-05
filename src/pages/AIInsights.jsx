@@ -4,8 +4,8 @@ import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
+import { useSettings } from '../contexts/SettingsContext';
 
-const fmt = n => '₹' + Math.abs(n || 0).toLocaleString('en-IN');
 const fmtL = n => '₹' + (Math.abs(n) / 100000).toFixed(1) + 'L';
 
 export default function AIInsights() {

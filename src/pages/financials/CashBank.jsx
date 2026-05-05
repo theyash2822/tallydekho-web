@@ -5,8 +5,8 @@ import Badge from '../../components/Badge';
 import Table from '../../components/Table';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
+import { useSettings } from '../../contexts/SettingsContext';
 
-const fmt  = n => '₹' + Math.abs(n || 0).toLocaleString('en-IN');
 const fmtL = n => {
   if (!n || n === 0) return '—';
   if (n >= 100000) return '₹' + (n / 100000).toFixed(2) + ' L';
