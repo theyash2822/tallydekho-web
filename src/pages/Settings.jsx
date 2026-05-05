@@ -573,7 +573,7 @@ function Stepper({ value, onChange, min = 0, max = 999, label }) {
 
 // ─── Helper: Channel Checkboxes ───────────────────────────────────────
 function ChannelCheckboxes({ value, onChange }) {
-  const channels = ['Push', 'Email', 'WhatsApp', 'SMS'];
+  const channels = ['Email', 'WhatsApp', 'SMS']; // Push removed — push is for app users only, not client reminders
   return (
     <div className="flex gap-2 flex-wrap">
       {channels.map(ch => {
@@ -602,7 +602,7 @@ function LowStockExpirySettings() {
   const [alertBefore, setAlertBefore] = useState(stored.alertBefore || '15 Days');
   const [trackedOnly, setTrackedOnly] = useState(stored.trackedOnly ?? true);
   const [groupByWarehouse, setGroupByWarehouse] = useState(stored.groupByWarehouse ?? false);
-  const [channels, setChannels] = useState(stored.channels || ['Push', 'Email']);
+  const [channels, setChannels] = useState((stored.channels || ['Email']).filter(c => c !== 'Push'));
   const [frequency, setFrequency] = useState(stored.frequency || 'Daily');
   const [scheduleTime, setScheduleTime] = useState(stored.scheduleTime || '05:00 PM');
   const [saved, setSaved] = useState(false);
@@ -697,14 +697,14 @@ function ComplianceRemindersSettings() {
   const [gstr1Days, setGstr1Days] = useState(stored.gstr1Days ?? 5);
   const [gstr3bDays, setGstr3bDays] = useState(stored.gstr3bDays ?? 3);
   const [autoPauseNoSales, setAutoPauseNoSales] = useState(stored.autoPauseNoSales ?? false);
-  const [gstChannels, setGstChannels] = useState(stored.gstChannels || ['Push', 'Email']);
+  const [gstChannels, setGstChannels] = useState((stored.gstChannels || ['Email']).filter(c => c !== 'Push'));
   const [irnDays, setIrnDays] = useState(stored.irnDays ?? 2);
-  const [irnChannels, setIrnChannels] = useState(stored.irnChannels || ['Push']);
+  const [irnChannels, setIrnChannels] = useState((stored.irnChannels || ['Email']).filter(c => c !== 'Push'));
   const [ewbDays, setEwbDays] = useState(stored.ewbDays ?? 1);
-  const [ewbChannels, setEwbChannels] = useState(stored.ewbChannels || ['Push']);
+  const [ewbChannels, setEwbChannels] = useState((stored.ewbChannels || ['Email']).filter(c => c !== 'Push'));
   const [tdsDays, setTdsDays] = useState(stored.tdsDays ?? 3);
   const [vatDays, setVatDays] = useState(stored.vatDays ?? 5);
-  const [taxChannels, setTaxChannels] = useState(stored.taxChannels || ['Push', 'Email']);
+  const [taxChannels, setTaxChannels] = useState((stored.taxChannels || ['Email']).filter(c => c !== 'Push'));
   const [saved, setSaved] = useState(false);
 
   const save = () => {
@@ -777,8 +777,8 @@ function PaymentRemindersSettings() {
   const stored = (() => { try { return JSON.parse(localStorage.getItem('paymentReminders') || '{}'); } catch { return {}; } })();
   const [stopBelow, setStopBelow] = useState(stored.stopBelow ?? 500);
   const [reminders, setReminders] = useState(stored.reminders || [
-    { id: 1, name: 'Reminder 1', enabled: true, days: 3, time: '09:00 AM', onDueDate: false, channels: ['Push', 'Email'], exceptions: [] },
-    { id: 2, name: 'Reminder 2', enabled: true, days: 7, time: '10:00 AM', onDueDate: false, channels: ['Push'], exceptions: [] },
+    { id: 1, name: 'Reminder 1', enabled: true, days: 3, time: '09:00 AM', onDueDate: false, channels: ['WhatsApp', 'Email'], exceptions: [] },
+    { id: 2, name: 'Reminder 2', enabled: true, days: 7, time: '10:00 AM', onDueDate: false, channels: ['WhatsApp'], exceptions: [] },
   ]);
   const [expanded, setExpanded] = useState(null);
   const [exceptionInput, setExceptionInput] = useState({});
@@ -789,7 +789,7 @@ function PaymentRemindersSettings() {
   const addReminder = () => {
     if (reminders.length >= 4) return;
     const id = Date.now();
-    setReminders(r => [...r, { id, name: `Reminder ${r.length + 1}`, enabled: true, days: 5, time: '09:00 AM', onDueDate: false, channels: ['Push'], exceptions: [] }]);
+    setReminders(r => [...r, { id, name: `Reminder ${r.length + 1}`, enabled: true, days: 5, time: '09:00 AM', onDueDate: false, channels: ['WhatsApp'], exceptions: [] }]);
   };
 
   const removeReminder = (id) => setReminders(r => r.filter(rem => rem.id !== id));
