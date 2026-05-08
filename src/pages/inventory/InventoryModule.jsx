@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Package, AlertTriangle, Warehouse, Search, RefreshCw } from 'lucide-react';
+const fmt = n => n == null ? '—' : '₹' + Math.abs(Number(n)).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import KPICard from '../../components/KPICard';
 import Badge from '../../components/Badge';
