@@ -15,6 +15,7 @@ const kpis = {
   TCS:[{t:'Collected',v:'₹18,200',a:'#1A1A1A'},{t:'Remitted',v:'₹18,200',a:'#2D7D46'},{t:'Pending Pay',v:'—',a:'#F59E0B'},{t:'Late Fee',v:'—',a:'#787774'}],
 };
 const lateChallans = [{party:'IT Services Co.',due:'07 Jul 2025',amount:9500,daysLate:3},{party:'Sunrise Electricals',due:'07 Jul 2025',amount:3000,daysLate:3}];
+const tdsData = []; // populated from backend API when wired
 const tdsCols = [
   {key:'date',label:'Date'},
   {key:'voucher',label:'Voucher',render:v=><span className="font-mono text-xs text-[#787774]">{v}</span>},

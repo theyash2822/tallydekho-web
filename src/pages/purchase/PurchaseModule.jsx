@@ -40,7 +40,6 @@ const orderCols = [
 
 export default function PurchaseModule() {
   const { formatAmount, formatAmountCompact, formatDate } = useSettings();
-  const fmt = n => formatAmount(n || 0);
   const [tab, setTab] = useState(0);
   const { selectedCompany, token, selectedFY, isPaired } = useAuth();
   const isDemo = !isPaired;

@@ -12,6 +12,8 @@ const fmt = n => n == null ? '—' : '₹' + Math.abs(Number(n)).toLocaleString(
 const statusVariant = { Filed: 'green', Pending: 'yellow', Matched: 'green', Unmatched: 'red', Suggested: 'yellow', Rejected: 'red' };
 const TABS = ['GSTR-1', 'GSTR-2A Recon', 'GSTR-3B', 'GSTR-4', 'GSTR-6', 'GSTR-9'];
 
+const gstr1Data = []; // populated from backend API when wired
+const gstr2aData = []; // populated from backend API when wired
 const gstr3b = [
   { section: '3.1(a) – Outward Taxable Supplies', taxable: 3865254, igst: 0,    cgst: 257617, sgst: 257617 },
   { section: '3.1(b) – Zero Rated Supplies',       taxable: 0,       igst: 0,    cgst: 0,      sgst: 0 },

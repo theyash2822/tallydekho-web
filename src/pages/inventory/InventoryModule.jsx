@@ -27,7 +27,6 @@ const itemCols = [
 
 export default function InventoryModule() {
   const { formatAmount, formatAmountCompact, formatDate } = useSettings();
-  const fmt = n => formatAmount(n || 0);
   const [tab, setTab] = useState(0);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
