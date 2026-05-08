@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Receipt, AlertTriangle } from 'lucide-react';
+const fmt = n => n == null ? '—' : '₹' + Math.abs(Number(n)).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 import KPICard from '../../components/KPICard';
 import Badge from '../../components/Badge';
 import Table from '../../components/Table';

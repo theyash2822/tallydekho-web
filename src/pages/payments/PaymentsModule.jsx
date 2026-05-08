@@ -9,6 +9,7 @@ import Drawer from '../../components/Drawer';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 import { useSettings } from '../../contexts/SettingsContext';
+const fmt = n => n == null ? '—' : '₹' + Math.abs(Number(n)).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const TABS = ['Payments', 'Receipts'];
 const statusVariant = { Cleared: 'green', Pending: 'yellow', Reversed: 'red' };
