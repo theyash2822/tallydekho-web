@@ -1,4 +1,5 @@
 import { addToQueue } from '../services/localQueue';
+const fmt = n => n == null ? '—' : '₹' + Math.abs(Number(n)).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 
 export default function SummaryFooter({ subtotal = 0, discount = 0, tax = 0, logistics = 0, onSubmit, onDraft, submitLabel = 'Submit', showDraft = true, formType = 'entry', formData = {} }) {

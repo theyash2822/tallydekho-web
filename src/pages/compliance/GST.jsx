@@ -7,6 +7,7 @@ import Drawer from '../../components/Drawer';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 import { useSettings } from '../../contexts/SettingsContext';
+const fmt = n => n == null ? '—' : '₹' + Math.abs(Number(n)).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const statusVariant = { Filed: 'green', Pending: 'yellow', Matched: 'green', Unmatched: 'red', Suggested: 'yellow', Rejected: 'red' };
 const TABS = ['GSTR-1', 'GSTR-2A Recon', 'GSTR-3B', 'GSTR-4', 'GSTR-6', 'GSTR-9'];

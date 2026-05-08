@@ -5,6 +5,7 @@ import { TrendingUp, ChevronDown, ChevronRight } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import KPICard from '../../components/KPICard';
 import { useSettings } from '../../contexts/SettingsContext';
+const fmt = n => n == null ? '—' : '₹' + Math.abs(Number(n)).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 // No mock data
 
 const fmtL = n => '₹' + (n / 100000).toFixed(1) + 'L';

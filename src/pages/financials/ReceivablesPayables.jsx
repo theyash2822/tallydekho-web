@@ -5,6 +5,7 @@ import Table from '../../components/Table';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 import { useSettings } from '../../contexts/SettingsContext';
+const fmt = n => n == null ? '—' : '₹' + Math.abs(Number(n)).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const fmtL = n => {
   if (!n || n === 0) return '—';

@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
 import { useSettings } from '../contexts/SettingsContext';
-
 const fmtL = n => '₹' + (Math.abs(n) / 100000).toFixed(1) + 'L';
+const fmt = n => n == null ? '—' : '₹' + Math.abs(Number(n)).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function AIInsights() {
   const navigate = useNavigate();

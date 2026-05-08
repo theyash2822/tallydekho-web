@@ -9,6 +9,8 @@ import { useSettings } from '../../contexts/SettingsContext';
 
 
 const statusVariant = { Active: 'green', Expiring: 'yellow', Expired: 'red', Cancelled: 'gray' };
+const ewbPerDay = [];
+const ewayBills = [];
 
 export default function EWayBill() {
   const [drawer, setDrawer] = useState(null);
