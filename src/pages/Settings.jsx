@@ -162,58 +162,211 @@ const VOUCHER_FORMATS = [
   },
 ];
 
-function VoucherConfigSettings({ companyGuid }) {
-  const [selected, setSelected] = useState(() => {
-    try { return localStorage.getItem(`voucher_format_${companyGuid}`) || 'tally_default'; } catch { return 'tally_default'; }
-  });
-  const [saved, setSaved] = useState(false);
+// ── Voucher Configuration (mirrors mobile voucher-config.tsx) ─────────────────
+const VOUCHER_TYPES_WEB = [
+  { id: 'sales_inv',      label: 'Sales Invoice',    desc: 'Standard GST tax invoice for sales' },
+  { id: 'purchase_inv',  label: 'Purchase Invoice',  desc: 'Purchase invoice from supplier' },
+  { id: 'sales_order',   label: 'Sales Order',       desc: 'Pre-invoice sales commitment' },
+  { id: 'purchase_order',label: 'Purchase Order',    desc: 'Purchase order to supplier' },
+  { id: 'quotation',     label: 'Quotation',         desc: 'Price quotation for customer' },
+  { id: 'credit_note',   label: 'Credit Note',       desc: 'Credit adjustment for returned goods' },
+  { id: 'debit_note',    label: 'Debit Note',        desc: 'Debit adjustment for returns to supplier' },
+  { id: 'delivery_note', label: 'Delivery Note',     desc: 'Dispatch / delivery confirmation' },
+];
+const DEFAULT_TERMS_WEB = {
+  sales_inv:      ['Payment due within 30 days of invoice date.', 'Goods once sold will not be returned without prior approval.'],
+  purchase_inv:   ['All payments subject to receipt and verification of goods.'],
+  sales_order:    ['Order confirmation required within 48 hours.', 'Prices valid for 7 days.'],
+  purchase_order: ['Delivery must match PO specifications exactly.'],
+  quotation:      ['This quotation is valid for 15 days from issue date.'],
+  credit_note:    ['Credit to be adjusted against next invoice.'],
+  debit_note:     ['Debit note raised against purchase invoice reference.'],
+  delivery_note:  ['Goods dispatched as per order specifications.'],
+};
+const makeDefaultWeb = (id) => ({ format: 1, qrEnabled: false, qrImage: null, terms: DEFAULT_TERMS_WEB[id] || [] });
 
-  const save = () => {
-    try { localStorage.setItem(`voucher_format_${companyGuid}`, selected); } catch {}
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+function VoucherConfigSettings() {
+  const [configs, setConfigs] = useState(() =>
+    Object.fromEntries(VOUCHER_TYPES_WEB.map(v => [v.id, makeDefaultWeb(v.id)]))
+  );
+  const [expanded, setExpanded] = useState('sales_inv');
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const qrInputRef = useRef({});
+
+  // Load from backend
+  useEffect(() => {
+    api.getUserSettings?.().then(r => {
+      const sc = r?.data?.voucher_config;
+      if (sc) {
+        const parsed = typeof sc === 'string' ? JSON.parse(sc) : sc;
+        setConfigs(prev => {
+          const m = { ...prev };
+          Object.keys(parsed).forEach(k => { if (m[k]) m[k] = { ...m[k], ...parsed[k] }; });
+          return m;
+        });
+      }
+    }).catch(() => {});
+  }, []);
+
+  const update = (id, key, val) => { setConfigs(p => ({ ...p, [id]: { ...p[id], [key]: val } })); setIsDirty(true); };
+  const updateTerm = (id, i, text) => { setConfigs(p => ({ ...p, [id]: { ...p[id], terms: p[id].terms.map((t, j) => j === i ? text : t) } })); setIsDirty(true); };
+  const removeTerm = (id, i) => { setConfigs(p => ({ ...p, [id]: { ...p[id], terms: p[id].terms.filter((_, j) => j !== i) } })); setIsDirty(true); };
+  const addTerm = (id) => { setConfigs(p => ({ ...p, [id]: { ...p[id], terms: [...p[id].terms, ''] } })); setIsDirty(true); };
+
+  const handleQRUpload = (id, e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => { update(id, 'qrImage', ev.target.result); };
+    reader.readAsDataURL(file);
   };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await api.updateUserSettings({ voucher_config: configs });
+      setSaved(true); setIsDirty(false);
+      setTimeout(() => setSaved(false), 2500);
+    } catch { alert('Save failed. Please try again.'); }
+    finally { setSaving(false); }
+  };
+
+  const FORMAT_OPTIONS = [
+    { id: 1, label: 'Classic', desc: 'Traditional Tally-style layout. Logo left, company details right.' },
+    { id: 2, label: 'Modern', desc: 'Dark header bar, clean two-column layout.' },
+    { id: 3, label: 'Detailed', desc: 'Split header with stamp area. Maximum info density.' },
+  ];
 
   return (
     <div className="space-y-5">
-      <div>
-        <p className="text-base font-semibold text-[#1A1A1A]">Voucher Number Format</p>
-        <p className="text-xs text-[#787774] mt-1">Choose how voucher numbers are displayed. Tally Prime controls the actual numbering — this affects display format only.</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-base font-semibold text-[#1A1A1A]">Voucher Configuration</p>
+          <p className="text-xs text-[#787774] mt-0.5">Set PDF format, QR code, and terms per voucher type.</p>
+        </div>
+        <button
+          onClick={handleSave}
+          disabled={saving || !isDirty}
+          className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors disabled:opacity-40"
+        >
+          {saving ? 'Saving...' : saved ? '✓ Saved!' : 'Save All'}
+        </button>
       </div>
-      <div className="space-y-3">
-        {VOUCHER_FORMATS.map(fmt => (
-          <div
-            key={fmt.id}
-            onClick={() => setSelected(fmt.id)}
-            className={`cursor-pointer rounded-xl border-2 p-4 transition-all ${
-              selected === fmt.id ? 'border-[#1A1A1A] bg-[#F5F4EF]' : 'border-[#D4D3CE] bg-white hover:border-[#9FA9B1]'
-            }`}
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-[#1A1A1A]">{fmt.name}</span>
-                  {fmt.badge && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#1A1A1A] text-white tracking-wide">{fmt.badge}</span>}
+
+      <div className="space-y-2">
+        {VOUCHER_TYPES_WEB.map(vt => {
+          const cfg = configs[vt.id];
+          const isOpen = expanded === vt.id;
+          return (
+            <div key={vt.id} className="border border-[#D4D3CE] rounded-xl overflow-hidden">
+              {/* Header */}
+              <button
+                onClick={() => setExpanded(isOpen ? null : vt.id)}
+                className="w-full flex items-center justify-between px-4 py-3 hover:bg-[#F5F4EF] transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-semibold text-[#1A1A1A]">{vt.label}</span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#ECEEEF] text-[#787774]">Format {cfg.format}</span>
+                  {cfg.qrEnabled && <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#E8F5ED] text-[#2D7D46]">QR On</span>}
                 </div>
-                <p className="text-xs text-[#787774] mt-1">{fmt.desc}</p>
-                <div className="flex gap-2 mt-2 flex-wrap">
-                  {fmt.examples.map(e => (
-                    <span key={e} className="px-2 py-0.5 rounded-md bg-white border border-[#D4D3CE] text-[10px] font-mono text-[#1A1A1A]">{e}</span>
-                  ))}
-                </div>
-              </div>
-              {selected === fmt.id && (
-                <div className="w-5 h-5 rounded-full bg-[#1A1A1A] flex items-center justify-center flex-shrink-0 ml-3">
-                  <Check size={12} className="text-white" />
+                <span className="text-[#AEACA8] text-xs">{isOpen ? '▲' : '▼'}</span>
+              </button>
+
+              {isOpen && (
+                <div className="px-4 pb-4 space-y-4 border-t border-[#ECEEEF]">
+                  {/* Format selection */}
+                  <div className="pt-3">
+                    <p className="text-xs font-semibold text-[#787774] uppercase tracking-wide mb-2">PDF Format</p>
+                    <div className="grid grid-cols-3 gap-2">
+                      {FORMAT_OPTIONS.map(f => (
+                        <div
+                          key={f.id}
+                          onClick={() => update(vt.id, 'format', f.id)}
+                          className={`cursor-pointer rounded-xl border-2 p-3 transition-all ${
+                            cfg.format === f.id ? 'border-[#1A1A1A] bg-[#F5F4EF]' : 'border-[#D4D3CE] bg-white hover:border-[#9FA9B1]'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-xs font-semibold text-[#1A1A1A]">{f.label}</span>
+                            {cfg.format === f.id && <div className="w-4 h-4 rounded-full bg-[#1A1A1A] flex items-center justify-center"><Check size={10} className="text-white" /></div>}
+                          </div>
+                          <p className="text-[10px] text-[#787774]">{f.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* QR Code */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-xs font-semibold text-[#787774] uppercase tracking-wide">Payment QR Code</p>
+                      <button
+                        onClick={() => update(vt.id, 'qrEnabled', !cfg.qrEnabled)}
+                        className={`w-9 h-5 rounded-full transition-colors relative ${
+                          cfg.qrEnabled ? 'bg-[#1A1A1A]' : 'bg-[#D4D3CE]'
+                        }`}
+                      >
+                        <div className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-transform ${
+                          cfg.qrEnabled ? 'translate-x-4' : 'translate-x-0.5'
+                        }`} />
+                      </button>
+                    </div>
+                    {cfg.qrEnabled && (
+                      <div className="flex items-center gap-3">
+                        <div
+                          onClick={() => qrInputRef.current[vt.id]?.click()}
+                          className="w-16 h-16 rounded-lg border-2 border-dashed border-[#D4D3CE] flex items-center justify-center cursor-pointer hover:border-[#1A1A1A] overflow-hidden bg-[#F5F4EF]"
+                        >
+                          {cfg.qrImage
+                            ? <img src={cfg.qrImage} alt="QR" className="w-full h-full object-contain" />
+                            : <span className="text-[#AEACA8] text-xs text-center leading-tight">Upload QR</span>
+                          }
+                        </div>
+                        <div className="space-y-1">
+                          <button onClick={() => qrInputRef.current[vt.id]?.click()} className="text-xs text-[#1A1A1A] underline">
+                            {cfg.qrImage ? 'Change QR image' : 'Upload QR image'}
+                          </button>
+                          <p className="text-[10px] text-[#AEACA8]">Shows in PDF footer</p>
+                          {cfg.qrImage && <button onClick={() => update(vt.id, 'qrImage', null)} className="text-[10px] text-[#C0392B]">Remove</button>}
+                        </div>
+                        <input
+                          ref={el => qrInputRef.current[vt.id] = el}
+                          type="file" accept="image/*" className="hidden"
+                          onChange={e => handleQRUpload(vt.id, e)}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Terms & Conditions */}
+                  <div>
+                    <p className="text-xs font-semibold text-[#787774] uppercase tracking-wide mb-2">Terms & Conditions</p>
+                    <div className="space-y-2">
+                      {cfg.terms.map((term, i) => (
+                        <div key={i} className="flex gap-2">
+                          <input
+                            value={term}
+                            onChange={e => updateTerm(vt.id, i, e.target.value)}
+                            placeholder={`Term ${i + 1}`}
+                            className="flex-1 notion-input text-xs"
+                          />
+                          <button onClick={() => removeTerm(vt.id, i)} className="text-[#C0392B] hover:opacity-70 text-sm font-bold px-1">×</button>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => addTerm(vt.id)}
+                        className="text-xs text-[#787774] hover:text-[#1A1A1A] transition-colors"
+                      >+ Add term</button>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-      <button onClick={save} className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">
-        {saved ? '✓ Saved!' : 'Save Format'}
-      </button>
     </div>
   );
 }
@@ -1282,6 +1435,36 @@ export default function Settings() {
   // Company Info state
   const [companyState, setCompanyState] = useState('');
   const [companyInfoMsg, setCompanyInfoMsg] = useState('');
+  const [companyLogoUrl, setCompanyLogoUrl] = useState(null);
+  const [logoUploading, setLogoUploading] = useState(false);
+  const logoInputRef = useRef(null);
+
+  // Load company logo on mount / company change
+  useEffect(() => {
+    if (!selectedCompany?.guid) return;
+    api.fetchCompanyLogo(selectedCompany.guid)
+      .then(r => { if (r?.data?.logo_url) setCompanyLogoUrl(r.data.logo_url); })
+      .catch(() => {});
+  }, [selectedCompany?.guid]);
+
+  const handleLogoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !selectedCompany?.guid) return;
+    if (file.size > 512_000) { setCompanyInfoMsg('Logo too large. Max 500 KB.'); return; }
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      const dataUri = ev.target.result;
+      setLogoUploading(true);
+      try {
+        await api.uploadCompanyLogo(selectedCompany.guid, dataUri);
+        setCompanyLogoUrl(dataUri);
+        setCompanyInfoMsg('Logo saved!');
+        setTimeout(() => setCompanyInfoMsg(''), 2500);
+      } catch { setCompanyInfoMsg('Logo upload failed'); }
+      finally { setLogoUploading(false); }
+    };
+    reader.readAsDataURL(file);
+  };
 
   useEffect(() => {
     if (user) {
@@ -1373,9 +1556,50 @@ export default function Settings() {
             </div>
           )}
           {activeGroup==='account'&&activeSub==='Company Info'&&(
-            <div className="space-y-4">
+            <div className="space-y-5">
               <p className="text-base font-semibold text-[#1A1A1A]">Company Information</p>
               <p className="text-xs text-[#AEACA8]">Data synced from Tally Prime. Edit if needed.</p>
+
+              {/* Company Logo */}
+              <div>
+                <label className="text-xs font-medium text-[#787774] block mb-2">Company Logo</label>
+                <div className="flex items-center gap-4">
+                  <div
+                    onClick={() => logoInputRef.current?.click()}
+                    className="w-20 h-20 rounded-xl border-2 border-dashed border-[#D4D3CE] flex items-center justify-center cursor-pointer hover:border-[#1A1A1A] transition-colors overflow-hidden bg-[#F5F4EF] flex-shrink-0"
+                  >
+                    {companyLogoUrl
+                      ? <img src={companyLogoUrl} alt="logo" className="w-full h-full object-contain" />
+                      : <span className="text-2xl font-bold text-[#AEACA8]">
+                          {(selectedCompany?.name || 'CO').replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase()}
+                        </span>
+                    }
+                  </div>
+                  <div className="space-y-1.5">
+                    <button
+                      onClick={() => logoInputRef.current?.click()}
+                      disabled={logoUploading}
+                      className="px-4 py-2 rounded-lg text-xs font-medium border border-[#D4D3CE] hover:border-[#1A1A1A] text-[#1A1A1A] transition-colors disabled:opacity-50"
+                    >
+                      {logoUploading ? 'Uploading...' : companyLogoUrl ? 'Change Logo' : 'Upload Logo'}
+                    </button>
+                    <p className="text-[11px] text-[#AEACA8]">JPG, PNG · Max 500 KB · Shows on all PDFs</p>
+                    {companyLogoUrl && (
+                      <button
+                        onClick={async () => {
+                          try {
+                            await api.uploadCompanyLogo(selectedCompany.guid, '');
+                            setCompanyLogoUrl(null);
+                          } catch {}
+                        }}
+                        className="text-[11px] text-[#C0392B] hover:underline"
+                      >Remove logo</button>
+                    )}
+                  </div>
+                  <input ref={logoInputRef} type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} />
+                </div>
+              </div>
+
               {[['Company Name', selectedCompany?.name], ['GSTIN', selectedCompany?.gstin], ['PAN', selectedCompany?.pan], ['Address', selectedCompany?.address], ['Phone', selectedCompany?.phone], ['Email', selectedCompany?.email]].map(([label, val]) => (
                 <div key={label}>
                   <label className="text-xs font-medium text-[#787774] block mb-1.5">{label}</label>
@@ -1392,12 +1616,12 @@ export default function Settings() {
               <div className="flex gap-3 items-center">
                 <button onClick={async () => {
                   try {
-                    await api.updateMe({ name: selectedCompany?.name });
+                    await api.updateCompanyProfile(selectedCompany?.guid, { state: companyState });
                     setCompanyInfoMsg('Saved!');
                     setTimeout(() => setCompanyInfoMsg(''), 2000);
                   } catch { setCompanyInfoMsg('Save failed'); }
                 }} className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-[#1A1A1A] hover:bg-[#333] transition-colors">Save</button>
-                {companyInfoMsg && <span className="text-xs text-[#059669]">{companyInfoMsg}</span>}
+                {companyInfoMsg && <span className="text-[11px] font-medium text-[#059669]">{companyInfoMsg}</span>}
               </div>
             </div>
           )}
@@ -1562,7 +1786,7 @@ export default function Settings() {
           )}
           {/* Fallback */}
           {activeGroup==='preferences'&&activeSub==='Voucher Config'&&(
-            <VoucherConfigSettings companyGuid={selectedCompany?.guid} />
+            <VoucherConfigSettings />
           )}
           {activeGroup==='preferences'&&activeSub==='Currency & Format'&&(
             <CurrencyFormatSettings />

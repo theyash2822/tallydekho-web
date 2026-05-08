@@ -119,6 +119,15 @@ export const fetchLedgerStatement = (companyGuid, id, fy, extra = {}) => {
   return request('GET', `/api/ledgers/${id}/statement?${params}`);
 };
 export const fetchCashBank            = (body) => post('/cash-bank', body);
+
+// ─── Company Logo ────────────────────────────────────────────────────────────────────
+// ─── User Settings ──────────────────────────────────────────────────────────────
+export const getUserSettings    = () => request('GET', '/api/auth/user-settings');
+export const updateUserSettings = (data) => request('PATCH', '/api/auth/user-settings', data);
+
+export const fetchCompanyLogo    = (companyGuid) => request('GET',  `/api/company/${companyGuid}/logo`);
+export const uploadCompanyLogo   = (companyGuid, logo) => request('POST', `/api/company/${companyGuid}/logo`, { logo });
+export const updateCompanyProfile = (companyGuid, data) => request('PATCH', `/api/company/profile?companyGuid=${companyGuid}`, data);
 export const fetchReceivablesPayables = (body) => post('/receivables-payables', body);
 export const fetchExpenses            = (body) => post('/expenses', body);
 export const fetchGSTSummary          = (body) => post('/gst-summary', body);
@@ -181,6 +190,7 @@ const api = {
   // Vouchers & Reports
   fetchVouchers, fetchDashboard, fetchReportsPL, fetchReportsBS,
   fetchCashBank, fetchReceivablesPayables, fetchExpenses, fetchGSTSummary,
+  fetchCompanyLogo, uploadCompanyLogo,
   // Tally Write
   createSalesInvoice, createSalesOrder, createPurchaseInvoice, createPurchaseOrder,
   createPaymentVoucher, createReceiptVoucher, createJournalVoucher, createContraVoucher,
