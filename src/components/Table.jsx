@@ -1,4 +1,5 @@
-export default function Table({ columns, data, onRowClick }) {
+export default function Table({ columns, data = [], onRowClick }) {
+  const rows = Array.isArray(data) ? data : [];
   return (
     <div className="overflow-x-auto rounded-xl border border-[#E8E7E3]">
       <table className="w-full text-sm">
@@ -12,10 +13,10 @@ export default function Table({ columns, data, onRowClick }) {
           </tr>
         </thead>
         <tbody>
-          {data.length === 0 ? (
+          {rows.length === 0 ? (
             <tr><td colSpan={columns.length} className="text-center py-12 text-[#787774] text-sm">No records found</td></tr>
           ) : (
-            data.map((row, i) => (
+            rows.map((row, i) => (
               <tr
                 key={i}
                 onClick={() => onRowClick && onRowClick(row)}
