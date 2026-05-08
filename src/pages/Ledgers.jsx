@@ -184,8 +184,10 @@ function SkeletonRow() {
 // Helper accessors
 const getName  = l => l.name  || l.NAME  || l.ledgerName || '—';
 const getGroup = l => l.parent || l.group || l.PARENT    || '—';
-const getClose = l => l.closing_balance  || l.closing  || l.closingBalance  || l.CLOSINGBALANCE  || 0;
-const getOpen  = l => l.opening_balance  || l.opening  || l.openingBalance  || l.OPENINGBALANCE  || 0;
+const getClose     = l => l.closing_balance  || l.closing  || l.closingBalance  || l.CLOSINGBALANCE  || 0;
+// Use FY-specific opening if available (backend computes fy_opening_abs from ledger_fy_balances)
+const getOpen      = l => l.fy_opening_abs != null ? Math.abs(parseFloat(l.fy_opening_abs)) : (l.opening_balance  || l.opening  || l.openingBalance  || l.OPENINGBALANCE  || 0);
+const getOpenType  = l => l.fy_opening_type || (l.balance_type) || 'Dr';
 const getGstin = l => l.gstin || l.GSTIN || '';
 const getBalType = l => {
   if (l.balance_type) return l.balance_type;
@@ -405,7 +407,7 @@ export default function Ledgers() {
                       >
                         <td className="px-4 py-3 font-medium text-[#1A1A1A]">{getName(l)}</td>
                         <td className="px-4 py-3 text-[#787774] text-xs">{getGroup(l)}</td>
-                        <td className="px-4 py-3 text-[#787774]">{fmt(getOpen(l))}</td>
+                        <td className="px-4 py-3 text-[#787774]">{fmt(getOpen(l))} <span className="text-[10px] text-[#AEACA8]">{getOpenType(l)}</span></td>
                         <td className="px-4 py-3 font-semibold text-[#1A1A1A]">{fmt(close)}</td>
                         <td className="px-4 py-3">
                           <span className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
